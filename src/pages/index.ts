@@ -1,0 +1,11 @@
+export { default as Landing } from "./public/Landing";
+export { default as About } from "./public/About";
+export { default as Services } from "./public/Services";
+export { default as Coaches } from "./public/Coaches";
+export { default as Contact } from "./public/Contact";
+export { default as Signin } from "../pages/Signin";
+export { default as Signup } from "../pages/Signup";
+export { default as UserPage } from "../pages/UserPage";
+export { default as CoachPage } from "../pages/CoachPage";
+export { default as AdminPage } from "../pages/AdminPage";
+export { default as OwnerPage } from "../pages/OwnerPage";
