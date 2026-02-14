@@ -6,7 +6,7 @@ interface SigninPayload {
 }
 
 interface SingupPayload {
-  fullname: string;
+  name: string;
   age: number;
   sex: string;
   email: string;
@@ -14,8 +14,6 @@ interface SingupPayload {
 }
 
 export const signinUser = async (signinData: SigninPayload) => {
-  console.log("[AuthService] User signing in...");
-
   const response = await apiClient.post("/signin", signinData);
 
   return response.data;

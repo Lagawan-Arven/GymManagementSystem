@@ -2,7 +2,6 @@ import { X, Mail } from "lucide-react";
 import { useState } from "react";
 import { useAuthPage } from "../context/AuthPageContext";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const Signin = () => {
   const { signinOpen, setSigninOpen, switchToSignup } = useAuthPage();
@@ -10,8 +9,6 @@ const Signin = () => {
   const [password, setPassword] = useState("");
 
   const { signin } = useAuth();
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -39,7 +36,13 @@ const Signin = () => {
               </p>
             </div>
             {/* Email Sign In */}
-            <form className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                signin(email, password);
+              }}
+            >
               <div>
                 <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   Email
@@ -64,24 +67,14 @@ const Signin = () => {
                   className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                 />
               </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  signin(email, password);
-                  navigate("/user");
-                }}
-                type="submit"
-              >
-                Submit
-              </button>
-              <button
-                type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-red-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-red-500"
-              >
+              <button type="submit">Submit</button>
+
+              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-red-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-red-500">
                 <Mail className="h-4 w-4" />
                 Sign In with Email
               </button>
             </form>
+
             {/* Footer */}
             <div className="mt-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
               Don’t have an account?{" "}

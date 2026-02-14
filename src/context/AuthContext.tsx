@@ -1,8 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { signinUser } from "../services/api/authService";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
-  user: any | null;
+  user: string | null;
   signin: (email: string, password: string) => Promise<void>;
   signout: () => void;
 }
@@ -10,18 +11,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      navigate("/user");
+    }
+  }, []);
+
   const signin = async (email: string, password: string) => {
-    console.log("[Auth] User loggin in...");
+    console.log("[Auth] User signing in...");
 
     const response = await signinUser({ email, password });
-    setUser(response.data);
+
+    if (response) {
+      localStorage.setItem("access_token", response.access_token);
+      setUser(response.name);
+      console.log("[Auth] Signin success");
+    } else {
+      console.log("[Auth] Signin failed");
+    }
   };
 
   const signout = () => {
-    console.log("[Auth] User logging out...");
+    console.log("[Auth] User signing out...");
+    localStorage.setItem("access_token", "");
     setUser(null);
   };
 
