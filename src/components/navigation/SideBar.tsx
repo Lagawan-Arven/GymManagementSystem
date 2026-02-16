@@ -1,10 +1,12 @@
-import React from "react";
 import { IoSettings } from "react-icons/io5";
 import { MdDashboardCustomize } from "react-icons/md";
 import { BiSupport } from "react-icons/bi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const SideBar = () => {
+  const { signout } = useAuth();
+  const navigate = useNavigate();
   return (
     <>
       <div className="flex flex-col gap-2 p-4 bg-neutral-500 dark:bg-neutral-800 lg:w-[15vw] lg:h-full lg:px-3 lg:py-10 lg:gap-5 lg:text-md">
@@ -38,6 +40,16 @@ const SideBar = () => {
             <BiSupport />
           </NavLink>
           <h3>Support</h3>
+        </div>
+
+        <div>
+          <button
+            onClick={() => {
+              signout();
+            }}
+          >
+            Logout
+          </button>
         </div>
       </div>
     </>
