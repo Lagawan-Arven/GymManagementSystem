@@ -1,7 +1,7 @@
 import { apiClient } from "./client";
 
 interface SigninPayload {
-  email: string;
+  emailUsername: string;
   password: string;
 }
 
@@ -14,7 +14,7 @@ interface SingupPayload {
 }
 
 export const signinUser = async (signinData: SigninPayload) => {
-  const response = await apiClient.post("/signin", signinData);
+  const response = await apiClient.post("/auth/signin", signinData);
 
   return response.data;
 };
@@ -22,7 +22,7 @@ export const signinUser = async (signinData: SigninPayload) => {
 export const signupUser = async (signupData: SingupPayload) => {
   console.log("[AuthService] User signing up...");
 
-  const response = await apiClient.post("/signup", signupData);
+  const response = await apiClient.post("/auth/signup", signupData);
 
   return response.data;
 };
