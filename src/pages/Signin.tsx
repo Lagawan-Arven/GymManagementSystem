@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Signin = () => {
   const { signinOpen, setSigninOpen, switchToSignup } = useAuthPage();
-  const [email, setEmail] = useState("");
+  const [emailUsername, setEmailUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const { signin } = useAuth();
@@ -40,19 +40,20 @@ const Signin = () => {
               className="space-y-4"
               onSubmit={(e) => {
                 e.preventDefault();
-                signin(email, password);
+                signin({ emailUsername, password });
               }}
             >
               <div>
                 <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  Email
+                  Email or Username
                 </label>
                 <input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900  focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
+                  type="username"
+                  placeholder="your email or username"
+                  value={emailUsername}
+                  onChange={(e) => setEmailUsername(e.target.value)}
+                  className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900  focus:border-red-600 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-red-500"
+                  required
                 />
               </div>
               <div>
@@ -64,10 +65,18 @@ const Signin = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
+                  className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-red-600 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-red-500"
+                  required
                 />
               </div>
-              <button type="submit">Submit</button>
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className="py-2 px-4 rounded-xl bg-red-600 text-black hover:text-white dark:bg-red-500 "
+                >
+                  Submit
+                </button>
+              </div>
 
               <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-red-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-red-500">
                 <Mail className="h-4 w-4" />
