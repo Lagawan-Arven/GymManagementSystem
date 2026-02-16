@@ -1,11 +1,16 @@
 import { X, Mail } from "lucide-react";
 import { useState } from "react";
 import { useAuthPage } from "../context/AuthPageContext";
+import { useAuth } from "../context/AuthContext";
 
 const Signup = () => {
   const { signupOpen, setSignupOpen, switchToSignin } = useAuthPage();
+  const [name, setName] = useState("");
+  const [age, setAge] = useState(0);
+  const [sex, setSex] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { signup } = useAuth();
 
   return (
     <>
@@ -33,14 +38,23 @@ const Signup = () => {
               </p>
             </div>
             {/* Email Sign In */}
-            <form className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                signup({ name, age, sex, email, password });
+                switchToSignin();
+              }}
+            >
               <div>
                 <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  Fullname
+                  Name
                 </label>
                 <input
-                  type="fullname"
-                  placeholder="your fullname"
+                  type="name"
+                  placeholder="your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                 />
               </div>
@@ -53,6 +67,8 @@ const Signup = () => {
                   <input
                     type="age"
                     placeholder="your age"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
                     className="w-[90%] rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                   />
                 </div>
@@ -63,6 +79,8 @@ const Signup = () => {
                   <input
                     type="sex"
                     placeholder="your sex"
+                    value={sex}
+                    onChange={(e) => setSex(e.target.value)}
                     className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                   />
                 </div>
@@ -92,10 +110,17 @@ const Signup = () => {
                   className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                 />
               </div>
-              <button
-                type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
-              >
+
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className="py-2 px-4 rounded-xl bg-red-600 text-black hover:text-white dark:bg-red-500 "
+                >
+                  Submit
+                </button>
+              </div>
+
+              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200">
                 <Mail className="h-4 w-4" />
                 Sign Up with Email
               </button>
