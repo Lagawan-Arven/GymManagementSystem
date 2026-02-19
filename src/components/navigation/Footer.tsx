@@ -72,7 +72,7 @@ const Footer = () => {
 
         <div className="mt-2 flex justify-between md:mt-0 md:gap-4">
           <NavLink to="/policy">Privacy Policy</NavLink>
-          <NavLink to="terms">Terms of Service</NavLink>
+          <NavLink to="/terms">Terms of Service</NavLink>
         </div>
       </div>
     </footer>
