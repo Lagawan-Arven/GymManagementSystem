@@ -2,17 +2,21 @@ import { X, Mail } from "lucide-react";
 import { useState } from "react";
 import { useAuthPage } from "../context/AuthPageContext";
 import { useAuth } from "../context/AuthContext";
+import { createPortal } from "react-dom";
 
 const Signup = () => {
   const { signupOpen, setSignupOpen, switchToSignin } = useAuthPage();
-  const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
-  const [sex, setSex] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const { signup } = useAuth();
 
-  return (
+  const [user, setUser] = useState({
+    name: "",
+    age: 0,
+    sex: "",
+    email: "",
+    password: "",
+  });
+
+  return createPortal(
     <>
       {signupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -42,7 +46,7 @@ const Signup = () => {
               className="space-y-4"
               onSubmit={(e) => {
                 e.preventDefault();
-                signup({ name, age, sex, email, password });
+                signup(user);
                 switchToSignin();
               }}
             >
@@ -53,8 +57,8 @@ const Signup = () => {
                 <input
                   type="name"
                   placeholder="your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={user.name}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
                   className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                 />
               </div>
@@ -65,10 +69,12 @@ const Signup = () => {
                     Age
                   </label>
                   <input
-                    type="age"
+                    type="number"
                     placeholder="your age"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
+                    value={user.age}
+                    onChange={(e) =>
+                      setUser({ ...user, age: Number(e.target.value) })
+                    }
                     className="w-[90%] rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                   />
                 </div>
@@ -79,8 +85,8 @@ const Signup = () => {
                   <input
                     type="sex"
                     placeholder="your sex"
-                    value={sex}
-                    onChange={(e) => setSex(e.target.value)}
+                    value={user.sex}
+                    onChange={(e) => setUser({ ...user, sex: e.target.value })}
                     className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                   />
                 </div>
@@ -93,8 +99,8 @@ const Signup = () => {
                 <input
                   type="email"
                   placeholder="your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={user.email}
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
                   className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                 />
               </div>
@@ -105,8 +111,10 @@ const Signup = () => {
                 <input
                   type="password"
                   placeholder="your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={user.password}
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
                   className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-neutral-900 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-white"
                 />
               </div>
@@ -138,7 +146,8 @@ const Signup = () => {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body,
   );
 };
 

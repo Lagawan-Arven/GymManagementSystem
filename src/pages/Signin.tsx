@@ -2,15 +2,15 @@ import { X, Mail } from "lucide-react";
 import { useState } from "react";
 import { useAuthPage } from "../context/AuthPageContext";
 import { useAuth } from "../context/AuthContext";
+import { createPortal } from "react-dom";
 
 const Signin = () => {
   const { signinOpen, setSigninOpen, switchToSignup } = useAuthPage();
   const [emailUsername, setEmailUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const { signin } = useAuth();
 
-  return (
+  return createPortal(
     <>
       {signinOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -77,13 +77,11 @@ const Signin = () => {
                   Submit
                 </button>
               </div>
-
               <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-red-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-red-500">
                 <Mail className="h-4 w-4" />
                 Sign In with Email
               </button>
             </form>
-
             {/* Footer */}
             <div className="mt-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
               Don’t have an account?{" "}
@@ -97,7 +95,8 @@ const Signin = () => {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body,
   );
 };
 
