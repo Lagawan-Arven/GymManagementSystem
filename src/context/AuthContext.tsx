@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { signinUser, signupUser } from "../services/api/authService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 interface SignupPayload {
   name: string;
@@ -17,6 +17,7 @@ interface SigninPayload {
 
 interface User {
   id: string;
+  role: string;
   name: string;
   age: number;
   sex: string;
@@ -38,12 +39,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      navigate("/user");
+    if (user) {
+      if (user.role === "user") {
+        navigate("/user");
+      } else if (user.role === "coach") {
+        navigate("/coach");
+      } else if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "owner") {
+        navigate("/ownder");
+      }
       console.log(user);
-    } else {
-      navigate("/");
     }
   }, [user, navigate]);
 
@@ -51,10 +57,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log("[Auth] User signing in...");
 
     const response = await signinUser(data);
-
-    if (response) {
+    if (response?.user) {
       localStorage.setItem("access_token", response.access_token);
-      localStorage.setItem("user", response.user);
       setUser(response.user);
       console.log("[Auth] Signin success");
     } else {
@@ -78,7 +82,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signout = () => {
     console.log("[Auth] User signing out...");
     localStorage.setItem("access_token", "");
-    localStorage.setItem("user", "");
     setUser(null);
     navigate("/");
   };
