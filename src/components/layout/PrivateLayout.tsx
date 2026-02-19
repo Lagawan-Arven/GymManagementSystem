@@ -1,18 +1,22 @@
 import { Outlet } from "react-router-dom";
 import TopBar from "../navigation/TopBar";
 import SideBar from "../navigation/SideBar";
+import BottomBar from "../navigation/BottomBar";
 
 const PrivateLayout = () => {
   return (
     <>
-      <div className="relative dark:bg-black dark:text-white h-dvh lg:flex">
-        <div className="absolute w-full lg:h-full lg:w-[15vw] lg:relative">
-          <SideBar />
-        </div>
+      <div className=" dark:bg-black dark:text-white">
+        <div className="relative lg:flex h-dvh">
+          <div className="absolute w-full lg:h-full lg:w-[15vw] lg:relative">
+            <SideBar />
+          </div>
 
-        <div className="w-full ">
-          <TopBar />
-          <Outlet />
+          <div className="w-full ">
+            <TopBar />
+            <Outlet />
+            <BottomBar />
+          </div>
         </div>
       </div>
     </>
