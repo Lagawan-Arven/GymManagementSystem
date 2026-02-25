@@ -9,15 +9,25 @@ import {
   OwnerPage,
   Services,
   UserPage,
+  WorkoutLogs,
+  Progress,
+  Programs,
 } from "../pages";
-import PublicLayout from "../components/layout/PublicLayout";
-import PrivateLayout from "../components/layout/PrivateLayout";
-import AuthGuard from "../context/AuthGuard";
+import {
+  PublicLayout,
+  UserPageLayout,
+  CoachPageLayout,
+  AdminPageLayout,
+  OwnerPageLayout,
+} from "../components/layout";
+
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../components/ErrorFallback";
 
 const AppRouter = () => {
   return (
     <Routes>
-      {/* Public */}
+      {/* PUBLIC */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
@@ -26,33 +36,30 @@ const AppRouter = () => {
         <Route path="/contact" element={<Contact />} />
       </Route>
 
-      {/* Protected */}
-      <Route element={<PrivateLayout />}>
+      {/* PROTECTED */}
+      {/* User Pages */}
+      <Route element={<UserPageLayout />}>
         <Route path="/user" element={<UserPage />} />
-        <Route
-          path="/coach"
-          element={
-            <AuthGuard>
-              <CoachPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <AuthGuard>
-              <AdminPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/owner"
-          element={
-            <AuthGuard>
-              <OwnerPage />
-            </AuthGuard>
-          }
-        />
+        <Route path="/user/workout_logs" element={<WorkoutLogs />} />
+        <Route path="/user/progress" element={<Progress />} />
+        <Route path="/user/programs" element={<Programs />} />
+        <Route path="/user/journals" element={<WorkoutLogs />} />
+        <Route path="/user/coaches" element={<WorkoutLogs />} />
+      </Route>
+
+      {/* Coach Pages */}
+      <Route element={<CoachPageLayout />}>
+        <Route path="/coach" element={<CoachPage />} />
+      </Route>
+
+      {/* Admin Pages */}
+      <Route element={<AdminPageLayout />}>
+        <Route path="/admin" element={<AdminPage />} />
+      </Route>
+
+      {/* Owner Pages */}
+      <Route element={<OwnerPageLayout />}>
+        <Route path="/owner" element={<OwnerPage />} />
       </Route>
     </Routes>
   );

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
-import NavBar from "../navigation/NavBar";
-import Footer from "../navigation/Footer";
+import PublicTopBar from "../navigation/PublicTopBar";
+import Footer from "../navigation/PublicFooter";
 import { Signin, Signup } from "../../pages";
 
 const PublicLayout = () => {
@@ -15,7 +15,7 @@ const PublicLayout = () => {
             Fit<span className="text-red-600">Gym</span>
           </h1>
         </div>
-        <NavBar />
+        <PublicTopBar />
       </header>
       <Signin />
       <Signup />

@@ -8,7 +8,7 @@ const PrivateLayout = () => {
     <>
       <div className=" dark:bg-black dark:text-white">
         <div className="relative lg:flex h-dvh">
-          <div className="absolute w-full lg:h-full lg:w-[15vw] lg:relative">
+          <div className="absolute w-full lg:h-full lg:w-[20vw] lg:relative">
             <SideBar />
           </div>
 
