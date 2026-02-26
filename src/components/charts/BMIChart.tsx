@@ -30,27 +30,29 @@ const renderNeedle = (bmi: number) => {
 
   return (
     <>
-      <circle cx="50%" cy="65%" r={8} fill="#666" />
-      <svg viewBox="0 0 100 100">
-        <path d={`M 50 65 l ${x} ${y}`} stroke="black" strokeWidth={1} />
-      </svg>
+      <g>
+        <circle cx="50%" cy="65%" r={8} fill="#666" />
+        <svg viewBox="0 0 100 100">
+          <path d={`M 50 65 l ${x} ${y}`} stroke="black" strokeWidth={1} />
+        </svg>
+      </g>
     </>
   );
 };
 
 export default function BMIChart({ bmi }: { bmi: number }) {
   return (
-    <ResponsiveContainer className={"w-full h-auto"}>
-      <PieChart className="">
+    <ResponsiveContainer height={"100%"} width={"100%"}>
+      <PieChart className="relative" responsive>
         <Pie
           data={bmiData}
           dataKey="value"
           startAngle={180}
           endAngle={0}
           cx="50%"
-          cy="80%"
+          cy="90%"
           innerRadius={50}
-          outerRadius={120}
+          outerRadius={110}
           legendType="square"
         />
         <Legend
@@ -63,6 +65,8 @@ export default function BMIChart({ bmi }: { bmi: number }) {
             fontSize: "12px",
             paddingBottom: "5px",
             paddingLeft: "5px",
+            position: "absolute",
+            color: "white",
           }}
         />
         {renderNeedle(bmi)}

@@ -9,7 +9,7 @@ import {
   Legend,
 } from "recharts";
 
-import CustomTooltip from "./CustomTooltip";
+import RadarCustomTooltip from "./RadarCustomTooltip";
 
 const MyRadarChart = () => {
   const pieChartData = [
@@ -32,7 +32,7 @@ const MyRadarChart = () => {
         <PolarGrid stroke="#848a8b" />
         <PolarAngleAxis dataKey={"coach"} fontSize={12} />
         <PolarRadiusAxis fontSize={10} />
-        <Tooltip content={CustomTooltip} />
+        <Tooltip content={RadarCustomTooltip} />
         <Legend wrapperStyle={{ fontSize: "12px" }} iconSize={9} />
       </RadarChart>
     </ResponsiveContainer>
