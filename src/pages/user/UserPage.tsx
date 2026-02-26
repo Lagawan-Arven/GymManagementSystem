@@ -38,7 +38,7 @@ const UserPage = () => {
     { month: "May", workout: 20 },
     { month: "June", workout: 21 },
     { month: "July", workout: 31 },
-    { month: "August", workout: 30 },
+    { month: "Aug", workout: 30 },
     { month: "Sept", workout: 21 },
     { month: "Oct", workout: 27 },
     { month: "Nov", workout: 20 },
@@ -55,14 +55,14 @@ const UserPage = () => {
   return (
     <>
       <main className="h-auto lg:h-[80vh] ">
-        <div className="grid grid-cols-2 grid-rows-14 px-5 lg:grid-cols-3 lg:grid-rows-8 gap-y-5 gap-x-5 lg:h-full">
-          {/*HEADER */}
-          <section className="flex col-span-2 items-center gap-2 ">
+        <div className="flex flex-col gap-5 px-5 md:grid md:grid-cols-2 md:grid-rows-11 lg:grid-cols-3 lg:grid-rows-8 lg:gap-y-5 lg:gap-x-5 lg:h-full">
+          {/*===================================HEADER =================================*/}
+          <section className="flex items-center gap-2 md:order-1 lg:col-span-2">
             <LayoutDashboard className="" />
             <h1 className="text-xl lg:text-2xl font-bold">Workout Dashboard</h1>
           </section>
-          {/*HEADER */}
-          <section className="flex col-span-2 col-start-1 items-center gap-2 lg:col-start-3 lg:col-span-1 lg:justify-center ">
+          {/*========================Membership Status===============================*/}
+          <section className="flex items-center gap-2 md:order-2 md:justify-center lg:col-start-3 ">
             <GrStatusGood className="size-6" />
             <h1 className="text-sm lg:text-xl font-bold">
               Status:{" "}
@@ -71,20 +71,20 @@ const UserPage = () => {
               </span>
             </h1>
           </section>
-          {/*HEADER */}
-          <section className="flex col-span-2 items-center gap-2 lg:col-span-1 rounded-xl bg-neutral-300 dark:bg-neutral-800 lg:pl-5">
+          {/*================================Workout Session Total ===============================*/}
+          <section className="flex items-center gap-2 rounded-xl bg-neutral-300 dark:bg-neutral-800 md:order-3 md:pl-2">
             <TbSum />
             <h1 className="text-xs lg:text-[1rem]">Workout Session Total:</h1>
           </section>
-          {/*HEADER */}
-          <section className="flex col-span-2 items-center gap-2 lg:col-span-1 rounded-xl bg-neutral-300 dark:bg-neutral-800 lg:pl-5">
+          {/*============================Average workout duration=============================*/}
+          <section className="flex items-center gap-2  rounded-xl bg-neutral-300 dark:bg-neutral-800 md:order-4 md:pl-2">
             <Timer />
             <h1 className="text-xs lg:text-[1rem]">
               Average workout duration:
             </h1>
           </section>
-          {/*HEADER */}
-          <section className=" row-span-3 col-span-2 lg:row-span-7 lg:col-span-1 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+          {/*====================BMI ======================*/}
+          <section className="h-[80vh] md:h-[75vh] md:order-6 md:row-span-6 lg:order-5 lg:h-auto lg:row-span-7 rounded-xl bg-neutral-300 dark:bg-neutral-800">
             <div className="flex flex-col h-full">
               <div className="relative flex-1">
                 <div className="absolute top-2 left-2 flex gap-2">
@@ -94,7 +94,7 @@ const UserPage = () => {
                 <BMIChart bmi={22.5} />
               </div>
 
-              <div className="relative flex-1">
+              <div className="relative flex-1 pr-6 lg:pr-0">
                 <div className="absolute left-5 top-5 flex flex-col gap-15 ">
                   <div className="">
                     <h1>
@@ -112,14 +112,14 @@ const UserPage = () => {
                     <p>Sex: </p>
                   </div>
                 </div>
-                <div className="justify-self-center">
+                <div className="justify-self-end">
                   <HumanBodyBMI bmi={22.5} />
                 </div>
               </div>
             </div>
           </section>
-          {/*HEADER */}
-          <section className="col-span-2 row-span-3 py-2 px-2 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+          {/*=====================================Month Chart==========================================*/}
+          <section className="h-[30vh] md:h-auto md:order-8 md:row-span-3 md:col-span-2 lg:order-6 lg:h-auto lg:col-span-2 lg:row-span-3 py-2 px-2 rounded-xl bg-neutral-300 dark:bg-neutral-800">
             <ErrorBoundary FallbackComponent={ErrorFallback}>
               <BarChart
                 data={MonthChartData}
@@ -128,12 +128,12 @@ const UserPage = () => {
               />
             </ErrorBoundary>
           </section>
-          {/*HEADER */}
-          <section className="row-span-3 items-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+          {/*=======================================Coach Chart =====================================*/}
+          <section className="h-[30vh] md:h-auto md:order-5 md:row-span-3 lg:order-7 lg:h-auto lg:row-span-3 items-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
             <RadarChart />
           </section>
-          {/*HEADER */}
-          <section className="row-span-3 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+          {/*========================================Program Chart=====================================*/}
+          <section className="h-[30vh] md:h-auto md:order-7 md:row-span-3 lg:order-8 lg:h-auto lg:row-span-3 rounded-xl bg-neutral-300 dark:bg-neutral-800">
             <ErrorBoundary FallbackComponent={ErrorFallback}>
               <PieChart
                 data={ProgramChartData}

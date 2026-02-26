@@ -23,8 +23,8 @@ const UserPageLayout = () => {
   return (
     <>
       <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-        <div className="relative w-screen lg:flex lg:h-screen">
-          <div className="absolute w-full lg:h-full lg:w-[20vw] lg:relative">
+        <div className="relative w-screen h-auto lg:flex lg:h-screen">
+          <div className="w-full md:w-[50vw] lg:h-full lg:w-[20vw] ">
             <SideBar navLinks={navLinks} />
           </div>
 

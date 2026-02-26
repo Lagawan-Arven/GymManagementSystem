@@ -86,7 +86,7 @@ const TopBar = () => {
   return (
     <>
       <header className="w-full h-[10vh] text-xl p-2 lg:text-2xl lg:py-2 lg:px-10 ">
-        <div className="flex h-full px-2 border justify-end border-neutral-400 dark:border-neutral-700 rounded-2xl md:justify-between md:px-20 lg:px-10 lg:py-3">
+        <div className=" flex h-full px-2 border justify-end border-neutral-400 dark:border-neutral-700 rounded-2xl md:justify-between md:px-5 md:pl-20 lg:pl-10 lg:px-10 lg:py-3">
           {/* SEARCH */}
           <div className="hidden md:flex gap-2 items-center  ">
             <CiSearch />

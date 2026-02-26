@@ -5,10 +5,9 @@ import { useState, useRef, useEffect } from "react";
 
 const SideBar = ({ navLinks }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
 
-  const myClass =
-    "hidden z-50 p-4 bg-neutral-300 dark:bg-neutral-800 lg:block lg:w-[20vw] lg:h-full lg:px-5 lg:text-md";
+  const baseClass =
+    "fixed w-full md:w-[50vw] z-[100] p-4 border-b border-black bg-neutral-300 dark:bg-neutral-800 lg:static lg:block lg:w-[20vw] lg:h-full lg:px-5 lg:text-md";
 
   return (
     <>
@@ -17,7 +16,6 @@ const SideBar = ({ navLinks }) => {
         <button
           onClick={() => {
             setMenuOpen(true);
-            menuRef.current.className = "block" + myClass;
           }}
           className="absolute mt-5 ml-5 lg:hidden"
         >
@@ -30,15 +28,14 @@ const SideBar = ({ navLinks }) => {
         <button
           onClick={() => {
             setMenuOpen(false);
-            menuRef.current.className = myClass;
           }}
-          className="absolute right-0 mt-5 mr-5 lg:hidden "
+          className="fixed z-101 right-0 mt-5 mr-5 md:right-95 lg:hidden "
         >
           <X />
         </button>
       )}
 
-      <aside ref={menuRef} className={myClass}>
+      <aside className={`${menuOpen ? "block" : "hidden"} ${baseClass}`}>
         {/* LOGO */}
         <div className="flex gap-2 p-2 border-b-2 mb-2 border-neutral-700 lg:pb-5">
           <img src="src\assets\react.svg" alt="logo" />
