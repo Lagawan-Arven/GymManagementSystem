@@ -14,7 +14,7 @@ const UserPageLayout = () => {
     { link: "/user", icon: <MdDashboardCustomize />, name: "Dashboard" },
     { link: "/user/workout_logs", icon: <GiMuscleUp />, name: "Workout Logs" },
     { link: "/user/progress", icon: <GiProgression />, name: "Progress" },
-    { link: "/user/program", icon: <IoIosFitness />, name: "Programs" },
+    { link: "/user/programs", icon: <IoIosFitness />, name: "Programs" },
     { link: "/user/journals", icon: <IoIosJournal />, name: "Journals" },
     { link: "/user/coaches", icon: <GiTeacher />, name: "Coaches" },
     { link: "/user/settings", icon: <IoSettings />, name: "Settings" },
@@ -31,7 +31,6 @@ const UserPageLayout = () => {
           <div className="w-full lg:h-screen">
             <TopBar />
             <Outlet />
-            <BottomBar />
           </div>
         </div>
       </div>

@@ -1,5 +1,9 @@
-import { FaUserCircle, FaRegMoon, FaRegSun } from "react-icons/fa";
-import { MdMessage, MdCircleNotifications } from "react-icons/md";
+import { FaUserCircle, FaRegMoon } from "react-icons/fa";
+import {
+  MdMessage,
+  MdCircleNotifications,
+  MdOutlineWbSunny,
+} from "react-icons/md";
 import { ImProfile } from "react-icons/im";
 import { IoLogOut } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
@@ -131,7 +135,7 @@ const TopBar = () => {
               onClick={() => setTheme(toggleTheme)}
               className="mx-2 lg:mx-5"
             >
-              {theme === "light" ? <FaRegMoon /> : <FaRegSun />}
+              {theme === "light" ? <FaRegMoon /> : <MdOutlineWbSunny />}
             </button>
             <div className="">
               <FaUserCircle

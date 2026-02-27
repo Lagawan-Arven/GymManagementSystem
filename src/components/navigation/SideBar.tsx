@@ -48,6 +48,7 @@ const SideBar = ({ navLinks }) => {
         <div className="flex flex-col gap-5 pt-2 px-5 lg:px-2">
           {navLinks?.map((navLink, index) => (
             <NavLink
+              onClick={() => setMenuOpen(false)}
               key={index}
               to={navLink.link}
               className="flex gap-2 items-center justify-center border-b-1 border-neutral-700 lg:justify-start lg:pl-5 pb-2"

@@ -12,6 +12,7 @@ import {
   WorkoutLogs,
   Progress,
   Programs,
+  Journals,
 } from "../pages";
 import {
   PublicLayout,
@@ -38,12 +39,12 @@ const AppRouter = () => {
 
       {/* PROTECTED */}
       {/* User Pages */}
-      <Route element={<UserPageLayout />}>
+      <Route element={<UserPageLayout />} HydrateFallback={ErrorFallback}>
         <Route path="/user" element={<UserPage />} />
         <Route path="/user/workout_logs" element={<WorkoutLogs />} />
         <Route path="/user/progress" element={<Progress />} />
         <Route path="/user/programs" element={<Programs />} />
-        <Route path="/user/journals" element={<WorkoutLogs />} />
+        <Route path="/user/journals" element={<Journals />} />
         <Route path="/user/coaches" element={<WorkoutLogs />} />
       </Route>
 
