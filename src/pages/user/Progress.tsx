@@ -4,16 +4,16 @@ const Progress = () => {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
-    <main className="h-[80vh] ">
-      <div className="overflow-auto px-2 h-full lg:px-5 lg:pb-10">
+    <main className="h-[80vh] lg:h-[90vh]">
+      <div className="overflow-auto px-2 h-full lg:px-5">
         {/*=========== HEADER =============== */}
-        <header className="flex gap-2 items-center h-[5vh] lg:h-auto mb-2 px-2 lg:px-5 lg:mb-5 ">
+        <header className="flex gap-2 pt-2 items-center h-[5vh] lg:h-auto px-2 lg:px-5">
           <GiProgression size={25} />
           <h1 className="font-bold lg:text-2xl">Progress</h1>
         </header>
 
         {/*=========== MAIN =============== */}
-        <main className="flex flex-col lg:flex-row h-full gap-3 lg:gap-5">
+        <main className="flex flex-col lg:flex-row h-[85vh] gap-3 lg:gap-5 lg:pt-5">
           {/*=========== SECTION 1 =============== */}
           <section className="lg:flex-1 flex flex-col gap-3 lg:gap-5 h-[70vh] lg:h-auto">
             {/* This Week Section*/}

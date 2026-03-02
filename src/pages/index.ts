@@ -9,8 +9,4 @@ export { default as UserPage } from "./user/UserPage";
 export { default as WorkoutLogs } from "./user/WorkoutLogs";
 export { default as Progress } from "./user/Progress";
 export { default as Programs } from "./user/Programs";
-export { default as Coaches2 } from "./user/Coaches";
-export { default as Journals } from "./util/Journals";
-export { default as CoachPage } from "./coach/CoachPage";
 export { default as AdminPage } from "./admin/AdminPage";
-export { default as OwnerPage } from "./owner/OwnerPage";

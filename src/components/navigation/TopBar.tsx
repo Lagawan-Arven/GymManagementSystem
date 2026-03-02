@@ -11,6 +11,7 @@ import { CiSearch } from "react-icons/ci";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect, useRef } from "react";
+import { NavLink } from "react-router-dom";
 
 interface ModalProp {
   heading?: string;
@@ -68,7 +69,7 @@ const UserModal = ({ isOpen }: ModalProp) => {
   );
 };
 
-const TopBar = () => {
+const TopBar = ({ navLinks }) => {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -89,19 +90,43 @@ const TopBar = () => {
 
   return (
     <>
-      <header className="w-full h-[10vh] text-xl p-2 lg:text-2xl lg:py-2 lg:px-10 ">
-        <div className=" flex h-full px-2 border justify-end border-neutral-400 dark:border-neutral-700 rounded-2xl md:justify-between md:px-5 md:pl-20 lg:pl-10 lg:px-10 lg:py-3">
-          {/* SEARCH */}
-          <div className="hidden md:flex gap-2 items-center  ">
-            <CiSearch />
-            <input
-              type="text"
-              placeholder="Search..."
-              className=" border rounded-2xl py-1 px-2 text-xs border-neutral-200 dark:border-neutral-800  lg:text-sm"
-            />
-          </div>
+      <div className="flex justify-between h-full px-2 lg:px-5 lg:py-2">
+        {/*=================== LOGO SECTION =======================*/}
+        <section className="text-xs flex gap-2 p-2 border-neutral-700 items-center">
+          <img src="/vite.svg" alt="logo" />
+          <h1 className="content-center text-sm font-bold lg:text-2xl">
+            Gym<span className="text-red-600">MS</span>
+          </h1>
+        </section>
 
-          <div className="flex gap-3 items-center lg:gap-5 lg:justify-end">
+        {/*=================== NAV SECTION =======================*/}
+        <section className="hidden lg:flex lg:gap-10 lg:px-5 place-items-center">
+          {navLinks?.map((navLink, index) => (
+            <NavLink
+              key={index}
+              to={navLink.link}
+              className={({ isActive }) =>
+                isActive
+                  ? " text-red-500 pb-1 justify-items-center border-b-2 "
+                  : "  pb-1 justify-items-center border-b-2 border-neutral-500"
+              }
+            >
+              {navLink.icon}
+              <span className="text-xs text-neutral-500">{navLink.name}</span>
+            </NavLink>
+          ))}
+        </section>
+
+        {/*=================== PROFILE SECTION =======================*/}
+
+        <section className="flex gap-3 items-center lg:gap-5 ">
+          {/* HIDDEN FOR NOW */}
+          <div className="hidden">
+            {/* SEARCH ICON */}
+            <div className="hidden md:flex gap-2 items-center  ">
+              <CiSearch className="size-6" />
+            </div>
+            {/* MESSAGE ICON */}
             <button className="">
               <MdMessage
                 onClick={() => {
@@ -109,7 +134,11 @@ const TopBar = () => {
                   setUserModalOpen(false);
                   setNotifModalOpen(false);
                 }}
-                className=""
+                className={
+                  messageModalOpen
+                    ? "text-red-500 size-4 lg:size-6"
+                    : "size-4 lg:size-6"
+                }
               />
               <Modal
                 isOpen={messageModalOpen}
@@ -117,8 +146,14 @@ const TopBar = () => {
                 contents={initialMessages}
               />
             </button>
+            {/* NOTIFICATION ICON */}
             <button>
               <MdCircleNotifications
+                className={
+                  notifModalOpen
+                    ? "text-red-500 size-4 lg:size-6"
+                    : "size-4 lg:size-6"
+                }
                 onClick={() => {
                   setNotifModalOpen(!notifModalOpen);
                   setMessageModalOpen(false);
@@ -131,26 +166,32 @@ const TopBar = () => {
                 contents={initialNotifs}
               />
             </button>
-            <button
-              onClick={() => setTheme(toggleTheme)}
-              className="mx-2 lg:mx-5"
-            >
-              {theme === "light" ? <FaRegMoon /> : <MdOutlineWbSunny />}
-            </button>
-            <div className="">
-              <FaUserCircle
-                className="size-8 lg:size-10"
-                onClick={() => {
-                  setUserModalOpen(!userModalOpen);
-                  setMessageModalOpen(false);
-                  setNotifModalOpen(false);
-                }}
-              />
-              <UserModal isOpen={userModalOpen} />
-            </div>
           </div>
-        </div>
-      </header>
+          {/* SUN MOON ICON */}
+          <button
+            onClick={() => setTheme(toggleTheme)}
+            className="mx-2 lg:mx-5 text-red-500"
+          >
+            {theme === "light" ? (
+              <FaRegMoon className="size-4 lg:size-6" />
+            ) : (
+              <MdOutlineWbSunny className="size-4 lg:size-6" />
+            )}
+          </button>
+          {/* PROFILE ICON */}
+          <div className="">
+            <FaUserCircle
+              className="size-8 lg:size-10"
+              onClick={() => {
+                setUserModalOpen(!userModalOpen);
+                setMessageModalOpen(false);
+                setNotifModalOpen(false);
+              }}
+            />
+            <UserModal isOpen={userModalOpen} />
+          </div>
+        </section>
+      </div>
     </>
   );
 };

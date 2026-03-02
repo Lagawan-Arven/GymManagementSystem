@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import TopBar from "../navigation/TopBar";
-import SideBar from "../navigation/SideBar";
+
 import BottomBar from "../navigation/BottomBar";
 
 import { MdDashboardCustomize } from "react-icons/md";
@@ -25,9 +25,7 @@ const AdminPageLayout = () => {
     <>
       <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
         <div className="relative w-screen lg:flex lg:h-screen">
-          <div className="absolute w-full lg:h-full lg:w-[20vw] lg:relative">
-            <SideBar navLinks={navLinks} />
-          </div>
+          <div className="absolute w-full lg:h-full lg:w-[20vw] lg:relative"></div>
 
           <div className="w-full lg:h-screen">
             <TopBar />

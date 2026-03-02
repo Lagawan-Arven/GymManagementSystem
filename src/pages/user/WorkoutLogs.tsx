@@ -10,7 +10,6 @@ const logs = [
     day: "Monday",
     program: "Leg Workout",
     duration: "2 hours",
-    coach: "None",
   },
   {
     name: "Workout 2",
@@ -20,7 +19,6 @@ const logs = [
     day: "Tuesday",
     program: "Push Workout",
     duration: "2.5 hours",
-    coach: "Troy",
   },
   {
     name: "Workout 3",
@@ -30,7 +28,6 @@ const logs = [
     day: "Wednesday",
     program: "Pull Workout",
     duration: "2.5 hours",
-    coach: "None",
   },
   {
     name: "Workout 4",
@@ -40,7 +37,6 @@ const logs = [
     day: "Wednesday",
     program: "Pull Workout",
     duration: "2.5 hours",
-    coach: "Klyd",
   },
   {
     name: "Workout 5",
@@ -50,7 +46,6 @@ const logs = [
     day: "Wednesday",
     program: "Pull Workout",
     duration: "2.5 hours",
-    coach: "Wilson",
   },
   {
     name: "Workout 6",
@@ -60,7 +55,6 @@ const logs = [
     day: "Wednesday",
     program: "Pull Workout",
     duration: "2.5 hours",
-    coach: "James",
   },
   {
     name: "Workout 7",
@@ -70,7 +64,6 @@ const logs = [
     day: "Wednesday",
     program: "Pull Workout",
     duration: "2.5 hours",
-    coach: "Justin",
   },
 ];
 
@@ -143,7 +136,6 @@ const WorkoutLogs = () => {
                   ({logs[index].time_in} - {logs[index].time_out})
                 </span>
               </p>
-              <p>Coach: {logs[index].coach}</p>
             </div>
           </div>
         </section>

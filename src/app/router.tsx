@@ -3,21 +3,26 @@ import {
   About,
   AdminPage,
   Coaches,
-  CoachPage,
   Contact,
   Landing,
-  OwnerPage,
   Services,
   UserPage,
   WorkoutLogs,
   Progress,
   Programs,
-  Journals,
 } from "../pages";
+
+import {
+  OwnerHomePage,
+  OwnerHomeDashboard,
+  OwnerHomeReports,
+  OwnerAdminsPage,
+  OwnerMembersPage,
+} from "../pages/owner";
+
 import {
   PublicLayout,
   UserPageLayout,
-  CoachPageLayout,
   AdminPageLayout,
   OwnerPageLayout,
 } from "../components/layout";
@@ -28,7 +33,8 @@ import ErrorFallback from "../components/ErrorFallback";
 const AppRouter = () => {
   return (
     <Routes>
-      {/* PUBLIC */}
+      {/*================= PUBLIC ===================*/}
+      {/* Auth Pages */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
@@ -37,20 +43,14 @@ const AppRouter = () => {
         <Route path="/contact" element={<Contact />} />
       </Route>
 
-      {/* PROTECTED */}
+      {/*============= PROTECTED ===============*/}
       {/* User Pages */}
       <Route element={<UserPageLayout />} HydrateFallback={ErrorFallback}>
-        <Route path="/user" element={<UserPage />} />
+        <Route path="/user/dashboard" element={<UserPage />} />
         <Route path="/user/workout_logs" element={<WorkoutLogs />} />
         <Route path="/user/progress" element={<Progress />} />
         <Route path="/user/programs" element={<Programs />} />
-        <Route path="/user/journals" element={<Journals />} />
         <Route path="/user/coaches" element={<WorkoutLogs />} />
-      </Route>
-
-      {/* Coach Pages */}
-      <Route element={<CoachPageLayout />}>
-        <Route path="/coach" element={<CoachPage />} />
       </Route>
 
       {/* Admin Pages */}
@@ -60,7 +60,26 @@ const AppRouter = () => {
 
       {/* Owner Pages */}
       <Route element={<OwnerPageLayout />}>
-        <Route path="/owner" element={<OwnerPage />} />
+        {/* Home */}
+        <Route path="/owner/home" element={<OwnerHomePage />}>
+          <Route
+            path="/owner/home/dashboard"
+            element={<OwnerHomeDashboard />}
+          />
+          <Route path="/owner/home/reports" element={<OwnerHomeReports />} />
+        </Route>
+
+        {/* Admins */}
+        <Route path="/owner/admins" element={<OwnerAdminsPage />} />
+
+        {/* Members */}
+        <Route path="/owner/members" element={<OwnerMembersPage />} />
+
+        {/* Logs */}
+        <Route path="/owner/logs" element={<OwnerHomePage />}>
+          <Route path="/owner/logs/" element={<OwnerHomeDashboard />} />
+          <Route path="/owner/logs/" />
+        </Route>
       </Route>
     </Routes>
   );
