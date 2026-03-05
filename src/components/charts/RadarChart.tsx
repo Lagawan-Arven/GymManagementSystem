@@ -9,31 +9,33 @@ import {
   Legend,
 } from "recharts";
 
-import RadarCustomTooltip from "./RadarCustomTooltip";
+import CustomTooltip from "./CustomTooltip";
+import CustomLegend from "./util/CustomLegend";
 
-const MyRadarChart = () => {
-  const pieChartData = [
-    { coach: "Wilson", workouts: 10, fill: "#0088FE" },
-    { coach: "Justin", workouts: 15, fill: "#00C49F" },
-    { coach: "Klyd", workouts: 20, fill: "#FFBB28" },
-    { coach: "James", workouts: 10, fill: "#FF8042" },
-    { coach: "Edward", workouts: 15, fill: "#8884d8" },
-  ];
+const MyRadarChart = ({
+  data,
+  dataKey = "value",
+  nameKey = "name",
+  outerRadius = 70,
+}) => {
   return (
     <ResponsiveContainer height={"100%"} width={"100%"}>
-      <RadarChart data={pieChartData} outerRadius={70} responsive>
+      <RadarChart data={data} outerRadius={outerRadius} responsive>
         <Radar
-          dataKey={"workouts"}
+          dataKey={dataKey}
           stroke="#00C49F"
           fill="#17d5ff"
           fillOpacity={0.6}
           legendType="circle"
         />
         <PolarGrid stroke="#848a8b" />
-        <PolarAngleAxis dataKey={"coach"} fontSize={12} />
-        <PolarRadiusAxis fontSize={10} />
-        <Tooltip content={RadarCustomTooltip} />
-        <Legend wrapperStyle={{ fontSize: "12px" }} iconSize={9} />
+        <PolarAngleAxis
+          dataKey={nameKey}
+          tick={{ className: "text-xs md:text-sm" }}
+        />
+        <PolarRadiusAxis tick={{ className: "text-xs md:text-sm" }} />
+        <Tooltip content={CustomTooltip} />
+        <Legend formatter={CustomLegend} />
       </RadarChart>
     </ResponsiveContainer>
   );

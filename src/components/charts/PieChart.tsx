@@ -8,6 +8,7 @@ import {
 } from "recharts";
 
 import CustomTooltip from "./CustomTooltip";
+import CustomLegend from "./util/CustomLegend";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -59,7 +60,7 @@ const MyPieChart = ({ data, pieDataKey = "value", pieNameKey = "program" }) => {
           label={renderCustomizedLabel}
         />
         <Tooltip content={CustomTooltip} />
-        <Legend wrapperStyle={{ fontSize: "12px", paddingBottom: "5px" }} />
+        <Legend formatter={CustomLegend} />
       </PieChart>
     </ResponsiveContainer>
   );
