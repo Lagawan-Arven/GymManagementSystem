@@ -61,12 +61,9 @@ const AppRouter = () => {
       {/* Owner Pages */}
       <Route element={<OwnerPageLayout />}>
         {/* Home */}
-        <Route path="/owner/home" element={<OwnerHomePage />}>
-          <Route
-            path="/owner/home/dashboard"
-            element={<OwnerHomeDashboard />}
-          />
-          <Route path="/owner/home/reports" element={<OwnerHomeReports />} />
+        <Route element={<OwnerHomePage />}>
+          <Route path="/owner/home/" element={<OwnerHomeDashboard />} />
+          <Route path="/owner/home/revenue" element={<OwnerHomeReports />} />
         </Route>
 
         {/* Admins */}
