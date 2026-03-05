@@ -120,7 +120,7 @@ const TopBar = ({ navLinks }) => {
         {/*=================== PROFILE SECTION =======================*/}
 
         <section className="flex gap-3 items-center lg:gap-5 ">
-          {/* HIDDEN FOR NOW */}
+          {/*========= HIDDEN FOR NOW ============*/}
           <div className="hidden">
             {/* SEARCH ICON */}
             <div className="hidden md:flex gap-2 items-center  ">
@@ -167,6 +167,7 @@ const TopBar = ({ navLinks }) => {
               />
             </button>
           </div>
+
           {/* SUN MOON ICON */}
           <button
             onClick={() => setTheme(toggleTheme)}
@@ -181,7 +182,7 @@ const TopBar = ({ navLinks }) => {
           {/* PROFILE ICON */}
           <div className="">
             <FaUserCircle
-              className="size-8 lg:size-10"
+              className="size-8 lg:size-12"
               onClick={() => {
                 setUserModalOpen(!userModalOpen);
                 setMessageModalOpen(false);
