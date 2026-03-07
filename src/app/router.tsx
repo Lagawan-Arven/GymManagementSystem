@@ -18,6 +18,7 @@ import {
   OwnerHomeReports,
   OwnerAdminsPage,
   OwnerMembersPage,
+  OwnerLogsPage,
 } from "../pages/owner";
 
 import {
@@ -63,7 +64,6 @@ const AppRouter = () => {
         {/* Home */}
         <Route element={<OwnerHomePage />}>
           <Route path="/owner/home/" element={<OwnerHomeDashboard />} />
-          <Route path="/owner/home/revenue" element={<OwnerHomeReports />} />
         </Route>
 
         {/* Admins */}
@@ -73,10 +73,7 @@ const AppRouter = () => {
         <Route path="/owner/members" element={<OwnerMembersPage />} />
 
         {/* Logs */}
-        <Route path="/owner/logs" element={<OwnerHomePage />}>
-          <Route path="/owner/logs/" element={<OwnerHomeDashboard />} />
-          <Route path="/owner/logs/" />
-        </Route>
+        <Route path="/owner/logs" element={<OwnerLogsPage />} />
       </Route>
     </Routes>
   );
