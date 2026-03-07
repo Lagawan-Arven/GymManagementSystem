@@ -28,7 +28,7 @@ const OwnerMembersPage = () => {
         {/*=================== HEADER ========================= */}
         <header className="pb-2 border-b border-b-neutral-500">
           {/* Title */}
-          <section className="flex gap-2 items-center md:text-2xl md:font-bold">
+          <section className="flex gap-2 items-center md:text-2xl md:font-bold text-red-500">
             <FaUsers className="md:size-5" />
             <h1 className="text-xl md:text-2xl font-bold">Members</h1>
           </section>
