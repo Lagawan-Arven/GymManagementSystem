@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="content-center p-5 xl:py-20 xl:px-20">
+    <div className="content-center p-5 xl:py-20 xl:px-20">
       {/* TOP BAR */}
       <div className="flex flex-col gap-5 content-center md:flex-row">
         {/* LOGO & TEXT*/}
@@ -75,7 +75,7 @@ const Footer = () => {
           <NavLink to="/terms">Terms of Service</NavLink>
         </div>
       </div>
-    </footer>
+    </div>
   );
 };
 

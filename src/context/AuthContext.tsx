@@ -1,17 +1,20 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signinUser, signupUser } from "../services/api/authService";
-import { useNavigate, Navigate } from "react-router-dom";
+import { LoginUser, RegisterUser } from "../services/api/authService";
+import { useNavigate } from "react-router-dom";
 
-interface SignupPayload {
-  name: string;
-  age: number;
-  sex: string;
-  email: string;
+type UserRole = "admin" | "owner";
+
+interface LoginPayload {
+  owner_id: string | null;
+  username: string;
   password: string;
+  role: UserRole;
 }
 
-interface SigninPayload {
-  emailUsername: string;
+interface RegisterPayload {
+  name: string;
+  username: string;
+  email: string;
   password: string;
 }
 
@@ -19,17 +22,15 @@ interface User {
   id: string;
   role: string;
   name: string;
-  age: number;
-  sex: string;
   username: string;
   email: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  signin: (data: SigninPayload) => Promise<void>;
-  signup: (data: SignupPayload) => Promise<void>;
-  signout: () => void;
+  login: (data: LoginPayload) => Promise<void>;
+  register: (data: RegisterPayload) => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -40,54 +41,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (user) {
-      if (user.role === "user") {
-        navigate("/user");
-      } else if (user.role === "coach") {
-        navigate("/coach");
-      } else if (user.role === "admin") {
-        navigate("/admin");
+      if (user.role === "admin") {
+        navigate("/admin/home");
       } else if (user.role === "owner") {
-        navigate("/ownder");
+        navigate("/home");
+      } else {
+        console.error("Invalid user role");
       }
       console.log(user);
     }
-  }, [user, navigate]);
+  }, [user]);
 
-  const signin = async (data: SigninPayload) => {
-    console.log("[Auth] User signing in...");
+  const login = async (data: LoginPayload) => {
+    console.log("[Auth] User logging in...");
 
-    const response = await signinUser(data);
-    if (response?.user) {
+    const response = await LoginUser(data);
+    if (response) {
       localStorage.setItem("access_token", response.access_token);
-      setUser(response.user);
-      console.log("[Auth] Signin success");
+      setUser(response.owner ? response.owner : response.admin);
+      console.log("[Auth] Login success");
     } else {
-      console.log("[Auth] Signin failed");
+      console.log("[Auth] Login failed");
     }
   };
 
-  const signup = async (data: SignupPayload) => {
-    console.log("[Auth] User signing up...");
+  const register = async (data: RegisterPayload) => {
+    console.log("[Auth] User registering...");
 
-    const response = await signupUser(data);
-    if (response?.status) {
-      if (response.status === "ok") {
-        console.log("[Auth] Signup success");
+    const response = await RegisterUser(data);
+    if (response?.success) {
+      if (response.success) {
+        console.log("[Auth] Registration success");
+        navigate("/login");
       } else {
-        console.log("[Auth] Signup failed");
+        console.log("[Auth] Registration failed");
       }
     }
   };
 
-  const signout = () => {
-    console.log("[Auth] User signing out...");
+  const logout = () => {
+    console.log("[Auth] User logging out...");
     localStorage.setItem("access_token", "");
     setUser(null);
-    navigate("/");
+    navigate("/login");
+    console.log("[Auth] User logged out");
   };
 
   return (
-    <AuthContext.Provider value={{ user, signin, signup, signout }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {" "}
       {children}{" "}
     </AuthContext.Provider>

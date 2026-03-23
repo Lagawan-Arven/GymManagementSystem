@@ -1,41 +1,57 @@
 import { Outlet } from "react-router-dom";
 import TopBar from "../navigation/TopBar";
-
 import BottomBar from "../navigation/BottomBar";
 
-import { MdDashboardCustomize } from "react-icons/md";
-import { IoSettings } from "react-icons/io5";
-import { BiSupport } from "react-icons/bi";
 import { FaUsers } from "react-icons/fa6";
-import { GiTeacher } from "react-icons/gi";
-import { IoIosJournal } from "react-icons/io";
+import { IoMdHome } from "react-icons/io";
 import { LuLogs } from "react-icons/lu";
+import { PiRecordFill } from "react-icons/pi";
 
-const AdminPageLayout = () => {
+const OwnerPageLayout = () => {
   const navLinks = [
-    { link: "/admin", icon: <MdDashboardCustomize />, name: "Dashboard" },
-    { link: "/admin/entrance_logs", icon: <LuLogs />, name: "Entrance Logs" },
-    { link: "/admin/users", icon: <FaUsers />, name: "Users" },
-    { link: "/admin/coaches", icon: <GiTeacher />, name: "Coaches" },
-    { link: "/admin/journals", icon: <IoIosJournal />, name: "Journals" },
-    { link: "/admin/settings", icon: <IoSettings />, name: "Settings" },
-    { link: "/admin/support", icon: <BiSupport />, name: "Support" },
+    {
+      link: "/admin/home",
+      icon: <IoMdHome className="md:size-5" />,
+      name: "Home",
+    },
+    {
+      link: "/admin/sessions",
+      icon: <PiRecordFill className="md:size-5" />,
+      name: "Sessions",
+    },
+    {
+      link: "/admin/members",
+      icon: <FaUsers className="md:size-5" />,
+      name: "Members",
+    },
+    {
+      link: "/admin/logs",
+      icon: <LuLogs className="md:size-5" />,
+      name: "Logs",
+    },
   ];
   return (
     <>
       <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-        <div className="relative w-screen lg:flex lg:h-screen">
-          <div className="absolute w-full lg:h-full lg:w-[20vw] lg:relative"></div>
+        <div className="">
+          {/*=================== HEADER =======================*/}
+          <header className="h-[10vh] md:h-[15vh]">
+            <TopBar navLinks={navLinks} />
+          </header>
 
-          <div className="w-full lg:h-screen">
-            <TopBar />
+          {/*=================== MAIN =======================*/}
+          <main className="h-[80vh] md:h-[85vh] overflow-auto">
             <Outlet />
-            <BottomBar />
-          </div>
+          </main>
+
+          {/*=================== FOOTER =======================*/}
+          <footer className="h-[10vh] md:hidden">
+            <BottomBar navLinks={navLinks} />
+          </footer>
         </div>
       </div>
     </>
   );
 };
 
-export default AdminPageLayout;
+export default OwnerPageLayout;

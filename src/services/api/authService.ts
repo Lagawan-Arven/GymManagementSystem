@@ -1,28 +1,17 @@
 import { apiClient } from "./client";
 
-interface SigninPayload {
-  emailUsername: string;
-  password: string;
-}
+import type { LoginPayload, RegisterPayload } from "../../schemas";
 
-interface SingupPayload {
-  name: string;
-  age: number;
-  sex: string;
-  email: string;
-  password: string;
-}
-
-export const signinUser = async (signinData: SigninPayload) => {
-  const response = await apiClient.post("/auth/signin", signinData);
+export const LoginUser = async (payload: LoginPayload) => {
+  const response = await apiClient.post("/auth/login", payload);
 
   return response.data;
 };
 
-export const signupUser = async (signupData: SingupPayload) => {
+export const RegisterUser = async (payload: RegisterPayload) => {
   console.log("[AuthService] User signing up...");
 
-  const response = await apiClient.post("/auth/signup", signupData);
+  const response = await apiClient.post("/auth/register", payload);
 
   return response.data;
 };

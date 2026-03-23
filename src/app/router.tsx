@@ -1,31 +1,21 @@
 import { Route, Routes } from "react-router-dom";
 import {
-  About,
-  AdminPage,
-  Coaches,
-  Contact,
-  Landing,
-  Services,
-  UserPage,
-  WorkoutLogs,
-  Progress,
-  Programs,
+  Login,
+  Register,
+  MyProfilePage,
+  HomePage,
+  AdminsPage,
+  SessionsPage,
+  MembersPage,
+  LogsPage,
+  LandingPage,
 } from "../pages";
 
 import {
-  OwnerHomePage,
-  OwnerHomeDashboard,
-  OwnerHomeReports,
-  OwnerAdminsPage,
-  OwnerMembersPage,
-  OwnerLogsPage,
-} from "../pages/owner";
-
-import {
-  PublicLayout,
-  UserPageLayout,
-  AdminPageLayout,
   OwnerPageLayout,
+  AdminPageLayout,
+  PublicLayout,
+  AuthLayout,
 } from "../components/layout";
 
 import { ErrorBoundary } from "react-error-boundary";
@@ -34,46 +24,52 @@ import ErrorFallback from "../components/ErrorFallback";
 const AppRouter = () => {
   return (
     <Routes>
-      {/*================= PUBLIC ===================*/}
-      {/* Auth Pages */}
+      {/* Public Pages */}
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<Landing />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/coaches" element={<Coaches />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/" element={<LandingPage />} />
       </Route>
 
-      {/*============= PROTECTED ===============*/}
-      {/* User Pages */}
-      <Route element={<UserPageLayout />} HydrateFallback={ErrorFallback}>
-        <Route path="/user/dashboard" element={<UserPage />} />
-        <Route path="/user/workout_logs" element={<WorkoutLogs />} />
-        <Route path="/user/progress" element={<Progress />} />
-        <Route path="/user/programs" element={<Programs />} />
-        <Route path="/user/coaches" element={<WorkoutLogs />} />
+      {/* Auth Pages */}
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Route>
 
       {/* Admin Pages */}
       <Route element={<AdminPageLayout />}>
-        <Route path="/admin" element={<AdminPage />} />
+        {/* Profile */}
+        <Route path="/admin/profile" element={<MyProfilePage />} />
+        {/* Home */}
+        <Route path="/admin/home" element={<HomePage />} />
+
+        {/* Sessions */}
+        <Route path="/admin/sessions" element={<SessionsPage />} />
+
+        {/* Members */}
+        <Route path="/admin/members" element={<MembersPage />} />
+
+        {/* Logs */}
+        <Route path="/admin/logs" element={<LogsPage />} />
       </Route>
 
       {/* Owner Pages */}
       <Route element={<OwnerPageLayout />}>
+        {/* Profile */}
+        <Route path="/profile" element={<MyProfilePage />} />
         {/* Home */}
-        <Route element={<OwnerHomePage />}>
-          <Route path="/owner/home/" element={<OwnerHomeDashboard />} />
-        </Route>
+        <Route path="/home" element={<HomePage />} />
 
         {/* Admins */}
-        <Route path="/owner/admins" element={<OwnerAdminsPage />} />
+        <Route path="/admins" element={<AdminsPage />} />
+
+        {/* Sessions */}
+        <Route path="/sessions" element={<SessionsPage />} />
 
         {/* Members */}
-        <Route path="/owner/members" element={<OwnerMembersPage />} />
+        <Route path="/members" element={<MembersPage />} />
 
         {/* Logs */}
-        <Route path="/owner/logs" element={<OwnerLogsPage />} />
+        <Route path="/logs" element={<LogsPage />} />
       </Route>
     </Routes>
   );

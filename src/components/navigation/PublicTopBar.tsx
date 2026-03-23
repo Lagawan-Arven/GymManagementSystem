@@ -1,10 +1,9 @@
-import { NavLink } from "react-router-dom";
-import { useTheme } from "../../context/ThemeContext";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuthPage } from "../../context/AuthPageContext";
 
-const pages = ["home", "about", "services", "coaches", "contact"];
+import { useTheme } from "../../context/ThemeContext";
+
+import { Sun, Moon, Menu, X } from "lucide-react";
 
 const PublicTopBar = () => {
   const { theme, setTheme } = useTheme();
@@ -14,100 +13,35 @@ const PublicTopBar = () => {
   };
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { setSigninOpen, setSignupOpen } = useAuthPage();
+  const navigate = useNavigate();
 
   return (
     <>
-      {/* MOBILE & TABLET */}
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="absolute right-0 m-3 z-2 lg:hidden"
-      >
-        {menuOpen ? <X /> : <Menu />}
-      </button>
-
-      {menuOpen && (
-        <div className="flex flex-col absolute top-0 w-full text-center backdrop-blur-sm gap-5 px-2 py-3">
-          <nav className="flex flex-col">
-            {pages.map((page, index) =>
-              index === 0 ? (
-                <NavLink
-                  key={index}
-                  to="/"
-                  children={page.charAt(0).toUpperCase() + page.slice(1)}
-                  className="hover:text-red-500"
-                />
+      <div className="w-full h-full content-center">
+        <div className="flex justify-between px-5">
+          {/*================= LOGO =================  */}
+          <div className="flex gap-2 items-center">
+            <img src="/vite.svg" alt="logo" className="md:size-10" />
+            <h1 className="md:text-[24px] font-bold">
+              Fast<span className="text-red-500">AFIT</span>
+            </h1>
+          </div>
+          {/*================= THEME TOGGLE AND CALL TO ACTION BUTTON =================  */}
+          <div className="flex gap-5 items-center">
+            <div onClick={toggleTheme} className="text-red-500">
+              {theme === "light" ? (
+                <Moon className="size-4 md:size-5" />
               ) : (
-                <NavLink
-                  key={index}
-                  to={"/" + page}
-                  children={page.charAt(0).toUpperCase() + page.slice(1)}
-                  className="hover:text-red-500"
-                />
-              ),
-            )}
-          </nav>
-          <div className="flex flex-col gap-2">
+                <Sun className="size-4 md:size-5" />
+              )}
+            </div>
             <button
-              onClick={toggleTheme}
-              className="justify-items-center hover:text-red-500"
+              onClick={() => navigate("/login")}
+              className="px-2 py-1 text-[16px] md:text-[20px] font-semibold border hover:border-red-500 rounded-xl hover:text-red-500"
             >
-              {theme === "light" ? <Moon /> : <Sun />}
-            </button>
-            <button
-              className="hover:text-red-500"
-              onClick={() => setSigninOpen(true)}
-            >
-              Signin
-            </button>
-            <button
-              onClick={() => setSignupOpen(true)}
-              className="text-white rounded-lg py-2  bg-red-600 dark:text-black"
-            >
-              Signup
+              Get Started
             </button>
           </div>
-        </div>
-      )}
-
-      {/* LARGE SCREENS */}
-      <div className="hidden lg:flex flex-1">
-        <nav className="flex flex-1 justify-center gap-10">
-          {pages.map((page, index) =>
-            index === 0 ? (
-              <NavLink
-                key={index}
-                to="/"
-                children={page.charAt(0).toUpperCase() + page.slice(1)}
-                className="content-center hover:text-red-500"
-              />
-            ) : (
-              <NavLink
-                key={index}
-                to={"/" + page}
-                children={page.charAt(0).toUpperCase() + page.slice(1)}
-                className="content-center hover:text-red-500"
-              />
-            ),
-          )}
-        </nav>
-
-        <div className="flex flex-none py-5 mr-5">
-          <button onClick={toggleTheme} className="mx-5 hover:text-red-500  ">
-            {theme === "light" ? <Moon /> : <Sun />}
-          </button>
-          <button
-            onClick={() => setSigninOpen(true)}
-            className="mx-5 hover:text-red-500"
-          >
-            Signin
-          </button>
-          <button
-            onClick={() => setSignupOpen(true)}
-            className=" text-white rounded-lg p-1 bg-red-600 dark:text-black"
-          >
-            Signup
-          </button>
         </div>
       </div>
     </>

@@ -25,12 +25,7 @@ const StackAreaChart = ({ data }) => {
           fill="#22cbc9"
         />
         <Area dataKey={"member"} stackId={1} type={"monotone"} fill="#8522cb" />
-        <Area
-          dataKey={"walk_in"}
-          stackId={1}
-          type={"monotone"}
-          fill="#b29514"
-        />
+        <Area dataKey={"single"} stackId={1} type={"monotone"} fill="#b29514" />
 
         <Area
           dataKey={"new_member"}
