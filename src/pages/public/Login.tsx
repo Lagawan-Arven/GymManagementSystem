@@ -6,6 +6,7 @@ import { fetchOwners } from "../../services/api/Service";
 
 import { RiAdminLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
 
 interface Owner {
   id: string;
@@ -20,6 +21,7 @@ const Login = () => {
 
   const [owners, setOwners] = useState<Owner[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<Owner | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [showQueryInput, setShowQueryInput] = useState(false);
   const [query, setQuery] = useState("");
@@ -29,8 +31,9 @@ const Login = () => {
   useEffect(() => {
     const getOwners = async () => {
       try {
-        const ownerData = await fetchOwners();
-        setOwners(ownerData);
+        const response = await fetchOwners();
+        setOwners(response.owners);
+        setLoading(false);
       } catch (error) {
         console.error("Error while fetching owners", error);
       }
@@ -43,7 +46,7 @@ const Login = () => {
     setQuery(value);
 
     if (value.length > 0) {
-      const suggestions = owners.filter((owner) =>
+      const suggestions = owners?.filter((owner) =>
         owner.name.toLowerCase().includes(value.toLowerCase()),
       );
       setFilteredGyms(suggestions);
@@ -65,7 +68,15 @@ const Login = () => {
         <div className="px-5 md:px-5 w-full max-w-md content-center ">
           {/* Gym query */}
           {showQueryInput && (
-            <div className="h-40 md:h-30 mb-5">
+            <div className="relative h-40 md:h-30 mb-5">
+              <MdCancel
+                onClick={() => {
+                  setShowQueryInput(false);
+                  setQuery("");
+                  setSelectedOwner(null);
+                }}
+                className="absolute right-0"
+              />
               <div className="flex gap-2 items-center justify-center">
                 <FaSearch />
                 <input
@@ -73,11 +84,12 @@ const Login = () => {
                   placeholder="Search for your gym"
                   value={query}
                   onChange={handleChange}
-                  className="px-2 py-1 rounded-xl border border-neutral-500"
+                  className="w-50 px-2 py-1 rounded-xl border border-neutral-500"
                 />
               </div>
-              {showDropdown && filteredGyms.length > 0 && (
-                <ul>
+              {loading && <p>Loading...</p>}
+              {!loading && showDropdown && filteredGyms.length > 0 && (
+                <ul className="w-55 justify-self-center px-2 py-1 rounded-b-xl border-x border-b border-neutral-500">
                   {filteredGyms.map((gym, index) => (
                     <li key={index} onClick={() => handleSelect(gym)}>
                       {gym ? gym.name : "None"}
@@ -104,6 +116,7 @@ const Login = () => {
             className="space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
+              console.log("Form submitted");
               try {
                 login({
                   owner_id: selectedOwner ? selectedOwner.id : null,
@@ -114,7 +127,7 @@ const Login = () => {
               } catch (err) {
                 console.error("Error whule owner login: ", err);
               }
-              console.log("Form submitted");
+
               setUsername("");
               setPassword("");
             }}

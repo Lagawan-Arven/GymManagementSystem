@@ -4,19 +4,6 @@ import { IoIosArrowBack } from "react-icons/io";
 import { TbLogs } from "react-icons/tb";
 import { fetchLogs } from "../../services/api/Service";
 
-type Action =
-  | "MEMBER-ADDED"
-  | "MEMBER-UPDATED"
-  | "MEMBERSHIP-RENEWED"
-  | "MEMBER-DELETED"
-  | "ADMIN-UPDATED"
-  | "ADMIN-LOGIN"
-  | "ADMIN-LOGOUT"
-  | "MEMBER-SESSION"
-  | "SINGLE-SESSION"
-  | "SINGLE-SESSION-PAYMENT"
-  | "MEMBERSHIP-PAYMENT";
-
 type Category = "all" | "membership" | "admin" | "payment" | "session";
 type DateFilter = "today" | "week" | "month" | "all";
 
@@ -32,9 +19,9 @@ interface Member {
 
 interface Log {
   id: number;
-  action: Action;
+  action: string;
   category: Category;
-  details: any;
+  details: any | null;
   admin: Admin | null;
   member: Member | null;
   session_id: number | null;
@@ -72,59 +59,34 @@ const LogsPage = () => {
   const [dateFilter, setDateFilter] = useState<DateFilter>("today");
 
   const [logList, setLogList] = useState<Log[]>([]);
-  const [todayLogList, setTodayLogList] = useState<Log[]>([]);
-  const [weekLogList, setWeekLogList] = useState<Log[]>([]);
-  const [monthLogList, setMonthLogList] = useState<Log[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [selectedLog, setSelectedLog] = useState<Log | null>(
-    logList ? logList[0] : null,
-  );
+  const [selectedLog, setSelectedLog] = useState<Log | null>(null);
   const [logDetailsOpen, setLogDetailsOpen] = useState(false);
 
   useEffect(() => {
     const getLogs = async () => {
       try {
-        const [today, week, month, all] = await Promise.all([
-          fetchLogs("today"),
-          fetchLogs("week"),
-          fetchLogs("month"),
-          fetchLogs(null),
-        ]);
-        setTodayLogList(today);
-        setWeekLogList(week);
-        setMonthLogList(month);
-        setLogList(all);
+        setLoading(true);
+        const res = await fetchLogs(dateFilter === "all" ? null : dateFilter);
+        setLogList(res.logs);
+        setLoading(false);
       } catch (err) {
         console.error("Error while fetching logs: ", err);
       }
     };
     getLogs();
-  }, []);
+  }, [dateFilter]);
 
   {
     /*-------------- Filtered Logs -----------------*/
   }
   const filteredLogs = useMemo(() => {
-    const sourceList = {
-      today: todayLogList,
-      week: weekLogList,
-      month: monthLogList,
-      all: logList,
-    };
-    const baseList = sourceList[dateFilter];
-
-    if (categoryFilter !== "all")
-      return baseList.filter((log) => log.category === categoryFilter);
-
-    return baseList;
-  }, [
-    dateFilter,
-    categoryFilter,
-    logList,
-    todayLogList,
-    weekLogList,
-    monthLogList,
-  ]);
+    if (categoryFilter !== "all") {
+      return logList.filter((log) => log.category === categoryFilter);
+    }
+    return logList;
+  }, [categoryFilter, logList]);
 
   {
     /*--------- Category Filter ------------*/
@@ -160,7 +122,7 @@ const LogsPage = () => {
   {
     /*----------------- Date Filter -------------------*/
   }
-  const DateFilter = ({
+  const DateFilterButton = ({
     label,
     filter,
   }: {
@@ -187,21 +149,56 @@ const LogsPage = () => {
       </div>
     );
   };
+  {
+    /*============ DETAILS RESOURCE LABEL =================== */
+  }
+  const handleDetailsResourceLabel = (log: Log) => {
+    const category = log.category?.toLowerCase();
 
-  const handleResourceLabel = (log: Log) => {
-    if (log.category === "membership") {
-      return `Member-${log.member?.id} ${log.member?.name}`;
-    } else if (log.category === "session") {
+    if (category === "membership") {
       return log.member
-        ? `Member-${log.member.id} ${log.member.name} | Session-${log.session_id}`
-        : `Visitor Name: ${log.details["visitor_name"]} | Session-${log.session_id}`;
-    } else if (log.category === "payment") {
-      return log.member
-        ? `Member-${log.member.id} ${log.member.name} | Payment-${log.payment_id}`
-        : `Payor Name: ${log.details["payor_name"]} | Payment-${log.payment_id}`;
-    } else {
-      return "None";
+        ? `Member-${log.member.id} ${log.member.name}`
+        : "Member data missing";
     }
+    if (category === "session") {
+      if (log.member) {
+        return `Member-${log.member.id} ${log.member.name} | Session-${log.session_id ?? "N/A"}`;
+      }
+      return `Visitor: ${log.details?.["visitor_name"] ?? "Unknown"} | Session-${log.session_id ?? "N/A"}`;
+    }
+    if (category === "payment") {
+      if (log.member) {
+        return `Member-${log.member.id} ${log.member.name} | Payment-${log.payment_id ?? "N/A"}`;
+      }
+      return `Payor: ${log.details?.["payor_name"] ?? "Unknown"} | Payment-${log.payment_id ?? "N/A"}`;
+    }
+
+    return "None";
+  };
+
+  {
+    /*============ FRONT RESOURCE LABEL =================== */
+  }
+  const handleResourceLabel = (log: Log) => {
+    const category = log.category?.toLowerCase();
+
+    if (category === "membership") {
+      return log.member ? `Member-${log.member.id}` : "Member data missing";
+    }
+    if (category === "session") {
+      if (log.member) {
+        return `Member-${log.member.id} | Session-${log.session_id ?? "N/A"}`;
+      }
+      return `Visitor | Session-${log.session_id ?? "N/A"}`;
+    }
+    if (category === "payment") {
+      if (log.member) {
+        return `Member-${log.member.id} | Payment-${log.payment_id ?? "N/A"}`;
+      }
+      return `Payor | Payment-${log.payment_id ?? "N/A"}`;
+    }
+
+    return "None";
   };
 
   return (
@@ -235,82 +232,97 @@ const LogsPage = () => {
           <div className="w-[screen] h-[67vh] md:h-[68vh] px-2 py-2 md:px-5 rounded-xl bg-neutral-300 dark:bg-neutral-800">
             {/* Body Filters */}
             <div className="grid grid-flow-col justify-around md:justify-start md:gap-5 pb-2 text-center border-b-[.5px] border-b-neutral-500">
-              <DateFilter label="Today" filter="today" />
-              <DateFilter label="This Week" filter="week" />
-              <DateFilter label="This Month" filter="month" />
-              <DateFilter label="All" filter="all" />
+              <DateFilterButton label="Today" filter="today" />
+              <DateFilterButton label="This Week" filter="week" />
+              <DateFilterButton label="This Month" filter="month" />
+              <DateFilterButton label="All" filter="all" />
             </div>
 
             {/* Body Content */}
             {/*-------------- Logs ------------- */}
             <div
-              className={logDetailsOpen ? "hidden" : "overflow-auto pt-2 block"}
+              className={
+                logDetailsOpen
+                  ? "hidden"
+                  : " overflow-auto h-[60vh] pt-2 block "
+              }
             >
-              <table className="w-full table-auto border-collapse border border-neutral-500">
-                <thead>
-                  {/* Mobile */}
-                  <tr className="text-[14px] md:hidden ">
-                    <TH label="No." />
-                    <TH label="[ACTION]" />
-                    <TH label="Details" />
-                    <TH label="Timestamp" />
-                  </tr>
-                  {/* Tablet -> Laptop */}
-                  <tr className="md:text-[16px] hidden md:table-row">
-                    <TH label="No." />
-                    <TH label="Actor" />
-                    <TH label="[ACTION]" />
-                    <TH label="Resource" />
-                    <TH label="Details" />
-                    <TH label="Timestamp" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Mobile */}
-                  {filteredLogs.map((log, index) => (
-                    <tr key={index} className="md:hidden text-[12px]">
-                      <TD label={`${index + 1}`} />
-                      <TD label={`[${log.action}]`} />
-                      <td
-                        onClick={() => {
-                          setSelectedLog(log);
-                          setLogDetailsOpen(true);
-                        }}
-                        className="decoration-1 underline hover:decoration-2 text-center p-1 border border-neutral-500"
-                      >
-                        Click
-                      </td>
-                      <TD label={`${log.added_at}`} />
+              {loading ? (
+                <p className=" place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                  Loading...
+                </p>
+              ) : (
+                <table className="w-full table-auto border-collapse border border-neutral-500">
+                  <thead>
+                    {/* Mobile */}
+                    <tr className="text-[14px] md:hidden ">
+                      <TH label="No." />
+                      <TH label="[ACTION]" />
+                      <TH label="Details" />
                     </tr>
-                  ))}
-
-                  {/* Tablet -> Laptop */}
-                  {filteredLogs.map((log, index) => (
-                    <tr key={index} className="hidden md:table-row">
-                      <TD label={`${index + 1}`} />
-                      <TD
-                        label={
-                          log.admin
-                            ? `Admin-${log.admin.id} ${log.admin.name}`
-                            : "Owner"
-                        }
-                      />
-                      <TD label={`[${log.action}]`} />
-                      <TD label={handleResourceLabel(log)} />
-                      <td
-                        onClick={() => {
-                          setSelectedLog(log);
-                          setLogDetailsOpen(true);
-                        }}
-                        className="decoration-1 underline hover:decoration-2 text-center p-1 border border-neutral-500"
-                      >
-                        Click here
-                      </td>
-                      <TD label={`${log.added_at}`} />
+                    {/* Tablet -> Laptop */}
+                    <tr className="md:text-[16px] hidden md:table-row">
+                      <TH label="No." />
+                      <TH label="Actor" />
+                      <TH label="[ACTION]" />
+                      <TH label="Resource" />
+                      <TH label="Details" />
+                      <TH label="Timestamp" />
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {/* Mobile */}
+                    {filteredLogs.map((log, index) => (
+                      <tr key={log.id} className="md:hidden text-[12px]">
+                        <TD label={`${index + 1}`} />
+                        <TD label={`[${log.action}]`} />
+                        <td
+                          onClick={() => {
+                            setSelectedLog(log);
+                            setLogDetailsOpen(true);
+                          }}
+                          className="decoration-1 underline hover:decoration-2 text-center p-1 border border-neutral-500"
+                        >
+                          Click
+                        </td>
+                      </tr>
+                    ))}
+                    {/* Tablet -> Laptop */}
+                    {filteredLogs.map((log, index) => (
+                      <tr
+                        key={log.id}
+                        className="hidden md:table-row md:text-[12px] lg:text-[14px]"
+                      >
+                        <TD label={`${index + 1}`} />
+                        <TD
+                          label={log.admin ? `Admin-${log.admin.id}` : "Owner"}
+                        />
+                        <TD label={`[${log.action}]`} />
+                        <TD label={handleResourceLabel(log)} />
+                        <td
+                          onClick={() => {
+                            setSelectedLog(log);
+                            setLogDetailsOpen(true);
+                          }}
+                          className="decoration-1 underline hover:decoration-2 text-center p-1 border border-neutral-500"
+                        >
+                          Click
+                        </td>
+                        <TD
+                          label={`${new Date(log.added_at).toLocaleString(
+                            undefined,
+                            {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            },
+                          )}`}
+                          style="md:text-[10px] lg:text-[12px]"
+                        />
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
 
             {/*-------------- Log Details------------- */}
@@ -330,25 +342,24 @@ const LogsPage = () => {
                 Log Details
               </h1>
               <LogDetails
-                content={`Actor: ${selectedLog?.admin?.id} | ${selectedLog?.admin?.name}`}
+                content={`Actor: ${
+                  selectedLog?.admin
+                    ? `Admin-${selectedLog.admin.id} ${selectedLog.admin.name}`
+                    : "Owner"
+                }`}
               />
               <LogDetails content={`Action: ${selectedLog?.action}`} />
               <LogDetails
-                content={
-                  selectedLog
-                    ? handleResourceLabel(selectedLog)
-                    : "Resource: None"
-                }
+                content={`Resource: ${selectedLog ? handleDetailsResourceLabel(selectedLog) : `None`}`}
               />
-              <LogDetails content={`Timestamp: ${selectedLog?.added_at}`} />
-              <LogDetails content="Other Details:" />
-              {selectedLog?.details && (
-                <div>
-                  {Object.entries(selectedLog?.details).map(([key, value]) => (
-                    <p>{`${key}: ${value}`}</p>
-                  ))}
-                </div>
-              )}
+              <LogDetails
+                content={`Timestamp: ${new Date(
+                  selectedLog?.added_at || "",
+                ).toLocaleString(undefined, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}`}
+              />
             </div>
           </div>
         </main>

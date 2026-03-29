@@ -1,7 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
+import toast from "react-hot-toast";
 
 import type { MemberPayload, Sex, BasePaymentPayload } from "../../schemas";
 import { Button, Form, Input, Select } from "../../components/util";
+import { showSuccessToast } from "../../components/util";
 
 import { FaUsers, FaClockRotateLeft } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
@@ -11,6 +13,7 @@ import {
   addPayment,
   fetchMembers,
   renewMembership,
+  addSession,
 } from "../../services/api/Service";
 
 interface Member extends MemberPayload {
@@ -19,6 +22,8 @@ interface Member extends MemberPayload {
   days_remaining: number;
   sessions: Session[];
   admin: Admin | null;
+  renewed_by: string | null;
+  updated_by: string | null;
   added_at: string;
   updated_at: string;
   renewed_at: string;
@@ -26,7 +31,6 @@ interface Member extends MemberPayload {
 }
 
 interface Session {
-  id: number;
   type: string;
 }
 
@@ -39,18 +43,34 @@ const filters = ["all", "active", "inactive"];
 
 const MembersPage = () => {
   const [memberList, setMemberList] = useState<Member[]>([]);
+  const [refetch, setRefetch] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showList, setShowList] = useState(false);
 
   useEffect(() => {
     const getMembers = async () => {
       try {
         const response = await fetchMembers(null);
-        setMemberList(response);
+        setMemberList(response.members);
+        setLoading(false);
       } catch (err) {
         console.error("Error while fetching members: ", err);
       }
     };
     getMembers();
-  }, []);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (!loading && memberList.length === 0) {
+      setShowDetails(false);
+      setShowList(false);
+    }
+    if (memberList.length > 0) {
+      setShowDetails(true);
+      setShowList(true);
+    }
+  }, [memberList]);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [filter, setFilter] = useState("all");
@@ -61,22 +81,23 @@ const MembersPage = () => {
       return memberList.filter((member) => member.isActive);
     else if (filter === "inactive")
       return memberList.filter((member) => member.isActive === false);
+    return [];
   }, [memberList, filter]);
 
-  const [selectedMember, setSelectedMember] = useState<Member | null>(
-    filteredMembers ? filteredMembers[0] : null,
+  const [selectedMember, setSelectedMember] = useState<Member>(
+    filteredMembers[0],
   );
   useEffect(() => {
-    setSelectedMember(filteredMembers ? filteredMembers[0] : null);
+    setSelectedMember(filteredMembers[0]);
   }, [filteredMembers]);
 
   const [showMemberForm, setShowMemberForm] = useState(false);
   const [memberForm, setMemberForm] = useState<MemberPayload>({
     name: "",
-    age: undefined,
-    sex: undefined,
+    age: "",
+    sex: "male",
     email: "",
-    contact_number: undefined,
+    contact_number: "",
   });
 
   const [showRenewForm, setShowRenewForm] = useState(false);
@@ -103,8 +124,8 @@ const MembersPage = () => {
           <div
             className={
               detailsOpen || showMemberForm || showRenewForm
-                ? "hidden md:w-[40vw] md:overflow-auto md:block "
-                : "md:w-[40vw] md:overflow-auto block"
+                ? "hidden md:w-[35vw] md:overflow-auto md:block "
+                : "md:w-[35vw] md:overflow-auto block"
             }
           >
             {/*====== Member List ========= */}
@@ -127,26 +148,43 @@ const MembersPage = () => {
               </div>
               {/* The List */}
               <div className="pt-2  ">
-                <div className="h-[55vh] flex flex-col gap-2">
-                  {filteredMembers?.map((member, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setSelectedMember(member);
-                        setDetailsOpen(true);
-                      }}
-                      className="px-2 py-1 md:py-2 md:px-5 rounded-xl bg-neutral-200 dark:bg-neutral-900"
-                    >
-                      <p>
-                        {index + 1} | ID: {member.id} | {member.name}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                {loading && (
+                  <div className="h-[55vh] ">
+                    <p className="pt-40 place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                      Loading...
+                    </p>
+                  </div>
+                )}
+                {!showList ? (
+                  <div className="h-[55vh]  content-center">
+                    <p className=" place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                      No data to show
+                    </p>
+                  </div>
+                ) : (
+                  <div className="h-[55vh] overflow-auto flex flex-col gap-2">
+                    {filteredMembers?.map((member, index) => (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setSelectedMember(member);
+                          setDetailsOpen(true);
+                        }}
+                        className="px-2 py-1 md:py-2 md:px-5 rounded-xl bg-neutral-200 dark:bg-neutral-900"
+                      >
+                        <p>
+                          {index + 1} | {member.name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="">
                   <Button
                     label="Add New Member"
-                    onClick={() => setShowMemberForm(true)}
+                    onClick={() => {
+                      setShowMemberForm(true);
+                    }}
                     btnStyle="font-semibold lg:font-bold md:text-[18px] lg:text-[24px]"
                   />
                 </div>
@@ -164,7 +202,7 @@ const MembersPage = () => {
           >
             {/* Member Details Division */}
             {!showMemberForm && !showRenewForm && (
-              <div className="h-full grid gap-2 relative">
+              <div className="h-full  relative">
                 {/*====== Return Button ========= */}
                 <button
                   onClick={() => setDetailsOpen(false)}
@@ -172,139 +210,134 @@ const MembersPage = () => {
                 >
                   <IoIosArrowBack className="size-6" />
                 </button>
-                {/*====== Member Details ========= */}
-                <section className=" px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                  <h1 className="md:text-xl font-semibold text-center">
-                    Member Details
-                  </h1>
-                  {/*---------Main Content -----------*/}
-                  <div>
-                    <p>
-                      Member ID: <span>{selectedMember?.id}</span>
-                    </p>
-                    <p className="flex gap-2">
-                      Membership Status:{" "}
-                      <span>
-                        {selectedMember?.isActive ? "Active" : "Incactive"}
-                      </span>{" "}
-                      <span className="flex gap-1 items-center text-neutral-500 text-[10px]">
-                        (<FaClockRotateLeft /> {selectedMember?.days_remaining}{" "}
-                        days left)
-                      </span>
-                      {selectedMember?.isActive === false && (
-                        <Button
-                          label="Renew"
-                          onClick={() => setShowRenewForm(true)}
-                        />
-                      )}
-                    </p>
-                    {/* Sessions */}
-                    <div className="flex justify-around md:pt-2">
-                      <div className="text-center">
-                        <p>{selectedMember?.sessions.length}</p>
-                        <p className="text-xs md:text-sm text-neutral-500">
-                          Sessions
-                        </p>
-                      </div>
-                      <div className="text-center">
-                        <p>
-                          {
-                            selectedMember?.sessions.filter(
-                              (session) => session.type === "member",
-                            ).length
-                          }
-                        </p>
-                        <p className="text-xs md:text-sm text-neutral-500">
-                          Member
-                        </p>
-                      </div>
-                      <div className="text-center">
-                        <p>
-                          {
-                            selectedMember?.sessions.filter(
-                              (session) => session.type === "single",
-                            ).length
-                          }
-                        </p>
-                        <p className="text-xs md:text-sm text-neutral-500">
-                          Single
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                {/* Division */}
-                <div className="flex flex-col md:flex-row gap-2 ">
-                  {/*====== Personal Details ========= */}
-                  <section className="flex-1 rounded-xl px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center bg-neutral-300 dark:bg-neutral-800">
-                    <h1 className="font-semibold text-center md:text-xl self-baseline">
-                      Personal Details:
-                    </h1>
-                    <div>
-                      <p>
-                        Name: <span>{selectedMember?.name}</span>
-                      </p>
-                      <p>
-                        Age: <span>{selectedMember?.age}</span>
-                      </p>
-                      <p>
-                        Sex: <span>{selectedMember?.sex}</span>
-                      </p>
-                    </div>
-                  </section>
-                  {/*====== Contact Details ========= */}
-                  <section className="flex-1 px-2 py-2 md:px-5 grid gap-0 md:gap-6 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                    <h1 className="font-semibold text-center md:text-xl">
-                      Contact Details:{" "}
-                    </h1>
-                    <div>
-                      <p>
-                        Email:{" "}
-                        <span className="text-xs ">
-                          {selectedMember?.email}
-                        </span>
-                      </p>
-                      <p>
-                        Cellphone No.:{" "}
-                        <span className="text-xs ">
-                          {selectedMember?.contact_number}
-                        </span>
-                      </p>
-                    </div>
-                  </section>
-                </div>
-                {/*====== Creation Details ========= */}
-                <section className="px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                  <h1 className="font-semibold text-center md:text-xl">
-                    Creation Details
-                  </h1>
-                  <div>
-                    <p>
-                      Added by:{" "}
-                      <span>
-                        {selectedMember?.admin
-                          ? selectedMember.admin.name
-                          : "Owner"}
-                      </span>
-                    </p>
-                    <p>
-                      Added at:{" "}
-                      <span className="text-xs md:text-sm">
-                        {selectedMember
-                          ? new Date(selectedMember.added_at).toLocaleString()
-                          : null}
-                      </span>
-                    </p>
-                    <p>
-                      Updated at:{" "}
-                      <span>
-                        {selectedMember
-                          ? new Date(selectedMember.updated_at).toLocaleString()
-                          : null}
-                      </span>
+
+                {!showDetails ? (
+                  <div className="flex-1 h-full content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+                    <p className="place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                      No data to show
                     </p>
                   </div>
-                </section>
+                ) : (
+                  <div className="h-full w-full grid gap-2">
+                    {/*====== Member Details ========= */}
+                    <section className=" px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+                      <h1 className="md:text-[18px] lg:text-[20px] font-semibold text-center">
+                        Member Details
+                      </h1>
+                      {/*---------Main Content -----------*/}
+                      <div>
+                        {/* Member ID */}
+                        <p>
+                          Member ID: <span>{selectedMember?.id}</span>
+                        </p>
+                        {/* Membership Status */}
+                        <p className="flex gap-2">
+                          Membership Status:{" "}
+                          <span>
+                            {selectedMember?.isActive ? "Active" : "Incactive"}
+                          </span>{" "}
+                          <span className="flex gap-1 items-center text-neutral-500 text-[10px]">
+                            (<FaClockRotateLeft />{" "}
+                            {selectedMember?.days_remaining} days left)
+                          </span>
+                          {selectedMember?.isActive === false && (
+                            <Button
+                              label="Renew"
+                              onClick={() => setShowRenewForm(true)}
+                            />
+                          )}
+                        </p>
+                        {/* Total Sessions */}
+                        <p>
+                          Total Sessions:{" "}
+                          <span>{selectedMember?.sessions.length}</span>
+                        </p>
+                      </div>
+                    </section>
+                    {/* Division */}
+                    <div className="flex flex-col md:flex-row gap-2 ">
+                      {/*====== Personal Details ========= */}
+                      <section className="flex-1 rounded-xl px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center bg-neutral-300 dark:bg-neutral-800">
+                        <h1 className="font-semibold text-center md:text-[18px] lg:text-[20px] self-baseline">
+                          Personal Details:
+                        </h1>
+                        <div>
+                          <p>
+                            Name: <span>{selectedMember?.name}</span>
+                          </p>
+                          <p>
+                            Age: <span>{selectedMember?.age}</span>
+                          </p>
+                          <p>
+                            Sex: <span>{selectedMember?.sex}</span>
+                          </p>
+                        </div>
+                      </section>
+                      {/*====== Contact Details ========= */}
+                      <section className="flex-1 px-2 py-2 md:px-5 grid gap-0 md:gap-6 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+                        <h1 className="font-semibold text-center md:text-[18px] lg:text-[20px]">
+                          Contact Details:{" "}
+                        </h1>
+                        <div>
+                          <p>
+                            Email:{" "}
+                            <span className="text-xs ">
+                              {selectedMember?.email}
+                            </span>
+                          </p>
+                          <p>
+                            Cellphone No.:{" "}
+                            <span className="text-xs ">
+                              {selectedMember?.contact_number}
+                            </span>
+                          </p>
+                        </div>
+                      </section>
+                    </div>
+                    {/*====== Creation Details ========= */}
+                    <section className="px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+                      <h1 className="font-semibold text-center md:text-[18px] lg:text-[20px]">
+                        Creation Details
+                      </h1>
+                      <div>
+                        <p>
+                          Added by:{" "}
+                          <span>
+                            {selectedMember.admin
+                              ? selectedMember.admin.name
+                              : "Owner"}
+                          </span>
+                        </p>
+                        <p>
+                          Added at:{" "}
+                          <span className="text-xs md:text-sm text-neutral-500">
+                            {selectedMember
+                              ? new Date(
+                                  selectedMember.added_at,
+                                ).toLocaleString(undefined, {
+                                  dateStyle: "medium",
+                                  timeStyle: "short",
+                                })
+                              : null}
+                          </span>
+                        </p>
+                        <p>
+                          Updated at:{" "}
+                          <span className="text-xs md:text-sm text-neutral-500">
+                            {selectedMember
+                              ? new Date(
+                                  selectedMember.updated_at,
+                                ).toLocaleString(undefined, {
+                                  dateStyle: "medium",
+                                  timeStyle: "short",
+                                })
+                              : null}
+                          </span>
+                        </p>
+                      </div>
+                    </section>
+                  </div>
+                )}
               </div>
             )}
 
@@ -326,31 +359,60 @@ const MembersPage = () => {
                 </h1>
                 {/* New Membership Form */}
                 <form
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
+                    console.log("Form submitted");
 
-                    const addNewMember = async () => {
+                    const addNewMember = async (): Promise<
+                      string | undefined
+                    > => {
                       try {
-                        const newMember = await addMember({
+                        const response = await addMember({
                           name: memberForm.name,
-                          age: memberForm.age,
+                          age: memberForm.age === "" ? null : memberForm.age,
                           sex: memberForm.sex,
                           email: memberForm.email,
-                          contact_number: memberForm.contact_number,
+                          contact_number:
+                            memberForm.contact_number === ""
+                              ? null
+                              : memberForm.contact_number,
                         });
-                        console.log("Form submitted");
-                        setMemberList((prevList) => [...prevList, newMember]);
+                        setRefetch(!refetch);
+                        showSuccessToast(response.message);
+                        setShowMemberForm(false);
+                        return response.member.id;
                       } catch (err) {
                         console.error("Error while adding member: ", err);
+                        toast.error("Adding member failed");
                       }
                     };
-                    addNewMember();
+
+                    const AddSession = async (id: string | undefined) => {
+                      try {
+                        const res = await addSession({
+                          type: "member",
+                          member_id: id,
+                          visitor_name: null,
+                        });
+
+                        showSuccessToast(res.message);
+                        console.log(res.message);
+                      } catch (err) {
+                        console.error(
+                          "Error while adding member session: ",
+                          err,
+                        );
+                        toast.error("Adding session failed");
+                      }
+                    };
+                    const member_id = addNewMember();
+                    AddSession(await member_id);
                     setMemberForm({
                       name: "",
-                      age: undefined,
-                      sex: undefined,
+                      age: "",
+                      sex: "male",
                       email: "",
-                      contact_number: "undefined",
+                      contact_number: "",
                     });
                   }}
                   className="grid gap-3 md:gap-5 md:justify-center"
@@ -477,15 +539,20 @@ const MembersPage = () => {
                   btnLabel="Confirm"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    if (selectedMember) {
+
+                    const renewMember = async () => {
                       try {
-                        renewMembership(selectedMember.id);
+                        const res = await renewMembership(selectedMember?.id);
+                        showSuccessToast(res.message);
                       } catch (err) {
                         console.error("Error while renewing membership: ", err);
+                        toast.error("Membership renewal failed");
                       }
+                    };
+                    const AddPayment = async () => {
                       try {
-                        addPayment({
-                          member_id: selectedMember.id,
+                        await addPayment({
+                          member_id: selectedMember?.id,
                           type: "membership_renewal",
                           amount: renewForm.amount,
                           method: renewForm.method,
@@ -499,13 +566,9 @@ const MembersPage = () => {
                           err,
                         );
                       }
-                      console.log("Form submitted");
-                      return;
-                    } else if (!selectedMember) {
-                      console.error("There is no selected Member");
-                    } else {
-                      console.error("Untrack error");
-                    }
+                    };
+                    renewMember();
+                    AddPayment();
                   }}
                   formStyle=" items-center justify-center "
                 >

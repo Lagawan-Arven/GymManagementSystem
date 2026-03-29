@@ -27,15 +27,15 @@ const LandingPage = () => {
               Clean, fast, and simple.
             </p>
             {/* FADED SUB HEADER  */}
-            <p className="text-[12px] md:text-[16px] lg:text-[20px] lg:font-semibold text-neutral-500">
+            <p className="text-[12px] md:text-[16px] lg:text-[20px] lg:font-semibold text-neutral-600 dark:text-neutral-400">
               Stop chasing paper logs and expired memberships.
             </p>
             {/* FADED SUB HEADER  */}
-            <p className="text-[12px] md:text-[16px] lg:text-[20px] lg:font-semibold text-neutral-500">
+            <p className="text-[12px] md:text-[16px] lg:text-[20px] lg:font-semibold text-neutral-600 dark:text-neutral-400">
               {" "}
               Get back to the floor while{" "}
-              <span className="font-semibold dark:text-white">
-                Fast<span className="text-red-500">AFIT</span>
+              <span className="font-bold dark:text-white">
+                Arv<span className="text-red-500">Fit</span>
               </span>{" "}
               handles the rest.
             </p>

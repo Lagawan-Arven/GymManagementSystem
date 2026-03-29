@@ -10,7 +10,7 @@ import {
 
 import CustomTooltip from "./CustomTooltip";
 
-const StackAreaChart = ({ data }) => {
+const StackAreaChart = ({ data }: { data: Array<Record<string, any>> }) => {
   return (
     <ResponsiveContainer width={"100%"} height={"100%"} className={""}>
       <AreaChart
@@ -24,8 +24,18 @@ const StackAreaChart = ({ data }) => {
           type={"monotone"}
           fill="#22cbc9"
         />
-        <Area dataKey={"member"} stackId={1} type={"monotone"} fill="#8522cb" />
-        <Area dataKey={"single"} stackId={1} type={"monotone"} fill="#b29514" />
+        <Area
+          dataKey={"member_session"}
+          stackId={1}
+          type={"monotone"}
+          fill="#8522cb"
+        />
+        <Area
+          dataKey={"single_session"}
+          stackId={1}
+          type={"monotone"}
+          fill="#b29514"
+        />
 
         <Area
           dataKey={"new_member"}

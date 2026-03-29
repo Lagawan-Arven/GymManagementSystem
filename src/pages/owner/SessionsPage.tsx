@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 import type { BasePaymentPayload, SessionType } from "../../schemas";
+import { showSuccessToast } from "../../components/util";
 
 import { PiRecordFill } from "react-icons/pi";
 import { addPayment, addSession } from "../../services/api/Service";
@@ -9,20 +11,13 @@ interface SingleSessionForm extends BasePaymentPayload {
   name: string;
 }
 
-interface MemberSessionForm extends BasePaymentPayload {
-  id?: string;
-  email?: string;
-}
-
 type PaymentMethod = "cash" | "gcash" | "others";
 
 const SessionsPage = () => {
   const [session, setSession] = useState<SessionType>("member");
-  const [memberFormData, setMemberFormData] = useState<MemberSessionForm>({
-    id: undefined,
-    email: undefined,
-    method: "",
-    isDicounted: false,
+  const [memberFormData, setMemberFormData] = useState({
+    id: "",
+    email: "",
   });
   const [singleSessionForm, setSingleSessionForm] = useState<SingleSessionForm>(
     {
@@ -85,29 +80,35 @@ const SessionsPage = () => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  if (
-                    memberFormData.id === undefined &&
-                    memberFormData.email === undefined
-                  ) {
-                    window.alert("Need atleast one value to continue");
+                  if (memberFormData.id === "" && memberFormData.email === "") {
+                    toast("Need atleast one value to continue");
                     return;
                   }
-                  try {
-                    addSession({
-                      type: session,
-                      member_id: memberFormData.id,
-                      member_email: memberFormData.email,
-                      visitor_name: null,
-                    });
-                  } catch (err) {
-                    console.error("Error while adding member session: ", err);
-                  }
                   console.log("Form submitted");
+                  const AddSession = async () => {
+                    try {
+                      const res = await addSession({
+                        type: session,
+                        member_id:
+                          memberFormData.id === "" ? null : memberFormData.id,
+                        member_email:
+                          memberFormData.email === ""
+                            ? null
+                            : memberFormData.email,
+                        visitor_name: null,
+                      });
+
+                      showSuccessToast(res.message);
+                      console.log(res.message);
+                    } catch (err) {
+                      console.error("Error while adding member session: ", err);
+                      toast.error("Adding session failed");
+                    }
+                  };
+                  AddSession();
                   setMemberFormData({
-                    id: undefined,
-                    email: undefined,
-                    method: "",
-                    isDicounted: false,
+                    id: "",
+                    email: "",
                   });
                 }}
                 className="flex flex-col gap-2 md:justify-center"
@@ -130,7 +131,7 @@ const SessionsPage = () => {
                 {/* Member Name*/}
                 <input
                   type="text"
-                  placeholder="Member Name"
+                  placeholder="Member Email"
                   value={memberFormData.email}
                   onChange={(e) =>
                     setMemberFormData({
@@ -157,26 +158,41 @@ const SessionsPage = () => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  {
-                    /* Adding Session */
-                  }
-                  addSession({
-                    type: session,
-                    visitor_name: singleSessionForm.name,
-                  });
-                  {
-                    /* Adding Payment */
-                  }
-                  addPayment({
-                    type: "single_session",
-                    amount: singleSessionForm.amount,
-                    method: singleSessionForm.method,
-                    isDicounted: singleSessionForm.isDicounted,
-                    discount_percentage: singleSessionForm.discount_percentage,
-                    discount_amount: singleSessionForm.discount_amount,
-                    payor_name: singleSessionForm.name,
-                  });
                   console.log("Form submitted");
+                  const AddSession = async () => {
+                    try {
+                      const res = await addSession({
+                        type: session,
+                        visitor_name: singleSessionForm.name,
+                      });
+                      console.log(res.message);
+                      showSuccessToast(res.message);
+                    } catch (err) {
+                      toast.error("Adding session failed");
+                      console.error("Error while adding session: ", err);
+                    }
+                  };
+
+                  const AddPayment = async () => {
+                    try {
+                      const res = await addPayment({
+                        type: "single_session",
+                        amount: singleSessionForm.amount,
+                        method: singleSessionForm.method,
+                        isDicounted: singleSessionForm.isDicounted,
+                        discount_percentage:
+                          singleSessionForm.discount_percentage,
+                        discount_amount: singleSessionForm.discount_amount,
+                        payor_name: singleSessionForm.name,
+                      });
+                      console.log(res.message);
+                    } catch (err) {
+                      console.error("Error while adding payment: ", err);
+                    }
+                  };
+                  AddSession();
+                  AddPayment();
+
                   setSingleSessionForm({
                     name: "",
                     method: "",
@@ -188,7 +204,7 @@ const SessionsPage = () => {
                 {/* Name */}
                 <input
                   type="text"
-                  placeholder="Name"
+                  placeholder="Visitor's Name"
                   value={singleSessionForm.name}
                   onChange={(e) =>
                     setSingleSessionForm({

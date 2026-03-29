@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
-import { Mail } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const Register = () => {
   const { register } = useAuth();
@@ -36,15 +36,11 @@ const Register = () => {
             onSubmit={(e) => {
               e.preventDefault();
               if (user.password !== confirmPassword) {
-                window.alert("Password did not match");
+                toast.error("Password did not match");
                 return;
               }
-              try {
-                register(user);
-              } catch (err) {
-                console.error("Error while registering owner: ", err);
-              }
               console.log("Form submitted");
+              register(user);
             }}
           >
             {/* Gym name */}

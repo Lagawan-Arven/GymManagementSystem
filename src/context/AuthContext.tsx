@@ -1,32 +1,18 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { LoginUser, RegisterUser } from "../services/api/authService";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-type UserRole = "admin" | "owner";
+import { showSuccessToast } from "../components/util";
 
-interface LoginPayload {
-  owner_id: string | null;
-  username: string;
-  password: string;
-  role: UserRole;
-}
-
-interface RegisterPayload {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-}
-
-interface User {
-  id: string;
-  role: string;
-  name: string;
-  username: string;
-  email: string;
-}
+import {
+  LoginUser,
+  RegisterUser,
+  GetCurrentUser,
+} from "../services/api/authService";
+import type { LoginPayload, RegisterPayload, User } from "../schemas";
 
 interface AuthContextType {
+  loading: boolean;
   user: User | null;
   login: (data: LoginPayload) => Promise<void>;
   register: (data: RegisterPayload) => Promise<void>;
@@ -37,6 +23,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,34 +36,59 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         console.error("Invalid user role");
       }
-      console.log(user);
+    } else {
+      navigate("/");
     }
   }, [user]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      fetchCurrentUser().finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await GetCurrentUser();
+      setUser(response.user);
+    } catch (err) {
+      console.error("Failed to fetch user", err);
+      logout();
+    }
+  };
+
   const login = async (data: LoginPayload) => {
     console.log("[Auth] User logging in...");
+    try {
+      const response = await LoginUser(data);
 
-    const response = await LoginUser(data);
-    if (response) {
       localStorage.setItem("access_token", response.access_token);
-      setUser(response.owner ? response.owner : response.admin);
+      setUser(response.user);
       console.log("[Auth] Login success");
-    } else {
-      console.log("[Auth] Login failed");
+      showSuccessToast(response.message);
+    } catch (err) {
+      console.error("Error while user login: ", err);
+      toast.error("Login failed");
     }
   };
 
   const register = async (data: RegisterPayload) => {
     console.log("[Auth] User registering...");
 
-    const response = await RegisterUser(data);
-    if (response?.success) {
-      if (response.success) {
+    try {
+      const response = await RegisterUser(data);
+      if (response?.success) {
         console.log("[Auth] Registration success");
+        showSuccessToast(response.message);
         navigate("/login");
-      } else {
-        console.log("[Auth] Registration failed");
       }
+    } catch (err) {
+      toast.error("Registration failed");
+      console.error("Error while user registering: ", err);
     }
   };
 
@@ -83,12 +96,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log("[Auth] User logging out...");
     localStorage.setItem("access_token", "");
     setUser(null);
-    navigate("/login");
+    showSuccessToast("Logout success");
+    navigate("/");
     console.log("[Auth] User logged out");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ loading, user, login, register, logout }}>
       {" "}
       {children}{" "}
     </AuthContext.Provider>

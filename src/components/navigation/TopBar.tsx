@@ -12,6 +12,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 interface ModalProp {
   heading?: string;
@@ -35,12 +36,15 @@ const Modal = ({ isOpen, heading, contents }: ModalProp) => {
   );
 };
 
-interface UserModalProp {
-  isOpen: boolean;
-  username: string;
+interface TopBarProp {
+  navLinks: Array<{
+    name: string;
+    link: string;
+    icon: React.ReactNode;
+  }>;
 }
 
-const UserModal = ({ isOpen, username }: UserModalProp) => {
+const UserModal = ({ isOpen }: { isOpen: boolean }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
@@ -56,7 +60,7 @@ const UserModal = ({ isOpen, username }: UserModalProp) => {
   return (
     <>
       {isVisible && (
-        <aside className="rounded-2xl p-4 absolute right-2 bg-neutral-400 dark:bg-neutral-700 md:right-10">
+        <aside className="rounded-2xl p-4 absolute right-2 bg-neutral-400 dark:bg-neutral-700 md:right-10 z-100">
           <h1 className="border-b pb-2 border-neutral-800 dark:border-neutral-500 md:text-xl ">
             {user ? user.username : "User"}
           </h1>
@@ -64,7 +68,11 @@ const UserModal = ({ isOpen, username }: UserModalProp) => {
             <button
               className="flex gap-2 items-center"
               onClick={() => {
-                navigate("/profile");
+                if (user?.role === "owner") {
+                  navigate("/profile");
+                } else if (user?.role === "admin") {
+                  navigate("/admin/profile");
+                }
                 setIsVisible(false);
               }}
             >
@@ -88,7 +96,7 @@ const UserModal = ({ isOpen, username }: UserModalProp) => {
   );
 };
 
-const TopBar = ({ navLinks }) => {
+const TopBar = ({ navLinks }: TopBarProp) => {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -108,16 +116,13 @@ const TopBar = ({ navLinks }) => {
   ];
   const initialNotifs = ["Notif01", "Notif02", "Notif03"];
 
-  const username = localStorage.getItem("username");
-
   return (
     <>
       <div className="flex justify-between h-full px-2 md:px-5 md:py-2">
         {/*=================== LOGO SECTION =======================*/}
         <section className="text-xs flex gap-2 p-2 border-neutral-700 items-center">
-          <img src="/vite.svg" alt="logo" />
-          <h1 className="content-center text-sm font-bold md:text-[20px] lg:text-[24px]">
-            Gym<span className="text-red-600">MS</span>
+          <h1 className="content-center text-sm font-bold md:text-[24px] lg:text-[30px]">
+            Arv<span className="text-red-500">Fit</span>
           </h1>
         </section>
 
@@ -213,10 +218,7 @@ const TopBar = ({ navLinks }) => {
                 setNotifModalOpen(false);
               }}
             />
-            <UserModal
-              isOpen={userModalOpen}
-              username={username ? username : "User"}
-            />
+            <UserModal isOpen={userModalOpen} />
           </div>
         </section>
       </div>

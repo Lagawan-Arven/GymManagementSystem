@@ -1,5 +1,3 @@
-import React from "react";
-
 const Button = ({
   label,
   divStyle,
@@ -13,15 +11,12 @@ const Button = ({
   onClick?: () => void;
   typeSubmit?: boolean;
 }) => {
-  const DivStyle = "text-center py-2";
-  const BtnStyle =
-    " px-2 py-1 font-semibold rounded-xl border border-neutral-500 hover:border-red-500 hover:text-red-500 ";
   return (
-    <div className={divStyle ? divStyle + DivStyle : DivStyle}>
+    <div className={`${divStyle} text-center py-1 md:py-2`}>
       <button
         type={typeSubmit ? "submit" : undefined}
         onClick={onClick}
-        className={btnStyle ? btnStyle + BtnStyle : BtnStyle}
+        className={`${btnStyle} px-2 py-1 font-bold rounded-xl border border-neutral-500 hover:border-red-500 hover:text-red-500`}
       >
         {label}
       </button>

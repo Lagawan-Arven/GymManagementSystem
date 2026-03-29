@@ -13,8 +13,15 @@ export interface LoginPayload {
 export interface RegisterPayload {
   name: string;
   username: string;
-  email: string;
+  email: string | null;
   password: string;
+}
+
+type BaseUser = Omit<RegisterPayload, "password">;
+
+export interface User extends BaseUser {
+  id: string;
+  role: string;
 }
 
 {
@@ -46,7 +53,7 @@ export type Sex = "male" | "female";
 
 export interface MemberPayload {
   name: string;
-  age?: number | null;
+  age?: number | null | "";
   sex?: Sex | null;
   email: string;
   contact_number?: string | null;
