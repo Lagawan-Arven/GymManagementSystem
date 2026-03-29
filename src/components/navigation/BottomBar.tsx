@@ -1,6 +1,16 @@
 import { NavLink } from "react-router-dom";
 
-const BottomBar = ({ navLinks }) => {
+interface NavLink {
+  link: string;
+  icon: React.ReactNode;
+  name: string;
+}
+
+interface BottomBarProps {
+  navLinks: NavLink[];
+}
+
+const BottomBar = ({ navLinks }: BottomBarProps) => {
   return (
     <div className="h-full content-center border-t border-neutral-300 dark:border-neutral-800">
       <section className="flex justify-around place-items-center">

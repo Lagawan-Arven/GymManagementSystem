@@ -1,4 +1,3 @@
-import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
@@ -46,19 +45,13 @@ const Footer = () => {
           <h4 className="font-bold">FOLLOW US</h4>
           <div className="flex gap-3 mt-2">
             <a href="" className="border rounded-lg p-2">
-              <FaFacebookF
-                color="red"
-                className="lg:h-[1.5rem] lg:w-[1.5rem]"
-              />
+              <FaFacebookF color="red" className="lg:h-6 lg:w-6" />
             </a>
             <a href="" className="border rounded-lg p-2">
-              <FaInstagram
-                color="red"
-                className="lg:h-[1.5rem] lg:w-[1.5rem]"
-              />
+              <FaInstagram color="red" className="lg:h-6 lg:w-6" />
             </a>
             <a href="" className="border rounded-lg p-2">
-              <FaXTwitter color="red" className="lg:h-[1.5rem] lg:w-[1.5rem]" />
+              <FaXTwitter color="red" className="lg:h-6 lg:w-6" />
             </a>
           </div>
         </div>

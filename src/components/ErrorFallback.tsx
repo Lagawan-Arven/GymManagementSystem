@@ -1,5 +1,3 @@
-import React from "react";
-
 const ErrorFallback = () => {
   return (
     <div role="alert">

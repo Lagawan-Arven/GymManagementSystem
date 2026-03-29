@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 import { useTheme } from "../../context/ThemeContext";
 
@@ -11,7 +10,6 @@ const PublicTopBar = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
   };
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 

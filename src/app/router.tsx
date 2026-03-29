@@ -22,8 +22,6 @@ import {
 import { Toaster } from "../components/util";
 
 import AuthGuard from "../context/AuthGuard";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../components/ErrorFallback";
 
 const AppRouter = () => {
   return (

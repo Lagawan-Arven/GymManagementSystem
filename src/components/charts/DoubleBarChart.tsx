@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const DoubleBarChart = ({ data }) => {
+const DoubleBarChart = ({ data }: { data: any }) => {
   return (
     <ResponsiveContainer width={"100%"} height={"100%"}>
       <BarChart data={data}>

@@ -10,8 +10,6 @@ import {
 import CustomTooltip from "./CustomTooltip";
 import CustomLegend from "./util/CustomLegend";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
-
 const RADIAN = Math.PI / 180;
 
 const renderCustomizedLabel = ({
@@ -44,7 +42,17 @@ const renderCustomizedLabel = ({
     </text>
   );
 };
-const MyPieChart = ({ data, pieDataKey = "value", pieNameKey = "program" }) => {
+interface PieChartProps {
+  data: Array<Record<string, any>>;
+  pieDataKey?: string;
+  pieNameKey?: string;
+}
+
+const MyPieChart = ({
+  data,
+  pieDataKey = "value",
+  pieNameKey = "program",
+}: PieChartProps) => {
   return (
     <ResponsiveContainer height={"100%"} width={"100%"}>
       <PieChart data={data}>

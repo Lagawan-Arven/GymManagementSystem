@@ -12,7 +12,6 @@ import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useErrorBoundary } from "react-error-boundary";
 
 interface ModalProp {
   heading?: string;

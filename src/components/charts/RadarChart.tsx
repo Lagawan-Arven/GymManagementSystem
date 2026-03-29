@@ -17,6 +17,11 @@ const MyRadarChart = ({
   dataKey = "value",
   nameKey = "name",
   outerRadius = 70,
+}: {
+  data: any[];
+  dataKey?: string;
+  nameKey?: string;
+  outerRadius?: number;
 }) => {
   return (
     <ResponsiveContainer height={"100%"} width={"100%"}>
