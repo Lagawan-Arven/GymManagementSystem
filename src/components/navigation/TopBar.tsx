@@ -98,7 +98,7 @@ const UserModal = ({ isOpen }: { isOpen: boolean }) => {
 const TopBar = ({ navLinks }: TopBarProp) => {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
+    const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
   };
 
@@ -197,10 +197,7 @@ const TopBar = ({ navLinks }: TopBarProp) => {
           </div>
 
           {/* SUN MOON ICON */}
-          <button
-            onClick={() => setTheme(toggleTheme)}
-            className="mx-2 md:mx-5 text-red-500"
-          >
+          <button onClick={toggleTheme} className="mx-2 md:mx-5 text-red-500">
             {theme === "light" ? (
               <FaRegMoon className="size-4 md:size-5 lg:size-6" />
             ) : (

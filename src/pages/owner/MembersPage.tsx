@@ -394,7 +394,6 @@ const MembersPage = () => {
                           member_id: id,
                           visitor_name: null,
                         });
-
                         showSuccessToast(res.message);
                         console.log(res.message);
                       } catch (err) {
