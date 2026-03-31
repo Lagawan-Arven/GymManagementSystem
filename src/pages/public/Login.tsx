@@ -2,7 +2,7 @@ import { useState, useEffect, type SetStateAction } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import { fetchOwners } from "../../services/api/Service";
+import { fetchOwners, getRoot } from "../../services/api/Service";
 
 import { RiAdminLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
@@ -14,6 +14,23 @@ interface Owner {
 }
 
 const Login = () => {
+  const [apiLoading, setApiLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  useEffect(() => {
+    const api_init = async () => {
+      try {
+        const res = await getRoot();
+        if (res.status === "ok") {
+          setApiLoading(false);
+        }
+      } catch (err) {
+        console.error("Error while initializing api: ", err);
+      }
+    };
+    api_init();
+  }, []);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
@@ -21,7 +38,7 @@ const Login = () => {
 
   const [owners, setOwners] = useState<Owner[]>([]);
   const [selectedOwner, setSelectedOwner] = useState<Owner | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [gymLoading, setGymLoading] = useState(true);
 
   const [showQueryInput, setShowQueryInput] = useState(false);
   const [query, setQuery] = useState("");
@@ -33,7 +50,7 @@ const Login = () => {
       try {
         const response = await fetchOwners();
         setOwners(response.owners);
-        setLoading(false);
+        setGymLoading(false);
       } catch (error) {
         console.error("Error while fetching owners", error);
       }
@@ -64,128 +81,140 @@ const Login = () => {
 
   return (
     <>
-      <div className="h-full flex justify-center">
-        <div className="px-5 md:px-5 w-full max-w-md content-center ">
-          {/* Gym query */}
-          {showQueryInput && (
-            <div className="relative h-40 md:h-30 mb-5">
-              <MdCancel
-                onClick={() => {
-                  setShowQueryInput(false);
-                  setQuery("");
-                  setSelectedOwner(null);
-                }}
-                className="absolute right-0"
-              />
-              <div className="flex gap-2 items-center justify-center">
-                <FaSearch />
-                <input
-                  type="text"
-                  placeholder="Search for your gym"
-                  value={query}
-                  onChange={handleChange}
-                  className="w-50 px-2 py-1 rounded-xl border border-neutral-500"
+      {apiLoading || authLoading ? (
+        <div className="h-full content-center text-center">
+          <p className="text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
+            Loading...
+          </p>
+        </div>
+      ) : (
+        <div className="flex h-full justify-center">
+          <div className="w-full max-w-md content-center px-5 md:px-5">
+            {/* Gym query */}
+            {showQueryInput && (
+              <div className="relative mb-5 h-40 md:h-30">
+                <MdCancel
+                  onClick={() => {
+                    setShowQueryInput(false);
+                    setQuery("");
+                    setSelectedOwner(null);
+                  }}
+                  className="absolute right-0"
                 />
+                <div className="flex items-center justify-center gap-2">
+                  <FaSearch />
+                  <input
+                    type="text"
+                    placeholder="Search for your gym"
+                    value={query}
+                    onChange={handleChange}
+                    className="w-50 rounded-xl border border-neutral-500 px-2 py-1"
+                  />
+                </div>
+                {gymLoading && <p>Loading...</p>}
+                {!gymLoading && showDropdown && filteredGyms.length > 0 && (
+                  <ul className="w-55 justify-self-center rounded-b-xl border-x border-b border-neutral-500 px-2 py-1">
+                    {filteredGyms.map((gym, index) => (
+                      <li key={index} onClick={() => handleSelect(gym)}>
+                        {gym ? gym.name : "None"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              {loading && <p>Loading...</p>}
-              {!loading && showDropdown && filteredGyms.length > 0 && (
-                <ul className="w-55 justify-self-center px-2 py-1 rounded-b-xl border-x border-b border-neutral-500">
-                  {filteredGyms.map((gym, index) => (
-                    <li key={index} onClick={() => handleSelect(gym)}>
-                      {gym ? gym.name : "None"}
-                    </li>
-                  ))}
-                </ul>
-              )}
+            )}
+
+            {/* Header */}
+            <div className="mb-6 text-center">
+              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
+                Welcome{" "}
+                <span className="text-red-600 dark:text-red-500">Back</span>
+              </h2>
+              <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+                Log in to continue
+              </p>
             </div>
-          )}
 
-          {/* Header */}
-          <div className="mb-6 text-center">
-            <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-              Welcome{" "}
-              <span className="text-red-600 dark:text-red-500 ">Back</span>
-            </h2>
-            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-              Log in to continue
-            </p>
-          </div>
+            {/* Login Form */}
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log("Form submitted");
+                setAuthLoading(true);
+                const loginUser = async () => {
+                  try {
+                    await login({
+                      owner_id: selectedOwner ? selectedOwner.id : null,
+                      username,
+                      password,
+                      role: selectedOwner ? "admin" : "owner",
+                    });
+                    setAuthLoading(false);
+                    setUsername("");
+                    setPassword("");
+                  } catch (err) {
+                    console.error("Error while owner login: ", err);
+                  }
+                };
+                loginUser();
+              }}
+            >
+              {/* Email or Username Input */}
 
-          {/* Login Form */}
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log("Form submitted");
-              try {
-                login({
-                  owner_id: selectedOwner ? selectedOwner.id : null,
-                  username,
-                  password,
-                  role: selectedOwner ? "admin" : "owner",
-                });
-              } catch (err) {
-                console.error("Error whule owner login: ", err);
-              }
+              <input
+                type="text"
+                placeholder="Email or Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-red-600 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-red-500"
+                required
+              />
 
-              setUsername("");
-              setPassword("");
-            }}
-          >
-            {/* Email or Username Input */}
+              {/* Password Input */}
 
-            <input
-              type="text"
-              placeholder="Email or Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900  focus:border-red-600 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-red-500"
-              required
-            />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-red-600 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-red-500"
+                required
+              />
 
-            {/* Password Input */}
+              {/* Submit Button */}
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className="rounded-xl bg-red-600 px-4 py-2 text-black hover:text-white dark:bg-red-500"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 bg-transparent px-4 py-2 text-neutral-900 focus:border-red-600 focus:outline-none dark:border-neutral-700 dark:text-white dark:focus:border-red-500"
-              required
-            />
+            {/* Login as an admin/staff */}
+            <button
+              onClick={() => setShowQueryInput(true)}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-red-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-red-500"
+            >
+              <RiAdminLine className="h-5 w-5" />
+              Log in as an Admin/Staff
+            </button>
 
-            {/* Submit Button */}
-            <div className="flex justify-center">
+            {/* Footer */}
+            <div className="mt-5 text-center text-sm text-neutral-500 dark:text-neutral-400">
+              Don’t have an account?{" "}
               <button
-                type="submit"
-                className="py-2 px-4 rounded-xl bg-red-600 text-black hover:text-white dark:bg-red-500 "
+                onClick={() => navigate("/register")}
+                className="font-medium text-neutral-900 hover:underline dark:text-white"
               >
-                Submit
+                Register
               </button>
             </div>
-          </form>
-
-          {/* Login as an admin/staff */}
-          <button
-            onClick={() => setShowQueryInput(true)}
-            className="flex mt-5 w-full items-center justify-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 font-semibold text-white transition hover:bg-red-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-red-500"
-          >
-            <RiAdminLine className="h-5 w-5" />
-            Log in as an Admin/Staff
-          </button>
-
-          {/* Footer */}
-          <div className="mt-5 text-center text-sm text-neutral-500 dark:text-neutral-400">
-            Don’t have an account?{" "}
-            <button
-              onClick={() => navigate("/register")}
-              className="font-medium text-neutral-900 hover:underline dark:text-white"
-            >
-              Register
-            </button>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

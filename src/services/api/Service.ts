@@ -10,6 +10,14 @@ import type {
 } from "../../schemas";
 
 {
+  /*============= HEALTH CHECK ================ */
+}
+export const getRoot = async () => {
+  const res = await apiClient.get("/");
+  return res.data;
+};
+
+{
   /*============= OWNER ================ */
 }
 

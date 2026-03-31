@@ -5,15 +5,15 @@ import PublicTopBar from "../navigation/PublicTopBar";
 const PublicLayout = () => {
   return (
     <>
-      <div className=" bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
+      <div className="bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
         <div className="relative">
           {/*=================== HEADER =======================*/}
-          <header className="h-[10vh] w-full md:h-[15vh] fixed z-10 bg-white/70 dark:bg-black/80">
+          <header className="fixed z-10 h-[10vh] w-full bg-white/70 md:h-[15vh] dark:bg-black/80">
             <PublicTopBar />
           </header>
 
           {/*=================== MAIN =======================*/}
-          <main className="">
+          <main className="h-screen">
             <Outlet />
           </main>
         </div>

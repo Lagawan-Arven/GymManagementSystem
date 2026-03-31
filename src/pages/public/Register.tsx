@@ -17,13 +17,13 @@ const Register = () => {
 
   return (
     <>
-      <div className="h-full flex items-center justify-center">
+      <div className="flex h-full items-center justify-center">
         <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-neutral-900">
           {/*============ Header =============*/}
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
               First Time{" "}
-              <span className="text-red-600 dark:text-red-500 ">Here?</span>
+              <span className="text-red-600 dark:text-red-500">Here?</span>
             </h2>
             <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
               Register your gym to continue{" "}
@@ -35,11 +35,13 @@ const Register = () => {
             className="space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
+              console.log("Form submitted");
+
               if (user.password !== confirmPassword) {
                 toast.error("Password did not match");
                 return;
               }
-              console.log("Form submitted");
+
               register(user);
             }}
           >
@@ -97,7 +99,7 @@ const Register = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="py-2 px-4 rounded-xl bg-red-600 text-black hover:text-white dark:bg-red-500 "
+                className="rounded-xl bg-red-600 px-4 py-2 text-black hover:text-white dark:bg-red-500"
               >
                 Submit
               </button>
