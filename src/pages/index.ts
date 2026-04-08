@@ -1,4 +1,6 @@
 export { default as LandingPage } from "./public/LandingPage";
+export { default as PricingPage } from "./public/PricingPage";
+export { default as ContactPage } from "./public/ContactPage";
 export { default as Login } from "./public/Login";
 export { default as Register } from "./public/Register";
 export { default as MyProfilePage } from "./owner/MyProfilePage";

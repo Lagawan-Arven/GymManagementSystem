@@ -12,9 +12,9 @@ import {
   addMember,
   addPayment,
   fetchMembers,
-  renewMembership,
+  renewMember,
   addSession,
-} from "../../services/api/Service";
+} from "../../api/Service";
 
 interface Member extends MemberPayload {
   id: string;
@@ -108,37 +108,37 @@ const MembersPage = () => {
 
   return (
     <>
-      <div className="h-full w-full px-3 md:px-5 ">
+      <div className="h-full w-full px-3 md:px-5">
         {/*=================== HEADER ========================= */}
-        <header className="pb-2 border-b border-b-neutral-500">
+        <header className="border-b border-b-neutral-500 pb-2">
           {/* Title */}
-          <section className="flex gap-2 items-center md:text-2xl md:font-bold text-red-500">
+          <section className="flex items-center gap-2 text-red-500 md:text-2xl md:font-bold">
             <FaUsers className="md:size-5" />
-            <h1 className="text-xl md:text-2xl font-bold">Members</h1>
+            <h1 className="text-xl font-bold md:text-2xl">Members</h1>
           </section>
         </header>
 
         {/*===================== MAIN ==================== */}
-        <main className="flex flex-col md:flex-row gap-2 pt-3 md:pt-5 w-full">
+        <main className="flex w-full flex-col gap-2 pt-3 md:flex-row md:pt-5">
           {/* CONTAINER 1 */}
           <div
             className={
               detailsOpen || showMemberForm || showRenewForm
-                ? "hidden md:w-[35vw] md:overflow-auto md:block "
-                : "md:w-[35vw] md:overflow-auto block"
+                ? "hidden md:block md:w-[35vw] md:overflow-auto"
+                : "block md:w-[35vw] md:overflow-auto"
             }
           >
             {/*====== Member List ========= */}
-            <section className="h-[70vh] md:h-[75vh] px-2 py-1 md:px-5 md:py-2 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+            <section className="h-[70vh] rounded-xl bg-neutral-300 px-2 py-1 md:h-[75vh] md:px-5 md:py-2 dark:bg-neutral-800">
               {/* Filters */}
-              <div className="flex gap-5 pb-1 border-b border-neutral-500">
+              <div className="flex gap-5 border-b border-neutral-500 pb-1">
                 {filters.map((name, index) => (
                   <p
                     key={index}
                     onClick={() => setFilter(name)}
                     className={
                       name === filter
-                        ? "rounded-tr-xl border-t border-r border-red-500 text-red-500 pt-1 pr-4"
+                        ? "rounded-tr-xl border-t border-r border-red-500 pt-1 pr-4 text-red-500"
                         : "rounded-tr-xl border-t border-r border-neutral-500 pt-1 pr-4"
                     }
                   >
@@ -147,22 +147,22 @@ const MembersPage = () => {
                 ))}
               </div>
               {/* The List */}
-              <div className="pt-2  ">
+              <div className="pt-2">
                 {loading && (
-                  <div className="h-[55vh] ">
-                    <p className="pt-40 place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                  <div className="h-[55vh]">
+                    <p className="place-self-center pt-40 text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                       Loading...
                     </p>
                   </div>
                 )}
                 {!showList ? (
-                  <div className="h-[55vh]  content-center">
-                    <p className=" place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                  <div className="h-[55vh] content-center">
+                    <p className="place-self-center text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                       No data to show
                     </p>
                   </div>
                 ) : (
-                  <div className="h-[55vh] overflow-auto flex flex-col gap-2">
+                  <div className="flex h-[55vh] flex-col gap-2 overflow-auto">
                     {filteredMembers?.map((member, index) => (
                       <div
                         key={index}
@@ -170,7 +170,7 @@ const MembersPage = () => {
                           setSelectedMember(member);
                           setDetailsOpen(true);
                         }}
-                        className="px-2 py-1 md:py-2 md:px-5 rounded-xl bg-neutral-200 dark:bg-neutral-900"
+                        className="rounded-xl bg-neutral-200 px-2 py-1 md:px-5 md:py-2 dark:bg-neutral-900"
                       >
                         <p>
                           {index + 1} | {member.name}
@@ -196,13 +196,13 @@ const MembersPage = () => {
           <div
             className={
               detailsOpen || showMemberForm || showRenewForm
-                ? "flex-1 block"
-                : "hidden md:flex-1 md:block"
+                ? "block flex-1"
+                : "hidden md:block md:flex-1"
             }
           >
             {/* Member Details Division */}
             {!showMemberForm && !showRenewForm && (
-              <div className="h-full  relative">
+              <div className="relative h-full">
                 {/*====== Return Button ========= */}
                 <button
                   onClick={() => setDetailsOpen(false)}
@@ -212,16 +212,16 @@ const MembersPage = () => {
                 </button>
 
                 {!showDetails ? (
-                  <div className="flex-1 h-full content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                    <p className="place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                  <div className="h-full flex-1 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+                    <p className="place-self-center text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                       No data to show
                     </p>
                   </div>
                 ) : (
-                  <div className="h-full w-full grid gap-2">
+                  <div className="grid h-full w-full gap-2">
                     {/*====== Member Details ========= */}
-                    <section className=" px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                      <h1 className="md:text-[18px] lg:text-[20px] font-semibold text-center">
+                    <section className="grid content-center gap-0 rounded-xl bg-neutral-300 px-2 py-2 md:gap-2 md:px-5 dark:bg-neutral-800">
+                      <h1 className="text-center font-semibold md:text-[18px] lg:text-[20px]">
                         Member Details
                       </h1>
                       {/*---------Main Content -----------*/}
@@ -236,7 +236,7 @@ const MembersPage = () => {
                           <span>
                             {selectedMember?.isActive ? "Active" : "Incactive"}
                           </span>{" "}
-                          <span className="flex gap-1 items-center text-neutral-500 text-[10px]">
+                          <span className="flex items-center gap-1 text-[10px] text-neutral-500">
                             (<FaClockRotateLeft />{" "}
                             {selectedMember?.days_remaining} days left)
                           </span>
@@ -255,10 +255,10 @@ const MembersPage = () => {
                       </div>
                     </section>
                     {/* Division */}
-                    <div className="flex flex-col md:flex-row gap-2 ">
+                    <div className="flex flex-col gap-2 md:flex-row">
                       {/*====== Personal Details ========= */}
-                      <section className="flex-1 rounded-xl px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center bg-neutral-300 dark:bg-neutral-800">
-                        <h1 className="font-semibold text-center md:text-[18px] lg:text-[20px] self-baseline">
+                      <section className="grid flex-1 content-center gap-0 rounded-xl bg-neutral-300 px-2 py-2 md:gap-2 md:px-5 dark:bg-neutral-800">
+                        <h1 className="self-baseline text-center font-semibold md:text-[18px] lg:text-[20px]">
                           Personal Details:
                         </h1>
                         <div>
@@ -274,20 +274,20 @@ const MembersPage = () => {
                         </div>
                       </section>
                       {/*====== Contact Details ========= */}
-                      <section className="flex-1 px-2 py-2 md:px-5 grid gap-0 md:gap-6 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                        <h1 className="font-semibold text-center md:text-[18px] lg:text-[20px]">
+                      <section className="grid flex-1 content-center gap-0 rounded-xl bg-neutral-300 px-2 py-2 md:gap-6 md:px-5 dark:bg-neutral-800">
+                        <h1 className="text-center font-semibold md:text-[18px] lg:text-[20px]">
                           Contact Details:{" "}
                         </h1>
                         <div>
                           <p>
                             Email:{" "}
-                            <span className="text-xs ">
+                            <span className="text-xs">
                               {selectedMember?.email}
                             </span>
                           </p>
                           <p>
                             Cellphone No.:{" "}
-                            <span className="text-xs ">
+                            <span className="text-xs">
                               {selectedMember?.contact_number}
                             </span>
                           </p>
@@ -295,8 +295,8 @@ const MembersPage = () => {
                       </section>
                     </div>
                     {/*====== Creation Details ========= */}
-                    <section className="px-2 py-2 md:px-5 grid gap-0 md:gap-2 content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                      <h1 className="font-semibold text-center md:text-[18px] lg:text-[20px]">
+                    <section className="grid content-center gap-0 rounded-xl bg-neutral-300 px-2 py-2 md:gap-2 md:px-5 dark:bg-neutral-800">
+                      <h1 className="text-center font-semibold md:text-[18px] lg:text-[20px]">
                         Creation Details
                       </h1>
                       <div>
@@ -310,7 +310,7 @@ const MembersPage = () => {
                         </p>
                         <p>
                           Added at:{" "}
-                          <span className="text-xs md:text-sm text-neutral-500">
+                          <span className="text-xs text-neutral-500 md:text-sm">
                             {selectedMember
                               ? new Date(
                                   selectedMember.added_at,
@@ -323,7 +323,7 @@ const MembersPage = () => {
                         </p>
                         <p>
                           Updated at:{" "}
-                          <span className="text-xs md:text-sm text-neutral-500">
+                          <span className="text-xs text-neutral-500 md:text-sm">
                             {selectedMember
                               ? new Date(
                                   selectedMember.updated_at,
@@ -343,7 +343,7 @@ const MembersPage = () => {
 
             {/*-------------------- Member Form Division -----------------------*/}
             {showMemberForm && (
-              <div className="h-full relative py-2 px-2 space-y-10 content-center rounded-xl bg-neutral-200 dark:bg-neutral-800">
+              <div className="relative h-full content-center space-y-10 rounded-xl bg-neutral-200 px-2 py-2 dark:bg-neutral-800">
                 {/* Return Button */}
                 <button
                   onClick={() => {
@@ -354,7 +354,7 @@ const MembersPage = () => {
                   <IoIosArrowBack className="size-7" />
                 </button>
                 {/* Header */}
-                <h1 className="text-[18px] md:text-xl lg:text-[24px] font-semibold text-center">
+                <h1 className="text-center text-[18px] font-semibold md:text-xl lg:text-[24px]">
                   Member Form
                 </h1>
                 {/* New Membership Form */}
@@ -414,7 +414,7 @@ const MembersPage = () => {
                       contact_number: "",
                     });
                   }}
-                  className="grid gap-3 md:gap-5 md:justify-center"
+                  className="grid gap-3 md:justify-center md:gap-5"
                 >
                   {/* Name */}
                   <input
@@ -428,7 +428,7 @@ const MembersPage = () => {
                         name: e.target.value,
                       })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                     required
                   />
 
@@ -445,7 +445,7 @@ const MembersPage = () => {
                           age: Number(e.target.value),
                         })
                       }
-                      className="w-20 px-2 py-1 rounded-xl border border-neutral-500"
+                      className="w-20 rounded-xl border border-neutral-500 px-2 py-1"
                     />
 
                     {/* Sex */}
@@ -460,7 +460,7 @@ const MembersPage = () => {
                             sex: e.target.value as Sex,
                           })
                         }
-                        className=" px-2 py-1 open:border-red-500 open:bg-red-500 rounded-xl border border-neutral-500"
+                        className="rounded-xl border border-neutral-500 px-2 py-1 open:border-red-500 open:bg-red-500"
                       >
                         <option value={undefined}>None</option>
                         <option value="male">Male</option>
@@ -481,7 +481,7 @@ const MembersPage = () => {
                         email: e.target.value,
                       })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                     required
                   />
 
@@ -501,14 +501,14 @@ const MembersPage = () => {
                         contact_number: e.target.value,
                       })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                   />
 
                   {/* Submit Button */}
-                  <div className="text-center md:text-[20px] lg:text-[24px] font-semibold md:font-bold">
+                  <div className="text-center font-semibold md:text-[20px] md:font-bold lg:text-[24px]">
                     <button
                       type="submit"
-                      className="px-2 py-1 rounded-xl border border-neutral-500 hover:border-red-500 hover:text-red-500"
+                      className="rounded-xl border border-neutral-500 px-2 py-1 hover:border-red-500 hover:text-red-500"
                     >
                       Submit
                     </button>
@@ -518,7 +518,7 @@ const MembersPage = () => {
             )}
             {/* Membership Renewal Form */}
             {showRenewForm && (
-              <div className="h-full relative py-2 px-2 space-y-10 content-center rounded-xl bg-neutral-200 dark:bg-neutral-800">
+              <div className="relative h-full content-center space-y-10 rounded-xl bg-neutral-200 px-2 py-2 dark:bg-neutral-800">
                 {/* Return Button */}
                 <button
                   onClick={() => {
@@ -530,7 +530,7 @@ const MembersPage = () => {
                 </button>
 
                 {/* Header */}
-                <h1 className="text-[18px] md:text-xl lg:text-[24px] font-semibold text-center">
+                <h1 className="text-center text-[18px] font-semibold md:text-xl lg:text-[24px]">
                   Renew Membership Form
                 </h1>
                 {/* Renew Form */}
@@ -539,9 +539,9 @@ const MembersPage = () => {
                   onSubmit={(e) => {
                     e.preventDefault();
 
-                    const renewMember = async () => {
+                    const RenewMember = async () => {
                       try {
-                        const res = await renewMembership(selectedMember?.id);
+                        const res = await renewMember(selectedMember?.id);
                         showSuccessToast(res.message);
                       } catch (err) {
                         console.error("Error while renewing membership: ", err);
@@ -566,7 +566,7 @@ const MembersPage = () => {
                         );
                       }
                     };
-                    renewMember();
+                    RenewMember();
                     AddPayment();
                   }}
                   formStyle=" items-center justify-center "
@@ -592,7 +592,7 @@ const MembersPage = () => {
                     />
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-5 justify-center ">
+                  <div className="flex flex-col justify-center gap-5 md:flex-row">
                     {/* Discount Percent */}
                     <Input
                       type="text"
@@ -619,7 +619,7 @@ const MembersPage = () => {
                       }
                     />
                   </div>
-                  <div className="flex gap-5 flex-col md:flex-row justify-center items-center">
+                  <div className="flex flex-col items-center justify-center gap-5 md:flex-row">
                     <Input
                       type="number"
                       placeholder="Payment Amount"

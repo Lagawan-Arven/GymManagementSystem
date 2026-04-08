@@ -5,7 +5,7 @@ import type { BasePaymentPayload, SessionType } from "../../schemas";
 import { showSuccessToast } from "../../components/util";
 
 import { PiRecordFill } from "react-icons/pi";
-import { addPayment, addSession } from "../../services/api/Service";
+import { addPayment, addSession } from "../../api/Service";
 
 interface SingleSessionForm extends BasePaymentPayload {
   name: string;
@@ -36,11 +36,11 @@ const SessionsPage = () => {
   }, [singleSessionForm.method]);
 
   return (
-    <div className="h-full w-full px-3 md:px-5 ">
+    <div className="h-full w-full px-3 md:px-5">
       {/*=================== HEADER ========================= */}
-      <header className="flex gap-1 items-center pb-2 text-red-500 border-b border-b-neutral-500">
+      <header className="flex items-center gap-1 border-b border-b-neutral-500 pb-2 text-red-500">
         <PiRecordFill className="size-5 md:size-7" />
-        <h1 className="font-bold text-[18px] md:text-[20px] lg:text-[24px] ">
+        <h1 className="text-[18px] font-bold md:text-[20px] lg:text-[24px]">
           Record Session
         </h1>
       </header>
@@ -48,15 +48,15 @@ const SessionsPage = () => {
       {/*===================== MAIN ==================== */}
       <main className="pt-2">
         {/*---------- Main Content ----------------*/}
-        <div className="h-[73vh] flex flex-col gap-5 px-2 py-2 md:px-5 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+        <div className="flex h-[73vh] flex-col gap-5 rounded-xl bg-neutral-300 px-2 py-2 md:px-5 dark:bg-neutral-800">
           {/*---- Session Type Section -----*/}
-          <section className="flex justify-around pb-2 border-b border-neutral-500">
+          <section className="flex justify-around border-b border-neutral-500 pb-2">
             <p
               onClick={() => setSession("member")}
               className={
                 session === "member"
-                  ? "text-red-500 font-semibold md:text-[20px] lg:text-[24px]"
-                  : "text-neutral-500 font-semibold md:text-[20px] lg:text-[24px]"
+                  ? "font-semibold text-red-500 md:text-[20px] lg:text-[24px]"
+                  : "font-semibold text-neutral-500 md:text-[20px] lg:text-[24px]"
               }
             >
               Member Session
@@ -65,8 +65,8 @@ const SessionsPage = () => {
               onClick={() => setSession("single")}
               className={
                 session === "single"
-                  ? "text-red-500 font-semibold md:text-[20px] lg:text-[24px]"
-                  : "text-neutral-500 font-semibold md:text-[20px] lg:text-[24px]"
+                  ? "font-semibold text-red-500 md:text-[20px] lg:text-[24px]"
+                  : "font-semibold text-neutral-500 md:text-[20px] lg:text-[24px]"
               }
             >
               Single Session
@@ -124,7 +124,7 @@ const SessionsPage = () => {
                       id: e.target.value,
                     })
                   }
-                  className="rounded-[10px] w-37.5 self-center px-2 py-1 border border-neutral-500"
+                  className="w-37.5 self-center rounded-[10px] border border-neutral-500 px-2 py-1"
                 />
 
                 <p className="text-center">OR</p>
@@ -139,12 +139,12 @@ const SessionsPage = () => {
                       email: e.target.value,
                     })
                   }
-                  className="rounded-[10px] w-50 self-center px-2 py-1 border border-neutral-500"
+                  className="w-50 self-center rounded-[10px] border border-neutral-500 px-2 py-1"
                 />
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-37.5 font-bold text-[24px] md:text-[26px] lg:text-[28px] py-1 mt-5 self-center rounded-[10px] border border-neutral-500"
+                  className="mt-5 w-37.5 self-center rounded-[10px] border border-neutral-500 py-1 text-[24px] font-bold md:text-[26px] lg:text-[28px]"
                 >
                   Check-in
                 </button>
@@ -153,7 +153,7 @@ const SessionsPage = () => {
           </section>
 
           {/* Single Session Form Section*/}
-          <section className={session === "single" ? "block " : "hidden"}>
+          <section className={session === "single" ? "block" : "hidden"}>
             <div className="lg:text-[20px]">
               <form
                 onSubmit={(e) => {
@@ -199,7 +199,7 @@ const SessionsPage = () => {
                     isDicounted: false,
                   });
                 }}
-                className=" flex flex-col gap-5 md:gap-10 text-center md:mt-10"
+                className="flex flex-col gap-5 text-center md:mt-10 md:gap-10"
               >
                 {/* Name */}
                 <input
@@ -212,11 +212,11 @@ const SessionsPage = () => {
                       name: e.target.value,
                     })
                   }
-                  className="rounded-[10px] w-50 self-center ml-2 px-2 py-1 border border-neutral-500"
+                  className="ml-2 w-50 self-center rounded-[10px] border border-neutral-500 px-2 py-1"
                   required
                 />
 
-                <div className="justify-center flex flex-col gap-5 md:flex-row md:gap-10">
+                <div className="flex flex-col justify-center gap-5 md:flex-row md:gap-10">
                   {/* Payment */}
                   <label>
                     Payment:
@@ -228,7 +228,7 @@ const SessionsPage = () => {
                           isDicounted: Boolean(e.target.value),
                         })
                       }
-                      className="ml-2 px-2 py-1 open:bg-red-500 rounded-[10px] border border-neutral-500"
+                      className="ml-2 rounded-[10px] border border-neutral-500 px-2 py-1 open:bg-red-500"
                     >
                       <option value={"false"}>Regular</option>
                       <option value={"true"}>Discounted</option>
@@ -246,7 +246,7 @@ const SessionsPage = () => {
                         discount_percentage: e.target.value,
                       })
                     }
-                    className="rounded-[10px] ml-2 px-2 py-1 border border-neutral-500"
+                    className="ml-2 rounded-[10px] border border-neutral-500 px-2 py-1"
                   />
 
                   {/* Discount Amount */}
@@ -260,10 +260,10 @@ const SessionsPage = () => {
                       })
                     }
                     placeholder="Discount Amount"
-                    className="ml-2 px-2 py-1 rounded-[10px] border border-neutral-500"
+                    className="ml-2 rounded-[10px] border border-neutral-500 px-2 py-1"
                   />
                 </div>
-                <div className="justify-center flex flex-col gap-5 md:flex-row md:gap-10">
+                <div className="flex flex-col justify-center gap-5 md:flex-row md:gap-10">
                   {/* Payment Amount */}
                   <input
                     type="text"
@@ -275,7 +275,7 @@ const SessionsPage = () => {
                       })
                     }
                     placeholder="Payment Amount"
-                    className="ml-2 px-2 py-1 rounded-[10px] border border-neutral-500"
+                    className="ml-2 rounded-[10px] border border-neutral-500 px-2 py-1"
                     required
                   />
 
@@ -291,7 +291,7 @@ const SessionsPage = () => {
                             method: e.target.value as PaymentMethod,
                           })
                         }
-                        className="ml-2 px-2 py-1 open:bg-red-500 rounded-[10px] border border-neutral-500"
+                        className="ml-2 rounded-[10px] border border-neutral-500 px-2 py-1 open:bg-red-500"
                       >
                         <option value="cash">Cash</option>
                         <option value="gcash">GCash</option>
@@ -309,7 +309,7 @@ const SessionsPage = () => {
                             method: e.target.value,
                           })
                         }
-                        className="w-32.5 lg:w-35 ml-2 px-2 py-1 rounded-[10px] border border-neutral-500"
+                        className="ml-2 w-32.5 rounded-[10px] border border-neutral-500 px-2 py-1 lg:w-35"
                       />
                     )}
                   </label>
@@ -318,7 +318,7 @@ const SessionsPage = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-37.5 font-bold text-[24px] md:text-[26px] lg:text-[28px] py-1 mt-5 self-center rounded-[10px] border border-neutral-500"
+                  className="mt-5 w-37.5 self-center rounded-[10px] border border-neutral-500 py-1 text-[24px] font-bold md:text-[26px] lg:text-[28px]"
                 >
                   Check-in
                 </button>

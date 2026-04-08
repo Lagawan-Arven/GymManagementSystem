@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Form, Input } from "../../components/util";
 import { useAuth } from "../../context/AuthContext";
-import { updateAdmin } from "../../services/api/Service";
+import { updateAdmin } from "../../api/Service";
 
 import { MdAdminPanelSettings, MdCancel } from "react-icons/md";
 
@@ -16,11 +16,11 @@ interface LineCardProp {
 const LineCard = ({ label, value, labelStyle, valueStyle }: LineCardProp) => {
   return (
     <p
-      className={`${labelStyle} font-semibold text-red-500 dark:text-red-400 text-[18px] md:text-[20px] lg:text-[24px]`}
+      className={`${labelStyle} text-[18px] font-semibold text-red-500 md:text-[20px] lg:text-[24px] dark:text-red-400`}
     >
       {label}:{" "}
       <span
-        className={`${valueStyle} text-black dark:text-white text-[16px] md:text-[18px] lg:text-[20px]`}
+        className={`${valueStyle} text-[16px] text-black md:text-[18px] lg:text-[20px] dark:text-white`}
       >
         {value}
       </span>
@@ -42,13 +42,13 @@ const MyProfilePage = () => {
   });
 
   return (
-    <div className="h-full w-full px-2 md:px-5 ">
+    <div className="h-full w-full px-2 md:px-5">
       {/*=================== HEADER ========================= */}
-      <header className="flex gap-5 pb-2 border-b border-b-neutral-500">
+      <header className="flex gap-5 border-b border-b-neutral-500 pb-2">
         {/* Title */}
-        <section className="flex gap-2 items-center text-red-500">
+        <section className="flex items-center gap-2 text-red-500">
           <MdAdminPanelSettings className="size-6 md:size-7 lg:size-8" />
-          <h1 className="text-[18px] md:text-[22px] lg:text-2xl font-bold ">
+          <h1 className="text-[18px] font-bold md:text-[22px] lg:text-2xl">
             My Profile
           </h1>
         </section>
@@ -56,8 +56,8 @@ const MyProfilePage = () => {
       {/*=================== MAIN ========================= */}
       {loading && <h1>Loading...</h1>}
       {!loading && (
-        <main className="pt-2 ">
-          <div className="h-[72vh] py-2 px-2 md:px-5 md:h-[75vh] rounded-xl bg-neutral-300 dark:bg-neutral-800">
+        <main className="pt-2">
+          <div className="h-[72vh] rounded-xl bg-neutral-300 px-2 py-2 md:h-[75vh] md:px-5 dark:bg-neutral-800">
             {/* Profile Details Section */}
             {!showEditForm && !showChangePassForm && (
               <section>
@@ -85,7 +85,7 @@ const MyProfilePage = () => {
               <section className="relative md:pt-10">
                 <MdCancel
                   onClick={() => setShowEditForm(false)}
-                  className=" absolute size-5 md:size-7 left-0 top-0"
+                  className="absolute top-0 left-0 size-5 md:size-7"
                 />
                 <Form
                   onSubmit={(e) => {

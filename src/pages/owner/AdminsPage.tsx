@@ -2,14 +2,17 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 import { showSuccessToast } from "../../components/util";
-import { addAdmin, fetchAdmins } from "../../services/api/Service";
+import { addAdmin, fetchAdmins } from "../../api/Service";
 import type { AdminPayload } from "../../schemas";
+
+import { useFetchAdmins, useAddAdmin } from "../../hooks/useAdmin";
 
 import type { IconType } from "react-icons";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { TbSum } from "react-icons/tb";
 import { FaCircle } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
+import { useAuth } from "../../context/AuthContext";
 
 interface Admin {
   id: string;
@@ -41,11 +44,11 @@ interface CardProp {
 const Card = ({ label, text, value, icon: Icon, iconStyle }: CardProp) => {
   return (
     <div className="text-center">
-      <p className="flex gap-1 items-center justify-center text-[14px] md:text-[18px] lg:text-[20px]">
+      <p className="flex items-center justify-center gap-1 text-[14px] md:text-[18px] lg:text-[20px]">
         {Icon && <Icon className={iconStyle} />}
         {text} <span>{value}</span>{" "}
       </p>
-      <p className="text-[12px] md:text-[14px] lg:text-[16px] text-neutral-500">
+      <p className="text-[12px] text-neutral-500 md:text-[14px] lg:text-[16px]">
         {label}
       </p>
     </div>
@@ -53,34 +56,7 @@ const Card = ({ label, text, value, icon: Icon, iconStyle }: CardProp) => {
 };
 
 const AdminsPage = () => {
-  const [adminList, setAdminList] = useState<Admin[]>([]);
-  const [showData, setShowData] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const [refetch, setRefetch] = useState(false);
-  useEffect(() => {
-    const getAdmins = async () => {
-      try {
-        const response = await fetchAdmins();
-        setAdminList(response.admins);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error while fetching admins:", error);
-      }
-    };
-    getAdmins();
-  }, [refetch]);
-
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null);
-  useEffect(() => {
-    if (adminList.length > 0) {
-      setSelectedAdmin(adminList[0]);
-      setShowData(true);
-    }
-    if (adminList.length === 0 && loading === false) {
-      setShowData(false);
-    }
-  }, [adminList]);
+  const { user } = useAuth();
 
   const [showAdminForm, setShowAdminForm] = useState(false);
   const [adminForm, setAdminForm] = useState<AdminPayload>({
@@ -93,47 +69,47 @@ const AdminsPage = () => {
 
   return (
     <>
-      <div className="h-full w-full px-2 md:px-5 ">
+      <div className="h-full w-full px-2 md:px-5">
         {/*=================== HEADER ========================= */}
-        <header className="flex gap-5 pb-2 border-b border-b-neutral-500">
+        <header className="flex gap-5 border-b border-b-neutral-500 pb-2">
           {/* Title */}
-          <section className="flex gap-2 items-center text-red-500">
+          <section className="flex items-center gap-2 text-red-500">
             <MdAdminPanelSettings className="size-6 md:size-7 lg:size-8" />
-            <h1 className="text-[18px] md:text-[22px] lg:text-2xl font-bold ">
+            <h1 className="text-[18px] font-bold md:text-[22px] lg:text-2xl">
               Admins
             </h1>
           </section>
         </header>
 
         {/*===================== MAIN ==================== */}
-        <main className="flex flex-col md:flex-row gap-3 md:gap-2 pt-2">
+        <main className="flex flex-col gap-3 pt-2 md:flex-row md:gap-2">
           {/*====== Admin List Section ========= */}
           <section className="md:w-[40vw]">
             {/*----------- Section Content ---------- */}
-            <div className="h-[20vh] md:h-[75vh] w-full px-2 py-2 md:px-5 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+            <div className="h-[20vh] w-full rounded-xl bg-neutral-300 px-2 py-2 md:h-[75vh] md:px-5 dark:bg-neutral-800">
               {loading && (
-                <div className="h-[10vh] md:h-[60vh] content-center text-center">
-                  <p className=" font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                <div className="h-[10vh] content-center text-center md:h-[60vh]">
+                  <p className="text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                     Loading...
                   </p>
                 </div>
               )}
               {/*WHAT TO SHOW IF THERE IS NO DATA */}
               {!showData ? (
-                <div className="h-[10vh] md:h-[60vh] content-center text-center">
-                  <p className=" font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                <div className="h-[10vh] content-center text-center md:h-[60vh]">
+                  <p className="text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                     No data to show
                   </p>
                 </div>
               ) : (
-                <div className="h-[10vh] md:h-[60vh] flex flex-col gap-2 overflow-auto">
+                <div className="flex h-[10vh] flex-col gap-2 overflow-auto md:h-[60vh]">
                   {adminList.map((admin, index) => (
                     <div
                       onClick={() => {
                         setSelectedAdmin(admin);
                       }}
                       key={index}
-                      className="px-2 py-1 md:px-5 md:py-2 rounded-xl bg-neutral-200 dark:bg-neutral-900"
+                      className="rounded-xl bg-neutral-200 px-2 py-1 md:px-5 md:py-2 dark:bg-neutral-900"
                     >
                       <p>
                         {index + 1} | {admin.name}
@@ -145,7 +121,7 @@ const AdminsPage = () => {
               <div className="text-center">
                 <button
                   onClick={() => setShowAdminForm(true)}
-                  className=" mt-3 px-2 py-1 font-semibold md:font-bold md:text-[20px] lg:text-[24px] rounded-[10px] border border-neutral-500"
+                  className="mt-3 rounded-[10px] border border-neutral-500 px-2 py-1 font-semibold md:text-[20px] md:font-bold lg:text-[24px]"
                 >
                   Add Admin
                 </button>
@@ -157,18 +133,18 @@ const AdminsPage = () => {
           <section className="md:flex-1">
             {/*----------- Admin Details ---------- */}
             {!showAdminForm && (
-              <div className="h-[50vh] md:h-[75vh] w-full  rounded-xl bg-neutral-300 dark:bg-neutral-800">
+              <div className="h-[50vh] w-full rounded-xl bg-neutral-300 md:h-[75vh] dark:bg-neutral-800">
                 {/*WHAT TO SHOW IF THERE IS NO DATA */}
                 {!showData ? (
                   <div className="h-full content-center text-center">
-                    <p className=" font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                    <p className="text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                       No data to show
                     </p>
                   </div>
                 ) : (
-                  <div className="h-full py-2 px-2 space-y-5 md:gap-y-10 content-center md:px-5">
+                  <div className="h-full content-center space-y-5 px-2 py-2 md:gap-y-10 md:px-5">
                     {/* Header */}
-                    <h1 className="text-[18px] md:text-xl lg:text-[24px] font-semibold text-center">
+                    <h1 className="text-center text-[18px] font-semibold md:text-xl lg:text-[24px]">
                       Admin Details
                     </h1>
                     {/* Line info*/}
@@ -177,7 +153,7 @@ const AdminsPage = () => {
                       <p className="text-[16px] md:text-[18px] lg:text-[20px]">
                         ID:{"  "}
                         {selectedAdmin && (
-                          <span className="font-sans ">{selectedAdmin.id}</span>
+                          <span className="font-sans">{selectedAdmin.id}</span>
                         )}
                       </p>
                       {/* Name*/}
@@ -211,7 +187,7 @@ const AdminsPage = () => {
                       <p className="text-[14px] md:text-[16px] lg:text-[18px]">
                         Added at:{"  "}
                         {selectedAdmin && (
-                          <span className="font-mono text-[12px] md:text-[14px] lg:text-[16px] text-neutral-500">
+                          <span className="font-mono text-[12px] text-neutral-500 md:text-[14px] lg:text-[16px]">
                             {new Date(selectedAdmin.added_at).toLocaleString(
                               undefined,
                               {
@@ -226,7 +202,7 @@ const AdminsPage = () => {
                       <p className="text-[14px] md:text-[16px] lg:text-[18px]">
                         Updated at:{"   "}
                         {selectedAdmin && (
-                          <span className="font-mono text-[12px] md:text-[14px] lg:text-[16px text-neutral-500">
+                          <span className="lg:text-[16px font-mono text-[12px] text-neutral-500 md:text-[14px]">
                             {new Date(selectedAdmin.updated_at).toLocaleString(
                               undefined,
                               {
@@ -320,7 +296,7 @@ const AdminsPage = () => {
 
             {/*----------- Admin Form ---------- */}
             {showAdminForm && (
-              <div className="relative h-[50vh] md:h-[75vh] w-full py-2 px-2 space-y-5 md:space-y-10 md:px-5 md:content-center rounded-xl bg-neutral-300 dark:bg-neutral-800">
+              <div className="relative h-[50vh] w-full space-y-5 rounded-xl bg-neutral-300 px-2 py-2 md:h-[75vh] md:content-center md:space-y-10 md:px-5 dark:bg-neutral-800">
                 {/* Return Button */}
                 <button
                   onClick={() => setShowAdminForm(false)}
@@ -330,7 +306,7 @@ const AdminsPage = () => {
                 </button>
 
                 {/* Header */}
-                <h1 className="text-[18px] md:text-xl lg:text-[24px] font-semibold text-center">
+                <h1 className="text-center text-[18px] font-semibold md:text-xl lg:text-[24px]">
                   Admin Form
                 </h1>
 
@@ -369,7 +345,7 @@ const AdminsPage = () => {
                     });
                     setConfirmPassword("");
                   }}
-                  className="grid gap-3 md:gap-5 md:justify-center"
+                  className="grid gap-3 md:justify-center md:gap-5"
                 >
                   {/* Name */}
                   <input
@@ -380,7 +356,7 @@ const AdminsPage = () => {
                     onChange={(e) =>
                       setAdminForm({ ...adminForm, name: e.target.value })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                     required
                   />
 
@@ -393,7 +369,7 @@ const AdminsPage = () => {
                     onChange={(e) =>
                       setAdminForm({ ...adminForm, username: e.target.value })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                     required
                   />
 
@@ -406,7 +382,7 @@ const AdminsPage = () => {
                     onChange={(e) =>
                       setAdminForm({ ...adminForm, email: e.target.value })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                   />
 
                   {/* Password */}
@@ -418,7 +394,7 @@ const AdminsPage = () => {
                     onChange={(e) =>
                       setAdminForm({ ...adminForm, password: e.target.value })
                     }
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                     required
                   />
 
@@ -429,15 +405,15 @@ const AdminsPage = () => {
                     placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className=" px-2 py-1 rounded-xl border border-neutral-500"
+                    className="rounded-xl border border-neutral-500 px-2 py-1"
                     required
                   />
 
                   {/* Submit Button */}
-                  <div className="text-center md:text-[20px] lg:text-[24px] font-semibold md:font-bold">
+                  <div className="text-center font-semibold md:text-[20px] md:font-bold lg:text-[24px]">
                     <button
                       type="submit"
-                      className="px-2 py-1 rounded-xl border border-neutral-500 hover:border-red-500 hover:text-red-500"
+                      className="rounded-xl border border-neutral-500 px-2 py-1 hover:border-red-500 hover:text-red-500"
                     >
                       Submit
                     </button>

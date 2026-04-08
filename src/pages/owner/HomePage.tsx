@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 
 import { StackAreaChart, BarChart } from "../../components/charts";
-import { fetchSessions, fetchMembers } from "../../services/api/Service";
+import { fetchSessions, fetchMembers } from "../../api/Service";
 import { buildWeeklyData, buildMonthlyData } from "../../util/util";
 
 import { LayoutDashboard } from "lucide-react";
@@ -19,12 +19,12 @@ interface cardProp {
 
 const Card = ({ icon: Icon, icon_color, value, label }: cardProp) => {
   return (
-    <div className="flex-1 px-2 py-2 md:px-2 md:py-3 rounded-xl bg-neutral-300 dark:bg-neutral-800">
-      <div className="flex gap-2 items-center justify-center">
+    <div className="flex-1 rounded-xl bg-neutral-300 px-2 py-2 md:px-2 md:py-3 dark:bg-neutral-800">
+      <div className="flex items-center justify-center gap-2">
         <Icon className={icon_color} />
         <p className="text-[16px] md:text-[18px] lg:text-xl">{value}</p>
       </div>
-      <p className="text-[12px] lg:text-[15px] text-neutral-500">{label}</p>
+      <p className="text-[12px] text-neutral-500 lg:text-[15px]">{label}</p>
     </div>
   );
 };
@@ -48,22 +48,22 @@ const LineCard = ({
     <div className="grid gap-2 px-2 py-2 lg:px-5">
       <h1 className="text=[18px] md:text-xl">{label} </h1>
       {/* Content 1*/}
-      <div className="flex text-center items-center justify-around text-[11px] md:text-[13px] lg:text-[14px]">
+      <div className="flex items-center justify-around text-center text-[11px] md:text-[13px] lg:text-[14px]">
         <div>
-          <p className="text-[16px] md:text-xl text-center ">{sessions}</p>
-          <p className=" text-neutral-500">Total Sessions</p>
+          <p className="text-center text-[16px] md:text-xl">{sessions}</p>
+          <p className="text-neutral-500">Total Sessions</p>
         </div>
         <div>
-          <p className="text-[16px] md:text-xl text-center ">{member}</p>
-          <p className=" text-neutral-500">Member Sessions</p>
+          <p className="text-center text-[16px] md:text-xl">{member}</p>
+          <p className="text-neutral-500">Member Sessions</p>
         </div>
         <div>
-          <p className="text-[16px] md:text-xl text-center">{single} </p>
-          <p className=" text-neutral-500">Single Sessions</p>
+          <p className="text-center text-[16px] md:text-xl">{single} </p>
+          <p className="text-neutral-500">Single Sessions</p>
         </div>
-        <div className="border rounded-xl p-1 lg:p-2">
-          <p className="text-[16px] md:text-xl text-center">+ {new_member} </p>
-          <p className=" text-neutral-500">New Member</p>
+        <div className="rounded-xl border p-1 lg:p-2">
+          <p className="text-center text-[16px] md:text-xl">+ {new_member} </p>
+          <p className="text-neutral-500">New Member</p>
         </div>
       </div>
     </div>
@@ -150,25 +150,25 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="h-full w-full px-2 md:px-5 ">
+      <div className="h-full w-full px-2 md:px-5">
         {/*=================== HEADER ========================= */}
-        <header className="flex gap-5 pb-2 border-b border-b-neutral-500 text-red-500">
+        <header className="flex gap-5 border-b border-b-neutral-500 pb-2 text-red-500">
           {/* Dashboard */}
-          <div className="flex gap-2 items-center ">
+          <div className="flex items-center gap-2">
             <LayoutDashboard />
-            <h1 className=" text-[18px] font-bold md:text-xl">Dashboard</h1>
+            <h1 className="text-[18px] font-bold md:text-xl">Dashboard</h1>
           </div>
         </header>
 
         {/*===================== MAIN ==================== */}
         {loading ? (
           <div className="h-full content-center text-center">
-            <p className="md:text-[18px] lg:text-[20px] font-semibold">
+            <p className="font-semibold md:text-[18px] lg:text-[20px]">
               Loading...
             </p>
           </div>
         ) : (
-          <main className="flex flex-col md:flex-row gap-2 pt-2">
+          <main className="flex flex-col gap-2 pt-2 md:flex-row">
             {/* CONTAINER 1 */}
             <div className="grid gap-2 md:flex-1">
               {/*====== Today Section ========= */}
@@ -195,8 +195,8 @@ const HomePage = () => {
               </section>
 
               {/*====== This Week Section ========= */}
-              <section className=" rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                <div className=" flex flex-col gap-2 ">
+              <section className="rounded-xl bg-neutral-300 dark:bg-neutral-800">
+                <div className="flex flex-col gap-2">
                   <LineCard
                     label="This Week"
                     sessions={weeklySessions ? weeklySessions.length : 100}
@@ -217,7 +217,7 @@ const HomePage = () => {
                     new_member={weeklyMembers ? weeklyMembers.length : 100}
                   />
                   {/* Stack Area Chart*/}
-                  <div className="h-[30vh] md:h-[35vh] lg:h-[38vh] pr-2 md:pr-5">
+                  <div className="h-[30vh] pr-2 md:h-[35vh] md:pr-5 lg:h-[38vh]">
                     <StackAreaChart data={thisWeekData} />
                   </div>
                 </div>
@@ -225,10 +225,10 @@ const HomePage = () => {
             </div>
 
             {/* CONTAINER 2 */}
-            <div className="md:flex-1 grid gap-2">
+            <div className="grid gap-2 md:flex-1">
               {/*====== Totals Section ========= */}
               <section className="order-2 md:order-1">
-                <div className="grid gap-2 ">
+                <div className="grid gap-2">
                   {/*--------- Member --------*/}
                   <div className="flex gap-2 text-center">
                     {/* Total Member */}
@@ -301,8 +301,8 @@ const HomePage = () => {
               </section>
 
               {/*====== This Month Section ========= */}
-              <section className="order-1 md:order-2 rounded-xl bg-neutral-300 dark:bg-neutral-800">
-                <div className=" flex flex-col gap-2">
+              <section className="order-1 rounded-xl bg-neutral-300 md:order-2 dark:bg-neutral-800">
+                <div className="flex flex-col gap-2">
                   <LineCard
                     label="This Month"
                     sessions={monthlySessions ? monthlySessions.length : 100}
@@ -323,7 +323,7 @@ const HomePage = () => {
                     new_member={monthlyMembers ? monthlyMembers.length : 100}
                   />
                   {/* Stack Bar Chart*/}
-                  <div className="h-[30vh] md:h-[32vh] lg:h-[33vh] pr-2 md:pr-5">
+                  <div className="h-[30vh] pr-2 md:h-[32vh] md:pr-5 lg:h-[33vh]">
                     <BarChart
                       data={thisMonthData}
                       barDataKeys={[

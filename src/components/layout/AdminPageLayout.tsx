@@ -7,7 +7,7 @@ import { IoMdHome } from "react-icons/io";
 import { LuLogs } from "react-icons/lu";
 import { PiRecordFill } from "react-icons/pi";
 
-const OwnerPageLayout = () => {
+const AdminPageLayout = () => {
   const navLinks = [
     {
       link: "/admin/home",
@@ -40,7 +40,7 @@ const OwnerPageLayout = () => {
           </header>
 
           {/*=================== MAIN =======================*/}
-          <main className="h-[80vh] md:h-[85vh] overflow-auto">
+          <main className="h-[80vh] overflow-auto md:h-[85vh]">
             <Outlet />
           </main>
 
@@ -54,4 +54,4 @@ const OwnerPageLayout = () => {
   );
 };
 
-export default OwnerPageLayout;
+export default AdminPageLayout;

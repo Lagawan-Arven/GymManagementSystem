@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import PublicTopBar from "../navigation/PublicTopBar";
+import Footer from "../navigation/Footer";
 
 const PublicLayout = () => {
   return (
@@ -13,9 +14,13 @@ const PublicLayout = () => {
           </header>
 
           {/*=================== MAIN =======================*/}
-          <main className="h-screen">
+          <main className="h-full">
             <Outlet />
           </main>
+
+          {/*=================== FOOTER =======================*/}
+
+          <Footer />
         </div>
       </div>
     </>

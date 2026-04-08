@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 
 import { TbLogs } from "react-icons/tb";
-import { fetchLogs } from "../../services/api/Service";
+import { fetchLogs } from "../../api/Service";
 
 type Category = "all" | "membership" | "admin" | "payment" | "session";
 type DateFilter = "today" | "week" | "month" | "all";
@@ -36,7 +36,7 @@ interface TableProp {
 
 const TH = ({ label, style }: TableProp) => {
   return (
-    <th className={`${style} text-center p-1 border border-neutral-500`}>
+    <th className={`${style} border border-neutral-500 p-1 text-center`}>
       {label}
     </th>
   );
@@ -44,7 +44,7 @@ const TH = ({ label, style }: TableProp) => {
 
 const TD = ({ label, style }: TableProp) => {
   return (
-    <td className={`${style} text-center p-1 border border-neutral-500`}>
+    <td className={`${style} border border-neutral-500 p-1 text-center`}>
       {label}
     </td>
   );
@@ -102,8 +102,8 @@ const LogsPage = () => {
       <div
         className={
           filter === categoryFilter
-            ? " pt-2 pr-2 rounded-tr-2xl border-t border-r border-t-red-500 border-r-red-500 text-red-500"
-            : " pt-2 pr-2 rounded-tr-2xl border-t border-r border-t-neutral-500 border-r-neutral-500"
+            ? "rounded-tr-2xl border-t border-r border-t-red-500 border-r-red-500 pt-2 pr-2 text-red-500"
+            : "rounded-tr-2xl border-t border-r border-t-neutral-500 border-r-neutral-500 pt-2 pr-2"
         }
       >
         <h1
@@ -111,7 +111,7 @@ const LogsPage = () => {
             setCategoryFilter(filter);
             setLogDetailsOpen(false);
           }}
-          className="md:font-semibold font-normal text-xs md:text-[18px]"
+          className="text-xs font-normal md:text-[18px] md:font-semibold"
         >
           {label}
         </h1>
@@ -133,8 +133,8 @@ const LogsPage = () => {
       <div
         className={
           filter === dateFilter
-            ? " px-2 border-r border-red-500 text-red-500"
-            : " px-2 border-r border-neutral-500"
+            ? "border-r border-red-500 px-2 text-red-500"
+            : "border-r border-neutral-500 px-2"
         }
       >
         <p
@@ -142,7 +142,7 @@ const LogsPage = () => {
             setDateFilter(filter);
             setLogDetailsOpen(false);
           }}
-          className="md:font-normal font-light text-[11px] md:text-[16px]"
+          className="text-[11px] font-light md:text-[16px] md:font-normal"
         >
           {label}
         </p>
@@ -203,13 +203,13 @@ const LogsPage = () => {
 
   return (
     <>
-      <div className="h-full w-full px-2 lg:px-5 ">
+      <div className="h-full w-full px-2 lg:px-5">
         {/*=================== HEADER ========================= */}
-        <header className="w-[screen] pb-2 border-b border-b-neutral-500">
+        <header className="w-[screen] border-b border-b-neutral-500 pb-2">
           {/* Header Title */}
-          <div className="flex gap-2 items-center mb-2 md:mb-5 text-red-500">
+          <div className="mb-2 flex items-center gap-2 text-red-500 md:mb-5">
             <TbLogs className="size-5 md:size-7" />
-            <h1 className="text-[20px] md:text-2xl font-bold">Logs</h1>
+            <h1 className="text-[20px] font-bold md:text-2xl">Logs</h1>
           </div>
           {/* Header Filters */}
           <div className="flex justify-around md:justify-start md:gap-3">
@@ -227,11 +227,11 @@ const LogsPage = () => {
         </header>
 
         {/*===================== MAIN ==================== */}
-        <main className="pt-2 ">
+        <main className="pt-2">
           {/*--------- Main Content ------------- */}
-          <div className="w-[screen] h-[67vh] md:h-[68vh] px-2 py-2 md:px-5 rounded-xl bg-neutral-300 dark:bg-neutral-800">
+          <div className="h-[67vh] w-[screen] rounded-xl bg-neutral-300 px-2 py-2 md:h-[68vh] md:px-5 dark:bg-neutral-800">
             {/* Body Filters */}
-            <div className="grid grid-flow-col justify-around md:justify-start md:gap-5 pb-2 text-center border-b-[.5px] border-b-neutral-500">
+            <div className="grid grid-flow-col justify-around border-b-[.5px] border-b-neutral-500 pb-2 text-center md:justify-start md:gap-5">
               <DateFilterButton label="Today" filter="today" />
               <DateFilterButton label="This Week" filter="week" />
               <DateFilterButton label="This Month" filter="month" />
@@ -242,26 +242,24 @@ const LogsPage = () => {
             {/*-------------- Logs ------------- */}
             <div
               className={
-                logDetailsOpen
-                  ? "hidden"
-                  : " overflow-auto h-[60vh] pt-2 block "
+                logDetailsOpen ? "hidden" : "block h-[60vh] overflow-auto pt-2"
               }
             >
               {loading ? (
-                <p className=" place-self-center font-semibold text-[18px] md:text-[20px] lg:text-[24px]">
+                <p className="place-self-center text-[18px] font-semibold md:text-[20px] lg:text-[24px]">
                   Loading...
                 </p>
               ) : (
                 <table className="w-full table-auto border-collapse border border-neutral-500">
                   <thead>
                     {/* Mobile */}
-                    <tr className="text-[14px] md:hidden ">
+                    <tr className="text-[14px] md:hidden">
                       <TH label="No." />
                       <TH label="[ACTION]" />
                       <TH label="Details" />
                     </tr>
                     {/* Tablet -> Laptop */}
-                    <tr className="md:text-[16px] hidden md:table-row">
+                    <tr className="hidden md:table-row md:text-[16px]">
                       <TH label="No." />
                       <TH label="Actor" />
                       <TH label="[ACTION]" />
@@ -273,7 +271,7 @@ const LogsPage = () => {
                   <tbody>
                     {/* Mobile */}
                     {filteredLogs.map((log, index) => (
-                      <tr key={log.id} className="md:hidden text-[12px]">
+                      <tr key={log.id} className="text-[12px] md:hidden">
                         <TD label={`${index + 1}`} />
                         <TD label={`[${log.action}]`} />
                         <td
@@ -281,7 +279,7 @@ const LogsPage = () => {
                             setSelectedLog(log);
                             setLogDetailsOpen(true);
                           }}
-                          className="decoration-1 underline hover:decoration-2 text-center p-1 border border-neutral-500"
+                          className="border border-neutral-500 p-1 text-center underline decoration-1 hover:decoration-2"
                         >
                           Click
                         </td>
@@ -304,7 +302,7 @@ const LogsPage = () => {
                             setSelectedLog(log);
                             setLogDetailsOpen(true);
                           }}
-                          className="decoration-1 underline hover:decoration-2 text-center p-1 border border-neutral-500"
+                          className="border border-neutral-500 p-1 text-center underline decoration-1 hover:decoration-2"
                         >
                           Click
                         </td>
@@ -334,7 +332,7 @@ const LogsPage = () => {
               {/* Return Button */}
               <button
                 onClick={() => setLogDetailsOpen(false)}
-                className="absolute top-2 left-2 "
+                className="absolute top-2 left-2"
               >
                 <IoIosArrowBack className="size-6" />
               </button>

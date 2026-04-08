@@ -2,7 +2,7 @@ import { useState, useEffect, type SetStateAction } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import { fetchOwners, getRoot } from "../../services/api/Service";
+import { fetchOwners, getRoot } from "../../api/Service";
 
 import { RiAdminLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";

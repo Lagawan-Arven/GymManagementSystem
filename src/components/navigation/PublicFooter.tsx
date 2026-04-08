@@ -4,27 +4,27 @@ import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div className="content-center p-5 xl:py-20 xl:px-20">
+    <div className="content-center p-5 xl:px-20 xl:py-20">
       {/* TOP BAR */}
-      <div className="flex flex-col gap-5 content-center md:flex-row">
-        {/* LOGO & TEXT*/}
-        <div className="basis-1/2 ">
+      <div className="flex flex-col content-center gap-5 md:flex-row">
+        {/* LOGO SECTION*/}
+        <section className="basis-1/2">
           <div className="flex">
             <img src="src/assets/react.svg" alt="Logo" />
             <h4 className="font-bold xl:text-xl">
               Fit<span className="text-red-600">Gym</span>
             </h4>
           </div>
-          <p className="text-sm mt-2 pr-10 xl:pr-50 xl:text-md">
+          <p className="xl:text-md mt-2 pr-10 text-sm xl:pr-50">
             Train smarter. Get stronger. Join a fitness community built for real
             results and long-term performance.
           </p>
-        </div>
+        </section>
 
-        {/* CONTACT US */}
-        <div className="basis-1/4 ">
+        {/* CONTACT US SECTION */}
+        <section className="basis-1/4">
           <h6 className="font-bold">CONTACT</h6>
-          <ul className="mt-2 text-sm flex flex-col gap-2">
+          <ul className="mt-2 flex flex-col gap-2 text-sm">
             <li className="flex gap-1">
               <MapPin width={20} height={20} color="red" />
               City, Country
@@ -38,27 +38,27 @@ const Footer = () => {
               contactus@email.com
             </li>
           </ul>
-        </div>
+        </section>
 
-        {/* FOLLOW US */}
-        <div className="basis-1/4 ">
+        {/* FOLLOW US SECTION */}
+        <section className="basis-1/4">
           <h4 className="font-bold">FOLLOW US</h4>
-          <div className="flex gap-3 mt-2">
-            <a href="" className="border rounded-lg p-2">
+          <div className="mt-2 flex gap-3">
+            <a href="" className="rounded-lg border p-2">
               <FaFacebookF color="red" className="lg:h-6 lg:w-6" />
             </a>
-            <a href="" className="border rounded-lg p-2">
+            <a href="" className="rounded-lg border p-2">
               <FaInstagram color="red" className="lg:h-6 lg:w-6" />
             </a>
-            <a href="" className="border rounded-lg p-2">
+            <a href="" className="rounded-lg border p-2">
               <FaXTwitter color="red" className="lg:h-6 lg:w-6" />
             </a>
           </div>
-        </div>
+        </section>
       </div>
 
       {/* BOTTOM BAR */}
-      <div className="text-xs mt-5 pt-2 border-t content-center border-neutral-800 md:flex md:justify-between lg:text-sm lg:mt-10 lg:pt-5">
+      <div className="mt-5 content-center border-t border-neutral-800 pt-2 text-xs md:flex md:justify-between lg:mt-10 lg:pt-5 lg:text-sm">
         <div>
           <p>© {new Date().getFullYear()} All rights reserved.</p>
         </div>
