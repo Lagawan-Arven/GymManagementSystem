@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import {
   Route,
   Routes,
@@ -11,37 +10,42 @@ import { Toaster } from "sonner"; // Your notification library
 import {
   Login,
   Register,
-  MyProfilePage,
-  HomePage,
-  AdminsPage,
-  SessionsPage,
+  BillingPage,
+  DashboardOverview,
   MembersPage,
-  LogsPage,
+  PaymentsPage,
+  SettingsPage,
   LandingPage,
   PricingPage,
   ContactPage,
+  SupportPage,
+  LogsPage,
+  OperationPage,
 } from "./pages";
 
-import {
-  OwnerPageLayout,
-  AdminPageLayout,
-  PublicLayout,
-  AuthLayout,
-} from "./components/layout";
+import { PageLoader } from "./components/ui/loader";
 
-import { Loading } from "./components/util";
+import { PublicLayout } from "./components/layout/PublicLayout";
+import { DashboardLayout } from "./components/layout/DashboardLayout";
+import { OperationLayout } from "./components/layout/OperationLayout";
+
 import { useAuth } from "./context/AuthProvider";
+
+// Kicks logged-in users AWAY from login/register pages
+const AuthRoute = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return <PageLoader />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />; // Bounce to dashboard
+
+  return <Outlet />; // Let them see the login page
+};
 
 // --- The Protected Route Wrapper ---
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        Loading...
-      </div>
-    );
+  if (isLoading) return <PageLoader />;
 
   // If not logged in, bounce them to the login page
   if (!isAuthenticated) return <Navigate to="/login" replace />;
@@ -49,6 +53,8 @@ const ProtectedRoute = () => {
   // If logged in, render the child routes (e.g., Dashboard Layout)
   return <Outlet />;
 };
+
+import { RequireRole } from "./components/layout/RequireRole";
 
 function App() {
   console.log("Rendering root app");
@@ -58,56 +64,46 @@ function App() {
         {/* Global Toaster for notifications */}
         <Toaster position="top-right" richColors />
 
-        <Suspense fallback={<Loading fullScreen text="Page Loading..." />}>
-          <Routes>
-            {/* Public Pages */}
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-            </Route>
+        <Routes>
+          {/* PUBLIC MARKETING ROUTES (Wrapped in PublicLayout) */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </Route>
 
-            {/* Auth Pages */}
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Route>
+          {/* AUTH ROUTES (Using AuthLayout) */}
 
-            <Route element={<ProtectedRoute />}>
-              {/* Admin Pages */}
-              <Route element={<AdminPageLayout />}>
-                {/* Profile */}
-                <Route path="/admin/profile" element={<MyProfilePage />} />
-                {/* Home */}
-                <Route path="/admin/home" element={<HomePage />} />
-                {/* Sessions */}
-                <Route path="/admin/sessions" element={<SessionsPage />} />
-                {/* Members */}
-                <Route path="/admin/members" element={<MembersPage />} />
-                {/* Logs */}
-                <Route path="/admin/logs" element={<LogsPage />} />
-              </Route>
-              {/* Owner Pages */}
-              <Route element={<OwnerPageLayout />}>
-                {/* Profile */}
-                <Route path="/profile" element={<MyProfilePage />} />
-                {/* Home */}
-                <Route path="/home" element={<HomePage />} />
-                {/* Admins */}
-                <Route path="/admins" element={<AdminsPage />} />
-                {/* Sessions */}
-                <Route path="/sessions" element={<SessionsPage />} />
-                {/* Members */}
-                <Route path="/members" element={<MembersPage />} />
-                {/* Logs */}
-                <Route path="/logs" element={<LogsPage />} />
+          <Route element={<AuthRoute />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+
+          {/* PROTECTED DASHBOARD ROUTES */}
+          <Route element={<ProtectedRoute />}>
+            {/*  DASHBOARD ROUTES */}
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<DashboardOverview />} />
+              <Route path="/members" element={<MembersPage />} />
+              <Route path="/payments" element={<PaymentsPage />} />
+
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/support" element={<SupportPage />} />
+
+              <Route element={<RequireRole allowedRoles={["owner"]} />}>
+                <Route path="billing" element={<BillingPage />} />
+                <Route path="logs" element={<LogsPage />} />
               </Route>
             </Route>
+            {/* FULL-SCREEN OPERATION MODE */}
+            <Route element={<OperationLayout />}>
+              <Route path="operation" element={<OperationPage />} />
+            </Route>
+          </Route>
 
-            {/* Catch-all 404 */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
+          {/* Catch-all 404 */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </BrowserRouter>
     </>
   );
