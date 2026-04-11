@@ -91,9 +91,8 @@ export interface Payment {
 export interface AuditLog {
   id: number;
   gym_id: string;
-  action: string;
+  details: string;
   category: string;
-  notes: string | null;
   created_at: string;
   admin?: Admin;
   member?: Member;
