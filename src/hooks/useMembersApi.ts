@@ -45,3 +45,50 @@ export const useCreateMember = () => {
     },
   });
 };
+
+export const useUpdateMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Record<string, any>;
+    }) => {
+      // Assuming your backend route is PUT /members/{id}
+      const response = await api.put<{ member: Member; success: boolean }>(
+        `/members/${id}`,
+        data,
+      );
+      return response.data.member;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
+      toast.success("Member updated successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.detail || "Failed to update member.");
+    },
+  });
+};
+
+export const useDeleteMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // Assuming your backend route is DELETE /members/{id}
+      const response = await api.delete(`/members/${id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
+      toast.success("Member removed from the system.");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.detail || "Failed to delete member.");
+    },
+  });
+};
