@@ -17,4 +17,3 @@ jobs:
         with:
           # This creates the Release PR and handles versioning
           release-type: node
-          package-name: arvfit-frontend
