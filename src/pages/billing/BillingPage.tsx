@@ -22,7 +22,6 @@ const PRICING_PLANS = [
     icon: Zap,
     features: [
       "Up to 100 Active Members",
-      "Basic Analytics",
       "Standard Support",
       "1 Admin Account",
     ],
@@ -37,7 +36,6 @@ const PRICING_PLANS = [
     icon: Shield,
     features: [
       "Unlimited Members",
-      "Advanced Analytics",
       "Priority Support",
       "Unlimited Admin Accounts",
     ],
