@@ -31,12 +31,18 @@ import { OperationLayout } from "./components/layout/OperationLayout";
 
 import { useAuth } from "./context/AuthProvider";
 
-// Kicks logged-in users AWAY from login/register pages
+// Kicks logged-in users AWAY from public pages
 const AuthRoute = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) return <PageLoader />;
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />; // Bounce to dashboard
+  if (isAuthenticated)
+    return (
+      <Navigate
+        to={user?.role === "owner" ? "/dashboard" : "/members"}
+        replace
+      />
+    ); // Bounce to dashboard
 
   return <Outlet />; // Let them see the login page
 };
@@ -65,16 +71,16 @@ function App() {
         <Toaster position="top-right" richColors />
 
         <Routes>
-          {/* PUBLIC MARKETING ROUTES (Wrapped in PublicLayout) */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-          </Route>
-
-          {/* AUTH ROUTES (Using AuthLayout) */}
-
           <Route element={<AuthRoute />}>
+            {/* PUBLIC MARKETING ROUTES (Wrapped in PublicLayout) */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+            </Route>
+
+            {/* AUTH ROUTES (Using AuthLayout) */}
+
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Route>
@@ -83,16 +89,16 @@ function App() {
           <Route element={<ProtectedRoute />}>
             {/*  DASHBOARD ROUTES */}
             <Route element={<DashboardLayout />}>
-              <Route path="/dashboard" element={<DashboardOverview />} />
+              {/* Pages that can be access by the admin */}
               <Route path="/members" element={<MembersPage />} />
-              <Route path="/payments" element={<PaymentsPage />} />
-
-              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/support" element={<SupportPage />} />
-
+              {/* Owner-only Pages */}
               <Route element={<RequireRole allowedRoles={["owner"]} />}>
-                <Route path="billing" element={<BillingPage />} />
+                <Route path="/dashboard" element={<DashboardOverview />} />
+                <Route path="/payments" element={<PaymentsPage />} />
                 <Route path="logs" element={<LogsPage />} />
+                <Route path="billing" element={<BillingPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Route>
             {/* FULL-SCREEN OPERATION MODE */}
