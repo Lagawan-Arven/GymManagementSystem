@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -20,13 +21,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
+import { Spinner } from "../../components/ui/loader";
+
 import { useAuth } from "../../context/AuthProvider";
 import { useTheme } from "../../context/ThemeContext";
+import { useGetGymDetails, useUpdateGym } from "../../hooks/useSystemApi";
+import { useUpdateProfile } from "../../hooks/useAuthApi";
 
 // Inline schemas for quick settings validation
 const profileSchema = z.object({
   name: z.string().min(2, "Name is required"),
-  email: z.string().email("Invalid email address"),
+  email: z.email("Invalid email address"),
   username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
@@ -37,6 +42,12 @@ const gymSchema = z.object({
 export const SettingsPage = () => {
   const { user } = useAuth();
   const { setTheme } = useTheme();
+
+  const { data: gymDetails } = useGetGymDetails();
+  const { mutate: updateGym, isPending: isUpdating } = useUpdateGym();
+
+  const { mutate: updateProfile, isPending: isUpdatingProfile } =
+    useUpdateProfile();
 
   // Profile Form
   const {
@@ -56,25 +67,34 @@ export const SettingsPage = () => {
   const {
     register: registerGym,
     handleSubmit: handleGymSubmit,
+    reset: resetGym,
     formState: { errors: gymErrors },
   } = useForm({
     resolver: zodResolver(gymSchema),
     defaultValues: {
-      gymName: "ArvFit Base", // In reality, you'd fetch the Gym model data here
+      gymName: gymDetails?.name || "ArvFit", // <-- 2. Add optional chaining and a fallback string
     },
   });
 
   const onProfileSave = (data: any) => {
-    // TODO: Wire up to useUpdateProfile hook
-    console.log("Saving profile:", data);
-    toast.success("Profile updated successfully!");
+    updateProfile({
+      name: data.name,
+      email: data.email,
+      username: data.username,
+    });
   };
 
   const onGymSave = (data: any) => {
-    // TODO: Wire up to useUpdateGym hook
-    console.log("Saving gym:", data);
+    updateGym({ name: data.gymName });
     toast.success("Gym details updated successfully!");
   };
+
+  // Use useEffect to reset the form once the data loads from the API
+  useEffect(() => {
+    if (gymDetails) {
+      resetGym({ gymName: gymDetails.name });
+    }
+  }, [gymDetails, resetGym]);
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -143,8 +163,21 @@ export const SettingsPage = () => {
                     </p>
                   )}
                 </div>
-                <Button type="submit" className="mt-4">
-                  <Save className="mr-2 h-4 w-4" /> Save Profile
+                <Button
+                  type="submit"
+                  className="mt-4"
+                  disabled={isUpdatingProfile}
+                >
+                  {isUpdatingProfile ? (
+                    <>
+                      <Spinner size={16} className="mr-2 text-white" />
+                      Saving...{" "}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" /> Save Profile
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>
@@ -174,8 +207,17 @@ export const SettingsPage = () => {
                     </p>
                   )}
                 </div>
-                <Button type="submit" className="mt-4">
-                  <Save className="mr-2 h-4 w-4" /> Save Gym Details
+                <Button type="submit" className="mt-4" disabled={isUpdating}>
+                  {isUpdating ? (
+                    <>
+                      <Spinner size={16} className="mr-2 text-white" />
+                      Saving...{" "}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" /> Save Gym Details
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>
