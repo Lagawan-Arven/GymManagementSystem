@@ -36,4 +36,18 @@ export const setupMockApi = () => {
 
   // Allow any other requests (like external auth) to pass through normally
   mock.onAny().passThrough();
+
+  // Intercept PUT /users/me
+  mock.onPut("/users/me").reply((config) => {
+    // Parse the data you just sent from the form
+    const payload = JSON.parse(config.data);
+
+    // Grab the existing fake user from local storage
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+    // Merge the new data with the old data
+    const updatedUser = { ...currentUser, ...payload };
+
+    return [200, updatedUser];
+  });
 };
