@@ -23,6 +23,8 @@ import {
   OperationPage,
 } from "./pages";
 
+import { InactiveSubscriptionPage } from "./pages/auth/InactiveSubscriptionPage";
+
 import { PageLoader } from "./components/ui/loader";
 
 import { PublicLayout } from "./components/layout/PublicLayout";
@@ -39,7 +41,7 @@ const AuthRoute = () => {
   if (isAuthenticated)
     return (
       <Navigate
-        to={user?.role === "owner" ? "/dashboard" : "/members"}
+        to={user?.role === "owner" ? "/dashboard" : "/operation"}
         replace
       />
     ); // Bounce to dashboard
@@ -54,7 +56,7 @@ const ProtectedRoute = () => {
   if (isLoading) return <PageLoader />;
 
   // If not logged in, bounce them to the login page
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to={"/login"} />;
 
   // If logged in, render the child routes (e.g., Dashboard Layout)
   return <Outlet />;
@@ -72,6 +74,10 @@ function App() {
 
         <Routes>
           <Route element={<AuthRoute />}>
+            <Route
+              path="/unauthorized"
+              element={<InactiveSubscriptionPage />}
+            />
             {/* PUBLIC MARKETING ROUTES (Wrapped in PublicLayout) */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<LandingPage />} />
@@ -80,7 +86,6 @@ function App() {
             </Route>
 
             {/* AUTH ROUTES (Using AuthLayout) */}
-
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Route>
