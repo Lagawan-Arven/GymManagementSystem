@@ -10,6 +10,7 @@ import {
 } from "../../components/ui/card";
 import { Spinner } from "../../components/ui/loader";
 import { useCheckout } from "../../hooks/useBillingApi";
+import { useAuth } from "../../context/AuthProvider";
 
 // Hardcoded MVP Plans (These map to the IDs in your backend DB)
 const PRICING_PLANS = [
@@ -25,21 +26,21 @@ const PRICING_PLANS = [
       "Standard Support",
       "1 Admin Account",
     ],
-    popular: false,
+    popular: true,
   },
   {
     id: 2,
     name: "Pro",
     description: "Everything you need to scale your gym operations.",
-    price: "₱999",
-    interval: "/month",
+    price: "Soon",
+    interval: "",
     icon: Shield,
     features: [
       "Unlimited Members",
       "Priority Support",
       "Unlimited Admin Accounts",
     ],
-    popular: true, // We highlight this one to drive conversions
+    popular: false,
   },
   {
     id: 3,
@@ -60,6 +61,7 @@ const PRICING_PLANS = [
 
 export const BillingPage = () => {
   const { mutate: initiateCheckout, isPending } = useCheckout();
+  const { subscription } = useAuth();
 
   const handleSubscribe = (planId: number) => {
     if (planId === 3) {
@@ -86,11 +88,28 @@ export const BillingPage = () => {
       {/* Current Status Banner */}
       <div className="mx-auto max-w-2xl rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-center">
         <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-          You are currently on the <strong>7-Day Free Trial</strong>. Your{" "}
-          <span className="text-red-500 dark:text-red-400">
-            trial expires in 3
-          </span>{" "}
-          days.
+          You are currently on the{" "}
+          <strong>
+            {subscription?.isActive
+              ? subscription.plan
+                ? subscription.plan.name + " Plan"
+                : "7-Day Free Trial"
+              : "Expired Subscription"}
+          </strong>
+          .
+          {subscription?.isActive ? (
+            <>
+              {" "}
+              Your{" "}
+              <span className="text-red-500 dark:text-red-400">
+                {subscription?.plan ? "plan" : "trial"} expires in{" "}
+                {subscription?.days_remaining}
+              </span>{" "}
+              days.
+            </>
+          ) : (
+            "Subscribe to plan to continue."
+          )}
         </p>
       </div>
 
@@ -134,7 +153,7 @@ export const BillingPage = () => {
             </CardContent>
 
             <CardFooter>
-              {plan.id !== 3 && (
+              {plan.id === 1 && (
                 <Button
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
@@ -145,8 +164,12 @@ export const BillingPage = () => {
                     <>
                       <Spinner /> Processing...{" "}
                     </>
-                  ) : plan.id === 3 ? (
-                    "Contact Sales"
+                  ) : subscription?.isActive ? (
+                    subscription.plan ? (
+                      "Pay Now"
+                    ) : (
+                      "Subscribe Now"
+                    )
                   ) : (
                     "Subscribe Now"
                   )}

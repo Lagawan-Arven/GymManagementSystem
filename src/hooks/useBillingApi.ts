@@ -6,7 +6,6 @@ import type { CheckoutLinkResponse } from "../types";
 export const useCheckout = () => {
   return useMutation({
     mutationFn: async (planId: number) => {
-      // Hits the FastAPI route we built earlier
       const { data } = await api.post<CheckoutLinkResponse>(
         "/payments/saas-checkout",
         { plan_id: planId },
