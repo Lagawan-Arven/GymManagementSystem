@@ -49,6 +49,17 @@ export interface Gym {
   owner?: Owner;
 }
 
+export interface Subscription {
+  expires_at: string;
+  isActive: boolean;
+  days_remaining: number;
+  plan?: Plan;
+}
+
+export interface Plan {
+  name: string;
+}
+
 export interface SaasPlan {
   id: number;
   name: string;
@@ -111,6 +122,7 @@ export interface BaseResponse {
 export interface LoginResponse extends BaseResponse {
   access_token: string;
   user: Owner | Admin | Member;
+  subscription: Subscription;
 }
 
 export interface GoogleAuthResponse extends BaseResponse {
