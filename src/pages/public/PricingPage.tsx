@@ -19,7 +19,7 @@ const PRICING_PLANS = [
     interval: "/month",
     features: [
       "Up to 100 Active Members",
-      "Basic Financial Ledger",
+
       "Standard Support",
       "1 Admin Account",
     ],
@@ -33,10 +33,9 @@ const PRICING_PLANS = [
     interval: "/month",
     features: [
       "Unlimited Members",
-      "Advanced Revenue Analytics",
+
       "Priority Support",
       "Unlimited Admin Accounts",
-      "Automated Reminders",
     ],
     popular: true,
   },
