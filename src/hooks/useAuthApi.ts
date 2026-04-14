@@ -17,7 +17,7 @@ export const useLogin = () => {
     },
     onSuccess: (data) => {
       // Automatically update global auth state on success!
-      setAuth(data.user, data.access_token);
+      setAuth(data.user, data.access_token, data.subscription);
       toast.success(`Welcome back, ${data.user.name}!`);
     },
     onError: (error: any) => {
@@ -48,5 +48,36 @@ export const useGoogleAuth = () => {
     },
     // We don't call setAuth here in onSuccess because it might be a 202 "requires_completion" response.
     // The component using this hook will handle that logic.
+  });
+};
+
+export const useUpdateProfile = () => {
+  const { setAuth } = useAuth();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      name: string;
+      email: string;
+      username: string;
+    }) => {
+      // Assuming your FastAPI route is PUT /users/me
+      const { data } = await api.put("/users/me", payload);
+      return data; // This should return the updated User object from your backend
+    },
+    onSuccess: (updatedUser) => {
+      // 1. Grab the existing token so we don't accidentally log them out
+      const currentToken = localStorage.getItem("token");
+      const currentSub = localStorage.getItem("subscription");
+
+      // 2. Overwrite the Auth Context with the new user details!
+      if (currentToken && currentSub) {
+        setAuth(updatedUser, currentToken, JSON.parse(currentSub));
+      }
+
+      toast.success("Profile updated successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.detail || "Failed to update profile.");
+    },
   });
 };
