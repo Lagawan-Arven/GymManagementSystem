@@ -200,7 +200,11 @@ export const SettingsPage = () => {
               >
                 <div className="space-y-1">
                   <Label htmlFor="gymName">Gym Name</Label>
-                  <Input id="gymName" {...registerGym("gymName")} />
+                  <Input
+                    id="gymName"
+                    {...registerGym("gymName")}
+                    placeholder={gymDetails?.name || "ArvFit"}
+                  />
                   {gymErrors.gymName && (
                     <p className="text-xs text-red-500">
                       {gymErrors.gymName.message as string}
