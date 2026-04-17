@@ -1,7 +1,7 @@
 // ==========================================
 // ENUMS & LITERALS
 // ==========================================
-export type UserRole = "owner" | "admin" | "member";
+export type UserRole = "owner" | "admin";
 export type SessionType = "member" | "single";
 export type PaymentType =
   | "new_membership"
@@ -14,6 +14,7 @@ export type BillingCycle = "monthly" | "yearly";
 // CORE ENTITIES (Matching DB Models)
 // ==========================================
 export interface BaseUser {
+  gym_id: string;
   id: string;
   role: UserRole;
   name: string;
@@ -25,12 +26,9 @@ export interface BaseUser {
 
 export interface Owner extends BaseUser {}
 
-export interface Admin extends BaseUser {
-  gym_id: string;
-}
+export interface Admin extends BaseUser {}
 
-export interface Member extends BaseUser {
-  gym_id: string;
+export interface Member extends Omit<BaseUser, "username" | "role"> {
   age: number | null;
   sex: string | null;
   contact_number: string | null;
@@ -45,8 +43,8 @@ export interface Member extends BaseUser {
 export interface Gym {
   id: string;
   name: string;
-  isSubscribe: boolean;
-  owner?: Owner;
+  owner: Owner;
+  subscription: Subscription;
 }
 
 export interface Subscription {
@@ -73,13 +71,18 @@ export interface SaasPlan {
 // ==========================================
 // OPERATIONS (Sessions, Payments, Logs)
 // ==========================================
-export interface GymSession {
-  id: number;
+export interface BaseSession {
   type: SessionType;
-  gym_id: string;
-  admin_id?: string;
   member_id?: string;
   visitor_name?: string;
+}
+
+export interface SessionPayload extends BaseSession {}
+
+export interface Session extends BaseSession {
+  id: number;
+  gym_id: string;
+  admin_id?: string;
   created_at: string;
 }
 
@@ -107,7 +110,7 @@ export interface AuditLog {
   created_at: string;
   admin?: Admin;
   member?: Member;
-  session?: GymSession;
+  session?: Session;
   payment?: Payment;
 }
 
@@ -119,9 +122,13 @@ export interface BaseResponse {
   success: boolean;
 }
 
+export interface RegisterResponse extends BaseResponse {
+  gym: Gym;
+}
+
 export interface LoginResponse extends BaseResponse {
   access_token: string;
-  user: Owner | Admin | Member;
+  user: Owner | Admin;
   subscription: Subscription;
 }
 
@@ -145,4 +152,16 @@ export interface GetMembersResponse extends BaseResponse {
 
 export interface GetLogsResponse extends BaseResponse {
   logs: AuditLog[];
+}
+
+export interface GetPaymentsResponse extends BaseResponse {
+  payments: Payment[];
+}
+
+export interface GetSessionsResponse extends BaseResponse {
+  sessions: Session[];
+}
+
+export interface GymResponse extends BaseResponse {
+  gym: Gym;
 }
