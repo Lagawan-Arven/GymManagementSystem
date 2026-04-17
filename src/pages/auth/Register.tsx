@@ -34,7 +34,7 @@ export const Register = () => {
         password: data.password,
       },
     };
-    // This will hit FastAPI, create the Gym, create the Owner, and log them in!
+    // This will hit FastAPI, create the Gym, and create the Owner!
     registerGym(payload);
   };
 
