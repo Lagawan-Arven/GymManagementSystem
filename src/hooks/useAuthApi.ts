@@ -61,7 +61,7 @@ export const useUpdateProfile = () => {
       username: string;
     }) => {
       // Assuming your FastAPI route is PUT /users/me
-      const { data } = await api.put("/users/me", payload);
+      const { data } = await api.patch("/users/me", payload);
       return data; // This should return the updated User object from your backend
     },
     onSuccess: (updatedUser) => {
