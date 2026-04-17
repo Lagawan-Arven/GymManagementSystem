@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import type { Owner, Admin, Member, Subscription } from "../types";
+import type { Owner, Admin, Subscription } from "../types";
 import { api } from "../api/axios";
 
 // The union type of all possible users based on our backend
-type AppUser = Owner | Admin | Member;
+type AppUser = Owner | Admin;
 
 interface AuthContextType {
   user: AppUser | null;
