@@ -1,8 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
-import { useAuth } from "../context/AuthProvider";
-import { type LoginResponse } from "../types";
+import type { RegisterResponse, GymResponse } from "../types";
 
 export const systemKeys = {
   all: ["system"] as const,
@@ -13,18 +13,19 @@ export const systemKeys = {
 // 1. REGISTER NEW GYM (Public Route)
 // ==========================================
 export const useRegisterGym = () => {
-  const { setAuth } = useAuth();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (payload: Record<string, any>) => {
-      // Assuming your FastAPI expects: { name: str, owner: { firstname, lastname, ... } }
-      const { data } = await api.post<LoginResponse>("/register", payload);
+      const { data } = await api.post<RegisterResponse>(
+        "/gyms/register",
+        payload,
+      );
       return data;
     },
     onSuccess: (data) => {
-      // Instantly log them in after a successful registration!
-      setAuth(data.user, data.access_token, data.subscription);
-      toast.success("Welcome to ArvFit! Your 7-day free trial has started.");
+      toast.success(data.message || "Registration success");
+      navigate("/login");
     },
     onError: (error: any) => {
       toast.error(
@@ -42,8 +43,8 @@ export const useGetGymDetails = () => {
   return useQuery({
     queryKey: systemKeys.gym(),
     queryFn: async () => {
-      const { data } = await api.get("/gyms/me");
-      return data;
+      const { data } = await api.get<GymResponse>("/gyms/me");
+      return data.gym;
     },
     // This is crucial data for your plan limits, so we keep it fresh
     staleTime: 1000 * 60 * 5, // 5 minutes

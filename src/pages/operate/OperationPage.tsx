@@ -35,7 +35,11 @@ import {
 } from "../../components/ui/select";
 import { Badge } from "../../components/ui/badge";
 
-import { useGetMembers, useCreateMember } from "../../hooks/useMembersApi";
+import {
+  useGetMembers,
+  useCreateMember,
+  useRenewMember,
+} from "../../hooks/useMembersApi";
 import { useRecordPayment } from "../../hooks/usePaymentsApi";
 import { useRecordSession } from "../../hooks/useSessionsApi";
 
@@ -44,10 +48,10 @@ export const OperationPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const { data: members, isLoading: loadingMembers } = useGetMembers();
-
+  const { mutateAsync: renewMember } = useRenewMember();
   const { mutateAsync: createMember } = useCreateMember();
   const { mutateAsync: recordPayment } = useRecordPayment();
-  const { mutateAsync: recordSession } = useRecordSession(); // NEW MUTATION
+  const { mutateAsync: recordSession } = useRecordSession();
 
   // Form setups
   const {
@@ -70,6 +74,7 @@ export const OperationPage = () => {
       firstname: "",
       lastname: "",
       contact: "",
+      email: "",
       age: "",
       sex: "",
       method: "Cash",
@@ -94,10 +99,10 @@ export const OperationPage = () => {
   const onCheckInSubmit = async (data: any) => {
     setIsProcessing(true);
     try {
-      await recordSession({ member_id: data.member_id });
+      await recordSession({ type: "member", member_id: data.member_id });
       resetCheckIn();
     } catch (e) {
-      // Error handled by hook toast
+      toast.error("Check-in failed.");
     } finally {
       setIsProcessing(false);
     }
@@ -106,6 +111,8 @@ export const OperationPage = () => {
   const onDropInSubmit = async (data: any) => {
     setIsProcessing(true);
     try {
+      await recordSession({ type: "single", visitor_name: data.visitorName });
+
       await recordPayment({
         type: "single_session",
         method: data.method,
@@ -129,6 +136,7 @@ export const OperationPage = () => {
       const newMember = await createMember({
         firstname: data.firstname,
         lastname: data.lastname,
+        email: data.email,
         contact_number: data.contact,
         sex: data.sex,
         age: Number(data.age) || undefined,
@@ -155,6 +163,7 @@ export const OperationPage = () => {
   const onRenewalSubmit = async (data: any) => {
     setIsProcessing(true);
     try {
+      await renewMember({ id: data.member_id });
       await recordPayment({
         type: "membership_renewal",
         method: data.method,
@@ -200,7 +209,7 @@ export const OperationPage = () => {
         </TabsTrigger>
       </TabsList>
 
-      {/* 1. NEW: MEMBER CHECK-IN */}
+      {/* 1. MEMBER CHECK-IN */}
       <TabsContent value="check-in">
         <Card className="border-border shadow-md">
           <CardHeader>
@@ -354,6 +363,7 @@ export const OperationPage = () => {
                   >
                     <option value="Cash">Cash</option>
                     <option value="GCash">GCash</option>
+                    <option value="Others">Others</option>
                   </select>
                 </div>
               </div>
@@ -395,7 +405,7 @@ export const OperationPage = () => {
                 <h3 className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
                   1. Member Details
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>First Name *</Label>
                     <Input required {...regNewMember("firstname")} />
@@ -403,6 +413,10 @@ export const OperationPage = () => {
                   <div className="space-y-2">
                     <Label>Last Name *</Label>
                     <Input required {...regNewMember("lastname")} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email *</Label>
+                    <Input required {...regNewMember("email")} />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
@@ -452,7 +466,7 @@ export const OperationPage = () => {
                     >
                       <option value="Cash">Cash</option>
                       <option value="GCash">GCash</option>
-                      <option value="Bank Transfer">Bank Transfer</option>
+                      <option value="Others">Others</option>
                     </select>
                   </div>
                 </div>
@@ -537,6 +551,7 @@ export const OperationPage = () => {
                   >
                     <option value="Cash">Cash</option>
                     <option value="GCash">GCash</option>
+                    <option value="Others">Others</option>
                   </select>
                 </div>
               </div>
