@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "../../lib/utils"; // shadcn utility
 
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 const gymNavItems = [
   {

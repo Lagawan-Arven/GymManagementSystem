@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { loginSchema, type LoginFormValues } from "../../lib/validation";
 
 import { useLogin } from "../../hooks/useAuthApi";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 //const mockGoogleClientID = import.meta.env.VITE_MOCK_GOOGLE_CLIENT_ID;
 

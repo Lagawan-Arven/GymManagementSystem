@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import { LogOut, Dumbbell, Clock } from "lucide-react";
 import { Button } from "../ui/button";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 export const OperationLayout = () => {
   const [time, setTime] = useState(new Date());

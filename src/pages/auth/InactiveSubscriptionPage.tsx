@@ -9,8 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { useAuth } from "../../context/useAuth";
 
 export const InactiveSubscriptionPage = () => {
+  const { logout } = useAuth();
   return (
     <div className="bg-muted/20 flex min-h-screen flex-col items-center justify-center p-4">
       <Card className="w-full max-w-md border-red-500/20 text-center shadow-lg">
@@ -38,7 +40,7 @@ export const InactiveSubscriptionPage = () => {
         </CardContent>
 
         <CardFooter>
-          <Button asChild className="w-full" variant="default">
+          <Button onClick={logout} asChild className="w-full" variant="default">
             <Link to="/login">
               <ArrowLeft className="mr-2 h-4 w-4" /> Return to Login
             </Link>

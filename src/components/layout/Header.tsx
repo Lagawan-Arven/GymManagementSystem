@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { PageLoader } from "../ui/loader";
 
 import { Sidebar } from "./Sidebar";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 
 export const Header = () => {

@@ -30,7 +30,7 @@ import {
 } from "../../components/ui/accordion";
 
 import { supportSchema, type SupportFormValues } from "../../lib/validation";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 const FAQS = [
   {
