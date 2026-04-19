@@ -1,20 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import type { Owner, Admin, Subscription } from "../types";
+import React, { useState, useEffect } from "react";
 import { api } from "../api/axios";
 
-// The union type of all possible users based on our backend
-type AppUser = Owner | Admin;
-
-interface AuthContextType {
-  user: AppUser | null;
-  subscription: Subscription | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  setAuth: (user: AppUser, token: string, subscription: Subscription) => void;
-  logout: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import type { Subscription } from "../types";
+import { AuthContext, type AppUser } from "./useAuth";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -87,13 +75,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Custom hook to use the Auth Context cleanly in any component
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 };
