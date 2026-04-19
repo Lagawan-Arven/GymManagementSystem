@@ -4,8 +4,9 @@ import {
   BrowserRouter,
   Outlet,
   Navigate,
+  useLocation,
 } from "react-router-dom";
-import { Toaster } from "sonner"; // Your notification library
+import { Toaster, toast } from "sonner"; // Your notification library
 
 import {
   Login,
@@ -24,45 +25,69 @@ import {
 } from "./pages";
 
 import { InactiveSubscriptionPage } from "./pages/auth/InactiveSubscriptionPage";
-
 import { PageLoader } from "./components/ui/loader";
 
 import { PublicLayout } from "./components/layout/PublicLayout";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { OperationLayout } from "./components/layout/OperationLayout";
-
-import { useAuth } from "./context/AuthProvider";
+import { RequireRole } from "./components/layout/RequireRole";
+import { useAuth } from "./context/useAuth";
 
 // Kicks logged-in users AWAY from public pages
 const AuthRoute = () => {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, user, subscription } = useAuth();
 
   if (isLoading) return <PageLoader />;
-  if (isAuthenticated)
+
+  if (isAuthenticated) {
+    // 1. Check subscription status first upon login
+    if (subscription && !subscription.isActive) {
+      return (
+        <Navigate
+          to={user?.role === "owner" ? "/billing" : "/unauthorized"}
+          replace
+        />
+      );
+    }
+    // 2. If active, route normally
     return (
       <Navigate
         to={user?.role === "owner" ? "/dashboard" : "/operation"}
         replace
       />
-    ); // Bounce to dashboard
+    );
+  }
 
   return <Outlet />; // Let them see the login page
 };
 
 // --- The Protected Route Wrapper ---
 const ProtectedRoute = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user, subscription } = useAuth();
+  const location = useLocation(); // Gets the current URL path
 
   if (isLoading) return <PageLoader />;
 
   // If not logged in, bounce them to the login page
-  if (!isAuthenticated) return <Navigate to={"/login"} />;
+  if (!isAuthenticated) return <Navigate to={"/login"} replace />;
 
-  // If logged in, render the child routes (e.g., Dashboard Layout)
+  // --- NEW: STRICT SUBSCRIPTION LOCK ---
+  if (subscription && !subscription.isActive) {
+    // If Owner is trying to go anywhere EXCEPT billing, force them to billing
+    if (user?.role === "owner" && location.pathname !== "/billing") {
+      toast.error("Access denied. Subscription expired.");
+      return <Navigate to="/billing" replace />;
+    }
+    // If Admin is trying to go anywhere, force them to unauthorized
+    if (user?.role === "admin" && location.pathname !== "/unauthorized") {
+      toast.error("Access denied. Subscription expired.");
+      return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  // If logged in and subscription is valid (or they are an owner ON the billing page), render routes
   return <Outlet />;
 };
-
-import { RequireRole } from "./components/layout/RequireRole";
 
 function App() {
   console.log("Rendering root app");
@@ -73,11 +98,8 @@ function App() {
         <Toaster position="top-right" richColors />
 
         <Routes>
+          <Route path="/unauthorized" element={<InactiveSubscriptionPage />} />
           <Route element={<AuthRoute />}>
-            <Route
-              path="/unauthorized"
-              element={<InactiveSubscriptionPage />}
-            />
             {/* PUBLIC MARKETING ROUTES (Wrapped in PublicLayout) */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<LandingPage />} />
@@ -101,14 +123,14 @@ function App() {
               <Route element={<RequireRole allowedRoles={["owner"]} />}>
                 <Route path="/dashboard" element={<DashboardOverview />} />
                 <Route path="/payments" element={<PaymentsPage />} />
-                <Route path="logs" element={<LogsPage />} />
-                <Route path="billing" element={<BillingPage />} />
+                <Route path="/logs" element={<LogsPage />} />
+                <Route path="/billing" element={<BillingPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Route>
             {/* FULL-SCREEN OPERATION MODE */}
             <Route element={<OperationLayout />}>
-              <Route path="operation" element={<OperationPage />} />
+              <Route path="/operation" element={<OperationPage />} />
             </Route>
           </Route>
 
