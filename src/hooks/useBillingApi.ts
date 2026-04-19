@@ -5,7 +5,7 @@ import type { CheckoutLinkResponse } from "../types";
 
 export const useCheckout = () => {
   return useMutation({
-    mutationFn: async (planId: number) => {
+    mutationFn: async (planId: string) => {
       const { data } = await api.post<CheckoutLinkResponse>(
         "/payments/saas-checkout",
         { plan_id: planId },
@@ -17,10 +17,8 @@ export const useCheckout = () => {
       // Push the user out of the React app and into PayMongo
       window.location.href = data.checkout_url;
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.detail || "Failed to initialize secure checkout.",
-      );
+    onError: () => {
+      toast.error("Failed to initialize secure checkout.");
     },
   });
 };

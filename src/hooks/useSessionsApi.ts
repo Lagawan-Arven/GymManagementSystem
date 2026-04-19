@@ -16,8 +16,8 @@ export const useRecordSession = () => {
       // Invalidate logs so the owner dashboard instantly sees this activity
       queryClient.invalidateQueries({ queryKey: ["logs"] });
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to record session.");
+    onError: () => {
+      toast.error("Failed to record session.");
     },
   });
 };

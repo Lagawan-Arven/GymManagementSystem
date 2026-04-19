@@ -40,8 +40,8 @@ export const useCreateMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member successfully added!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to add member.");
+    onError: () => {
+      toast.error("Failed to add member.");
     },
   });
 };
@@ -67,8 +67,8 @@ export const useUpdateMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to update member.");
+    onError: () => {
+      toast.error("Failed to update member.");
     },
   });
 };
@@ -87,8 +87,8 @@ export const useRenewMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member renewed successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to renew member.");
+    onError: () => {
+      toast.error("Failed to renew member.");
     },
   });
 };
@@ -105,8 +105,8 @@ export const useDeleteMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member removed from the system.");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to delete member.");
+    onError: () => {
+      toast.error("Failed to delete member.");
     },
   });
 };

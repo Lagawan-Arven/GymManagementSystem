@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { LoginResponse, GoogleAuthResponse } from "../types";
-import { useAuth } from "../context/AuthProvider";
+import { useAuth } from "../context/useAuth";
 
 export const useLogin = () => {
   const { setAuth } = useAuth();
@@ -20,10 +20,8 @@ export const useLogin = () => {
       setAuth(data.user, data.access_token, data.subscription);
       toast.success(`Welcome back, ${data.user.name}!`);
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.detail || "Login failed. Please try again.",
-      );
+    onError: () => {
+      toast.error("Login failed. Please try again.");
     },
   });
 };
@@ -41,10 +39,8 @@ export const useGoogleAuth = () => {
       );
       return data;
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.detail || "Google authentication failed.",
-      );
+    onError: () => {
+      toast.error("Google authentication failed.");
     },
     // We don't call setAuth here in onSuccess because it might be a 202 "requires_completion" response.
     // The component using this hook will handle that logic.
@@ -62,7 +58,7 @@ export const useUpdateProfile = () => {
     }) => {
       // Assuming your FastAPI route is PUT /users/me
       const { data } = await api.patch("/users/me", payload);
-      return data; // This should return the updated User object from your backend
+      return data.user; // This should return the updated User object from your backend
     },
     onSuccess: (updatedUser) => {
       // 1. Grab the existing token so we don't accidentally log them out
@@ -76,8 +72,8 @@ export const useUpdateProfile = () => {
 
       toast.success("Profile updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to update profile.");
+    onError: () => {
+      toast.error("Failed to update profile.");
     },
   });
 };

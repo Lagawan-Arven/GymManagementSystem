@@ -23,15 +23,12 @@ export const useRegisterGym = () => {
       );
       return data;
     },
-    onSuccess: (data) => {
-      toast.success(data.message || "Registration success");
+    onSuccess: () => {
+      toast.success("Registration success");
       navigate("/login");
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.detail ||
-          "Failed to register gym. Please try again.",
-      );
+    onError: () => {
+      toast.error("Failed to register gym. Please try again.");
     },
   });
 };
@@ -59,7 +56,7 @@ export const useUpdateGym = () => {
 
   return useMutation({
     mutationFn: async (payload: { name: string }) => {
-      const { data } = await api.put("/gyms/me", payload);
+      const { data } = await api.patch("/gyms/me", payload);
       return data;
     },
     onSuccess: () => {
@@ -67,10 +64,8 @@ export const useUpdateGym = () => {
       queryClient.invalidateQueries({ queryKey: systemKeys.gym() });
       toast.success("Gym settings updated successfully.");
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.detail || "Failed to update gym settings.",
-      );
+    onError: () => {
+      toast.error("Failed to update gym settings.");
     },
   });
 };

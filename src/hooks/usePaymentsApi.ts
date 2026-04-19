@@ -42,8 +42,8 @@ export const useRecordPayment = () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       toast.success("Payment recorded successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to record payment.");
+    onError: () => {
+      toast.error("Failed to record payment.");
     },
   });
 };
