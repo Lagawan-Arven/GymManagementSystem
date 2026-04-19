@@ -10,12 +10,12 @@ import {
 } from "../../components/ui/card";
 import { Spinner } from "../../components/ui/loader";
 import { useCheckout } from "../../hooks/useBillingApi";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 // Hardcoded MVP Plans (These map to the IDs in your backend DB)
 const PRICING_PLANS = [
   {
-    id: 1,
+    id: "STARTER499",
     name: "Starter",
     description: "Perfect for small or boutique gyms just getting started.",
     price: "₱499",
@@ -29,7 +29,7 @@ const PRICING_PLANS = [
     popular: true,
   },
   {
-    id: 2,
+    id: "PRO999",
     name: "Pro",
     description: "Everything you need to scale your gym operations.",
     price: "Soon",
@@ -43,7 +43,7 @@ const PRICING_PLANS = [
     popular: false,
   },
   {
-    id: 3,
+    id: "ENTERPRISE",
     name: "Enterprise",
     description: "For multi-branch franchises requiring custom setups.",
     price: "Soon",
@@ -63,8 +63,8 @@ export const BillingPage = () => {
   const { mutate: initiateCheckout, isPending } = useCheckout();
   const { subscription } = useAuth();
 
-  const handleSubscribe = (planId: number) => {
-    if (planId === 3) {
+  const handleSubscribe = (planId: string) => {
+    if (planId === "ENTERPRISE") {
       // Handle Enterprise custom contact
       window.location.href =
         "mailto:arvenlagawan0731@gmail.com?subject=Enterprise Inquiry";
@@ -87,30 +87,34 @@ export const BillingPage = () => {
 
       {/* Current Status Banner */}
       <div className="mx-auto max-w-2xl rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-center">
-        <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-          You are currently on the{" "}
-          <strong>
-            {subscription?.isActive
-              ? subscription.plan
+        {subscription?.isActive ? (
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            You are currently on the{" "}
+            <strong>
+              {subscription.plan
                 ? subscription.plan.name + " Plan"
-                : "7-Day Free Trial"
-              : "Expired Subscription"}
-          </strong>
-          .
-          {subscription?.isActive ? (
-            <>
-              {" "}
-              Your{" "}
-              <span className="text-red-500 dark:text-red-400">
-                {subscription?.plan ? "plan" : "trial"} expires in{" "}
-                {subscription?.days_remaining}
-              </span>{" "}
-              days.
-            </>
-          ) : (
-            "Subscribe to plan to continue."
-          )}
-        </p>
+                : "7-Day Free Trial"}
+            </strong>
+            .
+            {
+              <>
+                {" "}
+                Your{" "}
+                <span className="text-red-500 dark:text-red-400">
+                  {subscription?.plan ? "plan" : "trial"} expires in{" "}
+                  {subscription?.days_remaining}
+                </span>{" "}
+                days.
+              </>
+            }
+          </p>
+        ) : (
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            Your subscription is{" "}
+            <span className="text-red-500 dark:text-red-400">expired</span> .
+            Please subscribe to a plan to continue.
+          </p>
+        )}
       </div>
 
       {/* Pricing Cards */}
@@ -153,7 +157,7 @@ export const BillingPage = () => {
             </CardContent>
 
             <CardFooter>
-              {plan.id === 1 && (
+              {plan.id === "STARTER499" && (
                 <Button
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
