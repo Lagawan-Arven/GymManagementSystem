@@ -100,6 +100,7 @@ export interface Payment {
   status: PaymentStatus;
   payor_name?: string;
   created_at: string;
+  member: Member;
 }
 
 export interface AuditLog {
