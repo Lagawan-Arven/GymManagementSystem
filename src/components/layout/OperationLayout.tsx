@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import { LogOut, Dumbbell, Clock } from "lucide-react";
 import { Button } from "../ui/button";
+import { useAuth } from "../../context/useAuth";
 
 export const OperationLayout = () => {
   const [time, setTime] = useState(new Date());
@@ -11,6 +12,8 @@ export const OperationLayout = () => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const { user } = useAuth();
 
   return (
     <div className="bg-muted/20 flex min-h-screen flex-col">
@@ -44,7 +47,7 @@ export const OperationLayout = () => {
             className="bg-red-600 text-white hover:bg-red-700"
             asChild
           >
-            <Link to="/dashboard">
+            <Link to={user?.role === "owner" ? "/dashboard" : "/members"}>
               <LogOut className="mr-2 h-4 w-4" /> Exit Operation
             </Link>
           </Button>

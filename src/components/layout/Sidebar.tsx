@@ -11,14 +11,14 @@ import {
 } from "lucide-react";
 import { cn } from "../../lib/utils"; // shadcn utility
 
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 const gymNavItems = [
   {
     name: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    allowedRoles: ["owner", "admin"],
+    allowedRoles: ["owner"],
   },
   {
     name: "Members",
@@ -30,7 +30,7 @@ const gymNavItems = [
     name: "Payments",
     href: "/payments",
     icon: CreditCard,
-    allowedRoles: ["owner", "admin"],
+    allowedRoles: ["owner"],
   },
   {
     name: "Audit Logs",
@@ -45,7 +45,7 @@ const appNavItems = [
     name: "Settings",
     href: "/settings",
     icon: Settings,
-    allowedRoles: ["owner", "admin"],
+    allowedRoles: ["owner"],
   },
   {
     name: "Support",

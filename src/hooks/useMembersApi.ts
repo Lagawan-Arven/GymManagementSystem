@@ -16,7 +16,7 @@ export const useGetMembers = () => {
   return useQuery({
     queryKey: memberKeys.lists(),
     queryFn: async () => {
-      const { data } = await api.get<GetMembersResponse>("/members/");
+      const { data } = await api.get<GetMembersResponse>("/members");
       return data.members;
     },
   });
@@ -29,7 +29,7 @@ export const useCreateMember = () => {
   return useMutation({
     mutationFn: async (newMember: Record<string, any>) => {
       const { data } = await api.post<{ member: Member; success: boolean }>(
-        "/members/",
+        "/members",
         newMember,
       );
       return data.member;
@@ -40,8 +40,8 @@ export const useCreateMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member successfully added!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to add member.");
+    onError: () => {
+      toast.error("Failed to add member.");
     },
   });
 };
@@ -57,8 +57,7 @@ export const useUpdateMember = () => {
       id: string;
       data: Record<string, any>;
     }) => {
-      // Assuming your backend route is PUT /members/{id}
-      const response = await api.put<{ member: Member; success: boolean }>(
+      const response = await api.patch<{ member: Member; success: boolean }>(
         `/members/${id}`,
         data,
       );
@@ -68,8 +67,28 @@ export const useUpdateMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to update member.");
+    onError: () => {
+      toast.error("Failed to update member.");
+    },
+  });
+};
+
+export const useRenewMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      const response = await api.post<{ member: Member; success: boolean }>(
+        `/members/${id}`,
+      );
+      return response.data.member;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
+      toast.success("Member renewed successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to renew member.");
     },
   });
 };
@@ -79,7 +98,6 @@ export const useDeleteMember = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      // Assuming your backend route is DELETE /members/{id}
       const response = await api.delete(`/members/${id}`);
       return response.data;
     },
@@ -87,8 +105,8 @@ export const useDeleteMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member removed from the system.");
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.detail || "Failed to delete member.");
+    onError: () => {
+      toast.error("Failed to delete member.");
     },
   });
 };

@@ -1,4 +1,4 @@
-import { Check, Sparkles, Tag } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -19,7 +19,6 @@ const PRICING_PLANS = [
     interval: "/month",
     features: [
       "Up to 100 Active Members",
-      "Basic Financial Ledger",
       "Standard Support",
       "1 Admin Account",
     ],
@@ -33,10 +32,9 @@ const PRICING_PLANS = [
     interval: "/month",
     features: [
       "Unlimited Members",
-      "Advanced Revenue Analytics",
+
       "Priority Support",
       "Unlimited Admin Accounts",
-      "Automated Reminders",
     ],
     popular: true,
   },
@@ -66,9 +64,9 @@ export const PricingPage = () => {
             Simple, transparent pricing.
           </h2>
           <p className="text-muted-foreground text-xl">
-            All plans include a{" "}
+            Include a{" "}
             <strong className="text-foreground">1-Week Free Trial</strong> with
-            full feature access.
+            starter plan feature access.
           </p>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 ring-1 ring-red-500/20 ring-inset">
             <Sparkles className="h-4 w-4" />
@@ -124,7 +122,8 @@ export const PricingPage = () => {
         </div>
 
         {/* Early Adopter Tiers */}
-        <div className="bg-muted/50 border-border mx-auto mt-20 max-w-3xl rounded-2xl border p-8 text-center">
+        {/* Will implement later */}
+        {/*<div className="bg-muted/50 border-border mx-auto mt-20 max-w-3xl rounded-2xl border p-8 text-center">
           <Tag className="mx-auto mb-4 h-8 w-8 text-red-500" />
           <h3 className="mb-6 text-2xl font-bold">Early Adopter Discounts</h3>
           <p className="text-muted-foreground mb-6">
@@ -133,7 +132,7 @@ export const PricingPage = () => {
           </p>
           <div className="grid gap-4 text-sm sm:grid-cols-3">
             <div className="bg-background border-border rounded-lg border p-4 shadow-sm">
-              <div className="text-foreground text-lg font-bold">30% OFF</div>
+              <div className="text-foreground text-lg font-bold">50% OFF</div>
               <div className="text-muted-foreground">For the 1st Gym</div>
             </div>
             <div className="bg-background border-border rounded-lg border p-4 shadow-sm">
@@ -145,7 +144,7 @@ export const PricingPage = () => {
               <div className="text-muted-foreground">For Gyms 6 - 10</div>
             </div>
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

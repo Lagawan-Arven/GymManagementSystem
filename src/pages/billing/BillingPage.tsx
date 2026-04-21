@@ -10,11 +10,12 @@ import {
 } from "../../components/ui/card";
 import { Spinner } from "../../components/ui/loader";
 import { useCheckout } from "../../hooks/useBillingApi";
+import { useGetGymDetails } from "../../hooks/useGymApi";
 
 // Hardcoded MVP Plans (These map to the IDs in your backend DB)
 const PRICING_PLANS = [
   {
-    id: 1,
+    id: "STARTER499",
     name: "Starter",
     description: "Perfect for small or boutique gyms just getting started.",
     price: "₱499",
@@ -22,14 +23,13 @@ const PRICING_PLANS = [
     icon: Zap,
     features: [
       "Up to 100 Active Members",
-      "Basic Analytics",
       "Standard Support",
       "1 Admin Account",
     ],
-    popular: false,
+    popular: true,
   },
   {
-    id: 2,
+    id: "PRO999",
     name: "Pro",
     description: "Everything you need to scale your gym operations.",
     price: "₱999",
@@ -37,14 +37,13 @@ const PRICING_PLANS = [
     icon: Shield,
     features: [
       "Unlimited Members",
-      "Advanced Analytics",
       "Priority Support",
       "Unlimited Admin Accounts",
     ],
-    popular: true, // We highlight this one to drive conversions
+    popular: false,
   },
   {
-    id: 3,
+    id: "ENTERPRISE",
     name: "Enterprise",
     description: "For multi-branch franchises requiring custom setups.",
     price: "Soon",
@@ -62,10 +61,13 @@ const PRICING_PLANS = [
 
 export const BillingPage = () => {
   const { mutate: initiateCheckout, isPending } = useCheckout();
+  const { data: gymDetails } = useGetGymDetails();
+  const subscription = gymDetails?.subscription;
 
-  const handleSubscribe = (planId: number) => {
-    if (planId === 3) {
+  const handleSubscribe = (planId: string) => {
+    if (planId === "ENTERPRIS") {
       // Handle Enterprise custom contact
+      // eslint-disable-next-line react-hooks/immutability
       window.location.href =
         "mailto:arvenlagawan0731@gmail.com?subject=Enterprise Inquiry";
       return;
@@ -87,76 +89,139 @@ export const BillingPage = () => {
 
       {/* Current Status Banner */}
       <div className="mx-auto max-w-2xl rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-center">
-        <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-          You are currently on the <strong>7-Day Free Trial</strong>. Your{" "}
-          <span className="text-red-500 dark:text-red-400">
-            trial expires in 3
-          </span>{" "}
-          days.
-        </p>
+        {subscription?.isActive ? (
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            You are currently on the{" "}
+            <strong>
+              {subscription.plan
+                ? subscription.plan.name + " Plan"
+                : "7-Day Free Trial"}
+            </strong>
+            .
+            {
+              <>
+                {" "}
+                Your{" "}
+                <span className="text-red-500 dark:text-red-400">
+                  {subscription?.plan ? "plan" : "trial"} expires in{" "}
+                  {subscription?.days_remaining}
+                </span>{" "}
+                days.
+              </>
+            }
+          </p>
+        ) : (
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            Your subscription is{" "}
+            <span className="text-red-500 dark:text-red-400">expired</span> .
+            Please subscribe to a plan to continue.
+          </p>
+        )}
       </div>
 
       {/* Pricing Cards */}
       <div className="grid gap-8 pt-8 md:grid-cols-2 lg:grid-cols-3">
-        {PRICING_PLANS.map((plan) => (
-          <Card
-            key={plan.id}
-            className={`relative flex flex-col ${plan.popular ? "border-primary z-10 scale-105 shadow-lg" : ""}`}
-          >
-            {plan.popular && (
-              <div className="bg-primary text-primary-foreground absolute -top-4 right-0 left-0 mx-auto w-fit rounded-full px-3 py-1 text-xs font-medium">
-                Most Popular
-              </div>
-            )}
+        {PRICING_PLANS.map((plan) => {
+          // 1. Determine if this user gets the promo
+          const isEligibleForPromo = !subscription?.plan;
 
-            <CardHeader>
-              <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
-                <plan.icon className="text-primary h-6 w-6" />
-              </div>
-              <CardTitle className="text-2xl">{plan.name}</CardTitle>
-              <CardDescription className="min-h-10">
-                {plan.description}
-              </CardDescription>
-            </CardHeader>
+          // 2. Automatically calculate 50% off (ignores "Custom" string)
+          const numericPrice = parseInt(plan.price.replace(/\D/g, ""));
+          const discountedPrice = numericPrice
+            ? `₱${Math.floor(numericPrice / 2)}`
+            : plan.price;
 
-            <CardContent className="flex-1 space-y-6">
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold">{plan.price}</span>
-                <span className="text-muted-foreground">{plan.interval}</span>
-              </div>
-
-              <ul className="space-y-3 text-sm">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <Check className="h-4 w-4 shrink-0 text-emerald-500" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-
-            <CardFooter>
-              {plan.id !== 3 && (
-                <Button
-                  className="w-full"
-                  variant={plan.popular ? "default" : "outline"}
-                  onClick={() => handleSubscribe(plan.id)}
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <>
-                      <Spinner /> Processing...{" "}
-                    </>
-                  ) : plan.id === 3 ? (
-                    "Contact Sales"
-                  ) : (
-                    "Subscribe Now"
-                  )}
-                </Button>
+          return (
+            <Card
+              key={plan.id}
+              className={`relative flex flex-col ${plan.popular ? "border-primary z-10 scale-105 shadow-lg" : ""}`}
+            >
+              {plan.popular && (
+                <div className="bg-primary text-primary-foreground absolute -top-4 right-0 left-0 mx-auto w-fit rounded-full px-3 py-1 text-xs font-medium">
+                  Most Popular
+                </div>
               )}
-            </CardFooter>
-          </Card>
-        ))}
+
+              <CardHeader>
+                <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+                  <plan.icon className="text-primary h-6 w-6" />
+                </div>
+                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardDescription className="min-h-10">
+                  {plan.description}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="flex-1 space-y-6">
+                {/* --- DYNAMIC PRICING DISPLAY --- */}
+                {isEligibleForPromo &&
+                plan.id !== "ENTERPRISE" &&
+                plan.price !== "Custom" ? (
+                  <div className="animate-in fade-in space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground text-2xl font-bold line-through decoration-red-500/70">
+                        {plan.price}
+                      </span>
+                      <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-red-500 uppercase">
+                        50% OFF 1st Payment
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold">
+                        {discountedPrice}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {plan.interval}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground">
+                      {plan.interval}
+                    </span>
+                  </div>
+                )}
+                {/* -------------------------------- */}
+
+                <ul className="space-y-3 text-sm">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <Check className="h-4 w-4 shrink-0 text-emerald-500" />
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+
+              <CardFooter>
+                {plan.id !== "ENTERPRIS" && (
+                  <Button
+                    className="w-full"
+                    variant={plan.popular ? "default" : "outline"}
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <>
+                        <Spinner /> Processing...{" "}
+                      </>
+                    ) : subscription?.isActive ? (
+                      subscription.plan ? (
+                        "Pay Now"
+                      ) : (
+                        "Subscribe Now"
+                      )
+                    ) : (
+                      "Subscribe Now"
+                    )}
+                  </Button>
+                )}
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,19 +1,20 @@
 // ==========================================
 // ENUMS & LITERALS
 // ==========================================
-export type UserRole = "owner" | "admin" | "member";
+export type UserRole = "owner" | "admin";
 export type SessionType = "member" | "single";
 export type PaymentType =
   | "new_membership"
   | "single_session"
   | "membership_renewal";
 export type PaymentStatus = "pending" | "paid";
-export type BillingCycle = "monthly" | "yearly";
+export type Interval = "monthly" | "yearly";
 
 // ==========================================
 // CORE ENTITIES (Matching DB Models)
 // ==========================================
 export interface BaseUser {
+  gym_id: string;
   id: string;
   role: UserRole;
   name: string;
@@ -22,15 +23,12 @@ export interface BaseUser {
   created_at: string;
   updated_at: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Owner extends BaseUser {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Admin extends BaseUser {}
 
-export interface Admin extends BaseUser {
-  gym_id: string;
-}
-
-export interface Member extends BaseUser {
-  gym_id: string;
+export interface Member extends Omit<BaseUser, "username" | "role"> {
   age: number | null;
   sex: string | null;
   contact_number: string | null;
@@ -45,30 +43,45 @@ export interface Member extends BaseUser {
 export interface Gym {
   id: string;
   name: string;
-  isSubscribe: boolean;
-  owner?: Owner;
+  owner: Owner;
+  subscription: Subscription;
+}
+
+export interface Subscription {
+  expires_at: string;
+  isActive: boolean;
+  days_remaining: number;
+  plan?: SaasPlan;
+}
+
+export interface Plan {
+  name: string;
 }
 
 export interface SaasPlan {
   id: number;
   name: string;
   description: string | null;
-  price_centavos: number;
-  billing_cycle: BillingCycle;
-  features: Record<string, any>; // Handles the JSON column
-  isActive: boolean;
+  amount: number;
+  interval: Interval;
+  features: Record<string, unknown>; // Handles the JSON column
 }
 
 // ==========================================
 // OPERATIONS (Sessions, Payments, Logs)
 // ==========================================
-export interface GymSession {
-  id: number;
+export interface BaseSession {
   type: SessionType;
-  gym_id: string;
-  admin_id?: string;
   member_id?: string;
   visitor_name?: string;
+}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface SessionPayload extends BaseSession {}
+
+export interface Session extends BaseSession {
+  id: number;
+  gym_id: string;
+  admin_id?: string;
   created_at: string;
 }
 
@@ -86,6 +99,7 @@ export interface Payment {
   status: PaymentStatus;
   payor_name?: string;
   created_at: string;
+  member: Member;
 }
 
 export interface AuditLog {
@@ -96,7 +110,7 @@ export interface AuditLog {
   created_at: string;
   admin?: Admin;
   member?: Member;
-  session?: GymSession;
+  session?: Session;
   payment?: Payment;
 }
 
@@ -108,9 +122,14 @@ export interface BaseResponse {
   success: boolean;
 }
 
+export interface RegisterResponse extends BaseResponse {
+  gym: Gym;
+}
+
 export interface LoginResponse extends BaseResponse {
   access_token: string;
-  user: Owner | Admin | Member;
+  user: Owner | Admin;
+  subscription: Subscription;
 }
 
 export interface GoogleAuthResponse extends BaseResponse {
@@ -133,4 +152,20 @@ export interface GetMembersResponse extends BaseResponse {
 
 export interface GetLogsResponse extends BaseResponse {
   logs: AuditLog[];
+}
+
+export interface GetPaymentsResponse extends BaseResponse {
+  payments: Payment[];
+}
+
+export interface GetSessionsResponse extends BaseResponse {
+  sessions: Session[];
+}
+
+export interface GymResponse extends BaseResponse {
+  gym: Gym;
+}
+
+export interface GetSaasPlansResponse extends BaseResponse {
+  plans: SaasPlan[];
 }

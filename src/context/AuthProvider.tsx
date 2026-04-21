@@ -1,42 +1,33 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import type { Owner, Admin, Member } from "../types";
+import React, { useState } from "react";
 import { api } from "../api/axios";
 
-// The union type of all possible users based on our backend
-type AppUser = Owner | Admin | Member;
-
-interface AuthContextType {
-  user: AppUser | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  setAuth: (user: AppUser, token: string) => void;
-  logout: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import type { Subscription } from "../types";
+import { AuthContext, type AppUser } from "./useAuth";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<AppUser | null>(null);
-  // Start loading as true so we don't flash the login screen on refresh
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // On app mount, check if we have a saved user and token
+  const [user, setUser] = useState<AppUser | null>(() => {
     const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [subscription, setSubscription] = useState<Subscription | null>(() => {
+    const storedSub = localStorage.getItem("subscription");
+    return storedSub ? JSON.parse(storedSub) : null;
+  });
+  // Start loading as true so we don't flash the login screen on refresh
+  const [isLoading] = useState<boolean>(false);
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
-
-  const setAuth = (newUser: AppUser, token: string) => {
+  const setAuth = (
+    newUser: AppUser,
+    token: string,
+    subscription: Subscription,
+  ) => {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(newUser));
+    localStorage.setItem("subscription", JSON.stringify(subscription));
     setUser(newUser);
+    setSubscription(subscription);
   };
 
   const logout = async () => {
@@ -52,10 +43,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // 2. Clear frontend state regardless of backend success
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("subscription");
       setUser(null);
+      setSubscription(null);
 
-      // 3. Kick them back to login
-      window.location.href = "/login";
+      // 3. Kick them back to landing page
+      window.location.href = "/";
     }
   };
 
@@ -63,18 +56,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, isAuthenticated, setAuth, logout }}
+      value={{
+        user,
+        subscription,
+        isLoading,
+        isAuthenticated,
+        setAuth,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Custom hook to use the Auth Context cleanly in any component
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 };

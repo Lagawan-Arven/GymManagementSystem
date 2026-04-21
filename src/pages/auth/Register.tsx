@@ -6,9 +6,10 @@ import { AuthLayout } from "../../components/layout/AuthLayout";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import { Spinner } from "../../components/ui/loader";
 
 import { registerSchema, type RegisterFormValues } from "../../lib/validation";
-// import { useRegisterGym } from '../hooks/useSystemApi'; // You will create this hook next!
+import { useRegisterGym } from "../../hooks/useGymApi";
 
 export const Register = () => {
   const {
@@ -18,6 +19,8 @@ export const Register = () => {
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
   });
+
+  const { mutate: registerGym, isPending } = useRegisterGym();
 
   const onSubmit = (data: RegisterFormValues) => {
     // We map the flat form data into the nested JSON payload your backend expects
@@ -31,8 +34,8 @@ export const Register = () => {
         password: data.password,
       },
     };
-    console.log("Submitting:", payload);
-    // mutate(payload)
+    // This will hit FastAPI, create the Gym, and create the Owner!
+    registerGym(payload);
   };
 
   return (
@@ -100,8 +103,15 @@ export const Register = () => {
           </div>
         </div>
 
-        <Button type="submit" className="mt-2 w-full">
-          Create Account
+        <Button type="submit" className="mt-2 w-full" disabled={isPending}>
+          {isPending ? (
+            <>
+              <Spinner size={16} className="mr-2 text-white" />
+              Creating account...{" "}
+            </>
+          ) : (
+            "Create account"
+          )}
         </Button>
 
         <div className="pt-2 text-center text-sm">

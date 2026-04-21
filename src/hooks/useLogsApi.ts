@@ -7,7 +7,7 @@ export const useGetLogs = () => {
     queryKey: ["logs"],
     queryFn: async () => {
       const { data } = await api.get<{ logs: AuditLog[]; success: boolean }>(
-        "/logs/",
+        "/logs",
       );
       return data.logs;
     },

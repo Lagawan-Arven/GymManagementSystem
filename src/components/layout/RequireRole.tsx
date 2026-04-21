@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 
 interface RequireRoleProps {
   allowedRoles: string[];

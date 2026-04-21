@@ -1,9 +1,24 @@
 import * as z from "zod";
 
 export const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  usernameOrEmail: z
+    .string()
+    .min(1, "Username or email is required")
+    .refine(
+      (value) => {
+        // Basic email regex
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        // Example username regex: alphanumeric and underscores, 3-20 chars long
+        const isUsername = /^[a-zA-Z0-9_]{3,20}$/.test(value);
+
+        return isEmail || isUsername;
+      },
+      {
+        message: "Must be a valid email address or username",
+      },
+    ),
+
   password: z.string().min(6, "Password must be at least 6 characters"),
-  // We default to 'owner' for the B2B landing page, but admins/members can change this on a dedicated route later
   role: z.enum(["owner", "admin", "member"]).default("owner"),
 });
 

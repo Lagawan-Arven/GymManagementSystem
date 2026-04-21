@@ -105,7 +105,7 @@ export const PaymentsPage = () => {
                   </TableCell>
                   <TableCell className="font-medium">
                     {/* Display Member Name if it exists, otherwise Visitor Name */}
-                    {payment.payor_name || "Gym Member"}
+                    {payment.payor_name || payment.member.name}
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="text-xs">
