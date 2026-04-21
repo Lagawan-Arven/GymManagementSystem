@@ -8,7 +8,7 @@ export type PaymentType =
   | "single_session"
   | "membership_renewal";
 export type PaymentStatus = "pending" | "paid";
-export type BillingCycle = "monthly" | "yearly";
+export type Interval = "monthly" | "yearly";
 
 // ==========================================
 // CORE ENTITIES (Matching DB Models)
@@ -23,9 +23,9 @@ export interface BaseUser {
   created_at: string;
   updated_at: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Owner extends BaseUser {}
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Admin extends BaseUser {}
 
 export interface Member extends Omit<BaseUser, "username" | "role"> {
@@ -51,7 +51,7 @@ export interface Subscription {
   expires_at: string;
   isActive: boolean;
   days_remaining: number;
-  plan?: Plan;
+  plan?: SaasPlan;
 }
 
 export interface Plan {
@@ -62,10 +62,9 @@ export interface SaasPlan {
   id: number;
   name: string;
   description: string | null;
-  price_centavos: number;
-  billing_cycle: BillingCycle;
-  features: Record<string, any>; // Handles the JSON column
-  isActive: boolean;
+  amount: number;
+  interval: Interval;
+  features: Record<string, unknown>; // Handles the JSON column
 }
 
 // ==========================================
@@ -76,7 +75,7 @@ export interface BaseSession {
   member_id?: string;
   visitor_name?: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SessionPayload extends BaseSession {}
 
 export interface Session extends BaseSession {
@@ -165,4 +164,8 @@ export interface GetSessionsResponse extends BaseResponse {
 
 export interface GymResponse extends BaseResponse {
   gym: Gym;
+}
+
+export interface GetSaasPlansResponse extends BaseResponse {
+  plans: SaasPlan[];
 }

@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Lock } from "lucide-react";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/useAuth";
 import { Button } from "../ui/button";
 
 interface RequirePlanProps {
@@ -17,7 +17,11 @@ export const RequirePlan = ({
 }: RequirePlanProps) => {
   const { user, subscription } = useAuth();
 
-  if (!user || !subscription?.plan?.name || !allowedPlans.includes(subscription.plan.name)) {
+  if (
+    !user ||
+    !subscription?.plan?.name ||
+    !allowedPlans.includes(subscription.plan.name)
+  ) {
     // If a fallback is provided, render that (e.g., a disabled button)
     if (fallback) return <>{fallback}</>;
 

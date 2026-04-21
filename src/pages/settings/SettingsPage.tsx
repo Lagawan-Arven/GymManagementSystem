@@ -41,7 +41,7 @@ import { Spinner } from "../../components/ui/loader";
 
 import { useAuth } from "../../context/useAuth";
 import { useTheme } from "../../context/ThemeContext";
-import { useGetGymDetails, useUpdateGym } from "../../hooks/useSystemApi";
+import { useGetGymDetails, useUpdateGym } from "../../hooks/useGymApi";
 import { useUpdateProfile } from "../../hooks/useAuthApi";
 import {
   useGetAdmins,

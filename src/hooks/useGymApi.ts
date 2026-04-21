@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { RegisterResponse, GymResponse } from "../types";
+import { useAuth } from "../context/useAuth";
 
 export const systemKeys = {
   all: ["system"] as const,
@@ -16,7 +17,7 @@ export const useRegisterGym = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async (payload: Record<string, any>) => {
+    mutationFn: async (payload: Record<string, unknown>) => {
       const { data } = await api.post<RegisterResponse>(
         "/gyms/register",
         payload,
@@ -37,14 +38,27 @@ export const useRegisterGym = () => {
 // 2. GET GYM DETAILS (Protected Route)
 // ==========================================
 export const useGetGymDetails = () => {
+  const { setAuth } = useAuth();
   return useQuery({
     queryKey: systemKeys.gym(),
     queryFn: async () => {
       const { data } = await api.get<GymResponse>("/gyms/me");
+      if (data.gym.subscription) {
+        const storedUser = localStorage.getItem("user");
+        const storedToken = localStorage.getItem("token");
+        if (storedUser && storedToken) {
+          setAuth(JSON.parse(storedUser), storedToken, data.gym.subscription);
+        }
+      }
       return data.gym;
     },
-    // This is crucial data for your plan limits, so we keep it fresh
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchInterval: (query) => {
+      const gym = query.state.data;
+      if (gym?.subscription.days_remaining)
+        return gym.subscription.isActive && gym.subscription.days_remaining < 1
+          ? 1000 * 5 * 60
+          : 0;
+    },
   });
 };
 

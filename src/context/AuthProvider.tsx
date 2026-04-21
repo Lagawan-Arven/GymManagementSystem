@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { api } from "../api/axios";
 
 import type { Subscription } from "../types";
@@ -7,23 +7,16 @@ import { AuthContext, type AppUser } from "./useAuth";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<AppUser | null>(null);
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
-  // Start loading as true so we don't flash the login screen on refresh
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // On app mount, check if we have a saved user and token
+  const [user, setUser] = useState<AppUser | null>(() => {
     const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [subscription, setSubscription] = useState<Subscription | null>(() => {
     const storedSub = localStorage.getItem("subscription");
-
-    if (storedUser && storedToken && storedSub) {
-      setUser(JSON.parse(storedUser));
-      setSubscription(JSON.parse(storedSub));
-    }
-    setIsLoading(false);
-  }, []);
+    return storedSub ? JSON.parse(storedSub) : null;
+  });
+  // Start loading as true so we don't flash the login screen on refresh
+  const [isLoading] = useState<boolean>(false);
 
   const setAuth = (
     newUser: AppUser,

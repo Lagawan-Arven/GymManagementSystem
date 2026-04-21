@@ -9,7 +9,7 @@ import { Label } from "../../components/ui/label";
 import { Spinner } from "../../components/ui/loader";
 
 import { registerSchema, type RegisterFormValues } from "../../lib/validation";
-import { useRegisterGym } from "../../hooks/useSystemApi";
+import { useRegisterGym } from "../../hooks/useGymApi";
 
 export const Register = () => {
   const {
