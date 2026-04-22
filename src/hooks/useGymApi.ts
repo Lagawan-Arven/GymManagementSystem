@@ -55,8 +55,8 @@ export const useGetGymDetails = () => {
     refetchInterval: (query) => {
       const gym = query.state.data;
       if (gym?.subscription.days_remaining)
-        return gym.subscription.isActive && gym.subscription.days_remaining < 1
-          ? 1000 * 5 * 60
+        return gym.subscription.isActive && gym.subscription.days_remaining < 7
+          ? 0
           : 0;
     },
   });
