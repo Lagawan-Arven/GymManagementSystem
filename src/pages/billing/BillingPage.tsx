@@ -65,7 +65,7 @@ export const BillingPage = () => {
   const subscription = gymDetails?.subscription;
 
   const handleSubscribe = (planId: string) => {
-    if (planId === "ENTERPRIS") {
+    if (planId === "ENTERPRISE") {
       // Handle Enterprise custom contact
       // eslint-disable-next-line react-hooks/immutability
       window.location.href =
@@ -196,7 +196,7 @@ export const BillingPage = () => {
               </CardContent>
 
               <CardFooter>
-                {plan.id !== "ENTERPRIS" && (
+                {plan.id !== "ENTERPRISE" && (
                   <Button
                     className="w-full"
                     variant={plan.popular ? "default" : "outline"}
