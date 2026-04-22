@@ -9,5 +9,5 @@ export { PricingPage } from "./public/PricingPage";
 export { ContactPage } from "./public/ContactPage";
 export { SettingsPage } from "./settings/SettingsPage";
 export { SupportPage } from "./support/SupportPage";
-export { LogsPage } from "./logs/LogsPage";
+export { LogsPage } from "./gym_logs/LogsPage";
 export { OperationPage } from "./operate/OperationPage";
