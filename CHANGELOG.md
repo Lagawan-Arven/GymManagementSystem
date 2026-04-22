@@ -1,5 +1,60 @@
 # Changelog
 
+## [1.1.0](https://github.com/Lagawan-Arven/GymManagementSystem/compare/v1.0.0...v1.1.0) (2026-04-22)
+
+
+### Features
+
+* added admin api hook ([d579743](https://github.com/Lagawan-Arven/GymManagementSystem/commit/d579743a6a1e66a38a330b9ba94a7e430209aaaf))
+* added components from shadcn ([86dc1b2](https://github.com/Lagawan-Arven/GymManagementSystem/commit/86dc1b20ec446ca7b8ff33c7ff64c99d9d5e0c97))
+* added layout components ([8f11de3](https://github.com/Lagawan-Arven/GymManagementSystem/commit/8f11de3def6f5b67344260266ce7612c64d43097))
+* added loading states ([3eb61b1](https://github.com/Lagawan-Arven/GymManagementSystem/commit/3eb61b1e94fba919e960cb49b6778896d5ec0ab9))
+* added loading states ([2fa9594](https://github.com/Lagawan-Arven/GymManagementSystem/commit/2fa959456633b107128a325e1abd48ca1ccd0fa7))
+* added mock data to test UI ([7f42a29](https://github.com/Lagawan-Arven/GymManagementSystem/commit/7f42a29f99a834bfd8b38219cc9899250a37c726))
+* added object types ([16255f9](https://github.com/Lagawan-Arven/GymManagementSystem/commit/16255f9579185e903b1f0a5c94baad5c35696523))
+* added pages ([12578ee](https://github.com/Lagawan-Arven/GymManagementSystem/commit/12578eeac1ea5eb77fc426d9e6bb7493189dde1d))
+* added signin for staff/admin ([f74c67a](https://github.com/Lagawan-Arven/GymManagementSystem/commit/f74c67ac8b48be738c6db7b4815ca5c6d2425ccb))
+* added tanstack query hooks ([f11c0e0](https://github.com/Lagawan-Arven/GymManagementSystem/commit/f11c0e01a00b37afe60bbf90764759a053811db1))
+* added the admin management tab ([5ce9c0d](https://github.com/Lagawan-Arven/GymManagementSystem/commit/5ce9c0df8a705542c0ae989d06a78c9c8b5ea36c))
+* added theme toggle ([1e78953](https://github.com/Lagawan-Arven/GymManagementSystem/commit/1e789536362088e510a9143c2fc617e10b77f1c4))
+* added zod validation ([7a7012c](https://github.com/Lagawan-Arven/GymManagementSystem/commit/7a7012cf7f44ff342c3ffdee1b0b51d147d1061e))
+* fallback page ([6c9ef87](https://github.com/Lagawan-Arven/GymManagementSystem/commit/6c9ef87b7ffcf28b607f9378c220d7bb9405e42a))
+* features guard ([8d2f872](https://github.com/Lagawan-Arven/GymManagementSystem/commit/8d2f8724c1576bfbee82d470944cac9a16aa158f))
+* initial commit ([40c2fd1](https://github.com/Lagawan-Arven/GymManagementSystem/commit/40c2fd1e0e300e8d1d6e44d574a49325b16b81de))
+* new hook ([c347970](https://github.com/Lagawan-Arven/GymManagementSystem/commit/c34797032eda1e5f45fa7afaa5b4e37289d14367))
+* set-ups for the refactored version ([ca38d9a](https://github.com/Lagawan-Arven/GymManagementSystem/commit/ca38d9a95e41d8a974a039f3383c91fc5e80a1e9))
+
+
+### Bug Fixes
+
+* added dynamic values based on the subscription status ([52ae8e6](https://github.com/Lagawan-Arven/GymManagementSystem/commit/52ae8e61869c241e835126ce107952d41920d3f7))
+* added fallback page ([029f7ca](https://github.com/Lagawan-Arven/GymManagementSystem/commit/029f7cac08d3bc5541fb88fd62819e4daac40069))
+* added member to payment schema ([a22f57e](https://github.com/Lagawan-Arven/GymManagementSystem/commit/a22f57e789beb7a3b4c09e249d9744dc047bf417))
+* added mock intercept for updated user ([98ab335](https://github.com/Lagawan-Arven/GymManagementSystem/commit/98ab335da3590f125a5fe6b8bb11e930602897a5))
+* added sub and plan interface ([94f5b8a](https://github.com/Lagawan-Arven/GymManagementSystem/commit/94f5b8acad8aba0152a0a1ef063f8801d35e5369))
+* added subscription in login response ([250da0f](https://github.com/Lagawan-Arven/GymManagementSystem/commit/250da0f769a98047e4c0208323365c4d788cb83d))
+* client-server bugs ([03e988d](https://github.com/Lagawan-Arven/GymManagementSystem/commit/03e988d3ef41d27bcb80de5a2b91b3f1094986ea))
+* comment ([71d72c7](https://github.com/Lagawan-Arven/GymManagementSystem/commit/71d72c75ddfeac426b8d884662d311265c0e8136))
+* current status and plan ids ([039de3d](https://github.com/Lagawan-Arven/GymManagementSystem/commit/039de3d1fefce0c6b45a7a45a700f0b093bc1125))
+* exit operation redirect page based on the user's rol ([be5f66f](https://github.com/Lagawan-Arven/GymManagementSystem/commit/be5f66f723fc2b93f7409fc33a549f42477d36c1))
+* gym name ([cdcc559](https://github.com/Lagawan-Arven/GymManagementSystem/commit/cdcc559e86e0ebe924807e216c6e252c30501fcf))
+* logs(git ignored) -&gt; gym_logs ([f5b2163](https://github.com/Lagawan-Arven/GymManagementSystem/commit/f5b2163b4c48cab4d80a6c8e32490b850a52a67e))
+* logs(git ignored) -&gt; gym_logs ([52b891a](https://github.com/Lagawan-Arven/GymManagementSystem/commit/52b891aebbb99c89390f02f04d66b6c62ed08c2c))
+* minor fixes ([a252cfd](https://github.com/Lagawan-Arven/GymManagementSystem/commit/a252cfd51f8aab782036cc7ae2d97ca1bc04883c))
+* page navigation based on user role ([ea4285d](https://github.com/Lagawan-Arven/GymManagementSystem/commit/ea4285da220b79102de5c99e635acb8a80f9d76e))
+* payor name or member name ([6b765e2](https://github.com/Lagawan-Arven/GymManagementSystem/commit/6b765e2758f38f5e02ede1dd5cf09513cd0b3321))
+* put -&gt; patch ([53d3127](https://github.com/Lagawan-Arven/GymManagementSystem/commit/53d31271c7739a6dec6de2df0ffc3cd4f99d249a))
+* reinstalled dependencies ([a7c0de6](https://github.com/Lagawan-Arven/GymManagementSystem/commit/a7c0de6650e85f81c3d4973d1e6e93d3c48f7e55))
+* removed api calls error details to toast ([e104805](https://github.com/Lagawan-Arven/GymManagementSystem/commit/e104805dc4f1b8d95b29c9b5b83079b6076f6762))
+* removed features in plan card not yet implemented ([dbd36f9](https://github.com/Lagawan-Arven/GymManagementSystem/commit/dbd36f900067bef8875f56221e1e15de6af89be3))
+* removed member as a user ([b7a7b9f](https://github.com/Lagawan-Arven/GymManagementSystem/commit/b7a7b9f6b4c52c0d7e23980016496d331c052021))
+* removed unimplemented features ([8fc7707](https://github.com/Lagawan-Arven/GymManagementSystem/commit/8fc7707d555ff040c549eeee7f026c983665d258))
+* router guards and added subscription status guard ([70320bc](https://github.com/Lagawan-Arven/GymManagementSystem/commit/70320bc2258c297fc1468fa6ade80be8997f8c49))
+* separated component and hook ([c0a6c04](https://github.com/Lagawan-Arven/GymManagementSystem/commit/c0a6c045e0f9ca4ba05297df186a399fbad04bb6))
+* useAuth import ([446c93a](https://github.com/Lagawan-Arven/GymManagementSystem/commit/446c93a536408c11592ddefe8e27e2144abc9be3))
+* user-based routing ([285a28f](https://github.com/Lagawan-Arven/GymManagementSystem/commit/285a28f863f72f3d47741a4ecd435f36b4647d10))
+* username -&gt; usernameOrEmail ([7b364a0](https://github.com/Lagawan-Arven/GymManagementSystem/commit/7b364a0dfee04dc0431a5ff00370d72fd40ce8eb))
+
 ## 1.0.0 (2026-04-22)
 
 
