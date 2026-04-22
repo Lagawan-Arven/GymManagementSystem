@@ -8,6 +8,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import bgImage from "../../assets/workoutcover.jpg";
 
 const features = [
   {
@@ -43,7 +44,7 @@ export const LandingPage = () => {
       <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/src/assets/workoutcover.jpg')" }}
+          style={{ backgroundImage: `url(${bgImage})` }}
         >
           <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-[2px]" />
         </div>
