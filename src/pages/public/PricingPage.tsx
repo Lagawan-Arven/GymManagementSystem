@@ -1,4 +1,4 @@
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, Building, Zap, Shield } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -12,38 +12,40 @@ import { Link } from "react-router-dom";
 
 const PRICING_PLANS = [
   {
-    id: 1,
+    id: "STARTER499",
     name: "Starter",
-    description: "Perfect for small or boutique gyms.",
+    description: "Perfect for small or boutique gyms just getting started.",
     price: "₱499",
     interval: "/month",
+    icon: Zap,
     features: [
       "Up to 100 Active Members",
       "Standard Support",
       "1 Admin Account",
     ],
-    popular: false,
-  },
-  {
-    id: 2,
-    name: "Pro",
-    description: "Everything you need to scale.",
-    price: "₱999",
-    interval: "/month",
-    features: [
-      "Unlimited Members",
-
-      "Priority Support",
-      "Unlimited Admin Accounts",
-    ],
     popular: true,
   },
   {
-    id: 3,
+    id: "PRO999",
+    name: "Pro",
+    description: "Everything you need to scale your gym operations.",
+    price: "₱999",
+    interval: "/month",
+    icon: Shield,
+    features: [
+      "Unlimited Members",
+      "Priority Support",
+      "Unlimited Admin Accounts",
+    ],
+    popular: false,
+  },
+  {
+    id: "ENTERPRISE",
     name: "Enterprise",
-    description: "For multi-branch franchises.",
-    price: "Custom",
+    description: "For multi-branch franchises requiring custom setups.",
+    price: "Soon",
     interval: "",
+    icon: Building,
     features: [
       "Multi-Branch Support",
       "Custom API Access",
@@ -76,49 +78,81 @@ export const PricingPage = () => {
 
         {/* Pricing Cards */}
         <div className="mx-auto grid max-w-5xl gap-8 pt-12 md:grid-cols-2 lg:grid-cols-3">
-          {PRICING_PLANS.map((plan) => (
-            <Card
-              key={plan.id}
-              className={`relative flex flex-col ${plan.popular ? "z-10 scale-105 border-red-500 shadow-lg" : ""}`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 right-0 left-0 mx-auto w-fit rounded-full bg-red-500 px-3 py-1 text-xs font-medium text-white">
-                  Most Popular
-                </div>
-              )}
-              <CardHeader>
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <CardDescription className="min-h-10">
-                  {plan.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1 space-y-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.interval}</span>
-                </div>
-                <ul className="space-y-3 text-sm">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <Check className="h-4 w-4 shrink-0 text-red-500" />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  variant={plan.popular ? "default" : "outline"}
-                  asChild
-                >
-                  <Link to={plan.id === 3 ? "/contact" : "/register"}>
-                    {plan.id === 3 ? "Contact Sales" : "Start Free Trial"}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+          {PRICING_PLANS.map((plan) => {
+            // 2. Automatically calculate 50% off (ignores "Custom" string)
+            const numericPrice = parseInt(plan.price.replace(/\D/g, ""));
+            const discountedPrice = numericPrice
+              ? `₱${Math.floor(numericPrice / 2)}`
+              : plan.price;
+            return (
+              <Card
+                key={plan.id}
+                className={`relative flex flex-col ${plan.popular ? "z-10 scale-105 border-red-500 shadow-lg" : ""}`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 right-0 left-0 mx-auto w-fit rounded-full bg-red-500 px-3 py-1 text-xs font-medium text-white">
+                    Most Popular
+                  </div>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription className="min-h-10">
+                    {plan.description}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="flex-1 space-y-6">
+                  {plan.id !== "ENTERPRISE" && plan.price !== "Custom" ? (
+                    <div className="animate-in fade-in space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground text-2xl font-bold line-through decoration-red-500/70">
+                          {plan.price}
+                        </span>
+                        <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-red-500 uppercase">
+                          50% OFF 1st Payment
+                        </span>
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-bold">
+                          {discountedPrice}
+                        </span>
+                        <span className="text-muted-foreground">
+                          {plan.interval}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold">{plan.price}</span>
+                      <span className="text-muted-foreground">
+                        {plan.interval}
+                      </span>
+                    </div>
+                  )}
+                  <ul className="space-y-3 text-sm">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-3">
+                        <Check className="h-4 w-4 shrink-0 text-red-500" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+
+                <CardFooter>
+                  {plan.id !== "ENTERPRISE" && (
+                    <Button
+                      className="w-full"
+                      variant={plan.popular ? "default" : "outline"}
+                      asChild
+                    >
+                      <Link to={"/register"}>Start Free Trial</Link>
+                    </Button>
+                  )}
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Early Adopter Tiers */}
