@@ -118,6 +118,11 @@ export const Sidebar = () => {
           ))}
         </nav>
       </div>
+      <div>
+        <p className="text-[12px]">
+          App Version: {import.meta.env.VITE_APP_VERSION}
+        </p>
+      </div>
     </div>
   );
 };

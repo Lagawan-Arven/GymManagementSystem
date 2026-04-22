@@ -14,6 +14,9 @@ export const Footer = () => {
             <span className="text-lg font-bold tracking-tight">
               Arv<span className="text-red-500">Fit</span>
             </span>
+            <span className="text-muted-foreground text-[12px]">
+              v{import.meta.env.VITE_APP_VERSION}
+            </span>
           </div>
 
           <p className="text-muted-foreground text-sm">
