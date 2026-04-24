@@ -24,7 +24,7 @@ export const Spinner = ({ className, size = 24 }: SpinnerProps) => {
  * Perfect for initial app mount (e.g., inside AuthProvider) or heavy route transitions.
  * Features a pulsing and bouncing brand logo.
  */
-export const PageLoader = () => {
+export const PageLoader = ({ text }: { text?: string }) => {
   return (
     <div className="bg-background flex h-screen w-full flex-col items-center justify-center">
       <div className="flex flex-col items-center gap-4">
@@ -33,7 +33,7 @@ export const PageLoader = () => {
           <Dumbbell className="h-10 w-10 text-red-500" />
         </div>
         <p className="text-muted-foreground animate-pulse text-sm font-medium">
-          Warming up...
+          {text || "Warming up..."}
         </p>
       </div>
     </div>
