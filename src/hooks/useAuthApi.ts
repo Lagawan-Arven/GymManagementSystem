@@ -4,6 +4,24 @@ import { api } from "../api/axios";
 import type { LoginResponse, GoogleAuthResponse } from "../types";
 import { useAuth } from "../context/useAuth";
 
+export const useDemoLogin = () => {
+  const { setAuth } = useAuth();
+
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await api.post<LoginResponse>("/auth/login/demo");
+      return data;
+    },
+    onSuccess: (data) => {
+      setAuth(data.user, data.access_token, data.subscription);
+      toast.success(`Welcome, ${data.user.name}!`);
+    },
+    onError: () => {
+      toast.error("Failed. Please try again.");
+    },
+  });
+};
+
 export const useLogin = () => {
   const { setAuth } = useAuth();
 

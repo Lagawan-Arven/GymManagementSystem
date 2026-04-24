@@ -8,7 +8,10 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import { PageLoader } from "../../components/ui/loader";
 import bgImage from "../../assets/workoutcover.jpg";
+
+import { useDemoLogin } from "../../hooks/useAuthApi";
 
 const features = [
   {
@@ -38,6 +41,8 @@ const features = [
 ];
 
 export const LandingPage = () => {
+  const { mutate: loginDemo, isPending } = useDemoLogin();
+  if (isPending) return <PageLoader text="Loading..." />;
   return (
     <div className="flex flex-col">
       {/* HERO SECTION */}
@@ -61,12 +66,13 @@ export const LandingPage = () => {
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
+              onClick={() => loginDemo()}
               size="lg"
               className="h-14 bg-red-600 px-8 text-lg text-white transition-transform hover:scale-105 hover:bg-red-700"
               asChild
             >
-              <Link to="/register">
-                Start 7-Day Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+              <Link to="">
+                Demo App <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button
@@ -75,7 +81,7 @@ export const LandingPage = () => {
               className="h-14 border-zinc-500 bg-transparent px-8 text-lg text-white transition-transform hover:scale-105 hover:bg-zinc-800"
               asChild
             >
-              <Link to="/pricing">View Pricing</Link>
+              <Link to="/register">Start 7-Day Free Trial</Link>
             </Button>
           </div>
           <div className="mt-8 flex justify-center gap-6 text-sm text-zinc-400">
