@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { SessionPayload } from "../types";
+import { isAxiosError } from "axios";
 
 export const useRecordSession = () => {
   const queryClient = useQueryClient();
@@ -16,8 +17,11 @@ export const useRecordSession = () => {
       // Invalidate logs so the owner dashboard instantly sees this activity
       queryClient.invalidateQueries({ queryKey: ["logs"] });
     },
-    onError: () => {
-      toast.error("Failed to record session.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to record session.",
+      );
     },
   });
 };

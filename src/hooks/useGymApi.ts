@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { RegisterResponse, GymResponse } from "../types";
 import { useAuth } from "../context/useAuth";
+import { isAxiosError } from "axios";
 
 export const systemKeys = {
   all: ["system"] as const,
@@ -28,8 +29,11 @@ export const useRegisterGym = () => {
       toast.success("Registration success");
       navigate("/login");
     },
-    onError: () => {
-      toast.error("Failed to register gym. Please try again.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to register gym. Please try again.",
+      );
     },
   });
 };
@@ -78,8 +82,11 @@ export const useUpdateGym = () => {
       queryClient.invalidateQueries({ queryKey: systemKeys.gym() });
       toast.success("Gym settings updated successfully.");
     },
-    onError: () => {
-      toast.error("Failed to update gym settings.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to update gym settings.",
+      );
     },
   });
 };

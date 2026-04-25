@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { GetPaymentsResponse, Payment } from "../types";
+import { isAxiosError } from "axios";
 
 export const paymentKeys = {
   all: ["payments"] as const,
@@ -42,8 +43,11 @@ export const useRecordPayment = () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       toast.success("Payment recorded successfully!");
     },
-    onError: () => {
-      toast.error("Failed to record payment.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to record payment.",
+      );
     },
   });
 };

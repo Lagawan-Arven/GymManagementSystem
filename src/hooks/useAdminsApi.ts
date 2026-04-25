@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
+import { isAxiosError } from "axios";
 
 export const useGetAdmins = () => {
   return useQuery({
@@ -21,10 +22,13 @@ export const useCreateAdmin = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admins"] });
-      toast.success("Staff account created successfully!");
+      toast.success("Admin account created successfully!");
     },
-    onError: () => {
-      toast.error("Failed to create admin account.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to create admin account.",
+      );
     },
   });
 };
@@ -39,8 +43,11 @@ export const useDeleteAdmin = () => {
       queryClient.invalidateQueries({ queryKey: ["admins"] });
       toast.success("Admin account removed.");
     },
-    onError: () => {
-      toast.error("Failed to remove admin account.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to remove admin account.",
+      );
     },
   });
 };

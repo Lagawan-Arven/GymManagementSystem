@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { GetMembersResponse, Member } from "../types";
+import { isAxiosError } from "axios";
 
 // Query Keys (Keeps our cache organized)
 export const memberKeys = {
@@ -40,8 +41,11 @@ export const useCreateMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member successfully added!");
     },
-    onError: () => {
-      toast.error("Failed to add member.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to add member.",
+      );
     },
   });
 };
@@ -67,8 +71,11 @@ export const useUpdateMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member updated successfully!");
     },
-    onError: () => {
-      toast.error("Failed to update member.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to update member.",
+      );
     },
   });
 };
@@ -87,8 +94,11 @@ export const useRenewMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member renewed successfully!");
     },
-    onError: () => {
-      toast.error("Failed to renew member.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to renew member.",
+      );
     },
   });
 };
@@ -105,8 +115,11 @@ export const useDeleteMember = () => {
       queryClient.invalidateQueries({ queryKey: memberKeys.lists() });
       toast.success("Member removed from the system.");
     },
-    onError: () => {
-      toast.error("Failed to delete member.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to delete member.",
+      );
     },
   });
 };
