@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import {
   Activity,
   UserPlus,
@@ -57,7 +57,6 @@ export const OperationPage = () => {
   const {
     handleSubmit: handleCheckIn,
     control: checkInControl,
-    watch: watchCheckIn,
     reset: resetCheckIn,
   } = useForm();
   const {
@@ -89,7 +88,10 @@ export const OperationPage = () => {
   } = useForm({ defaultValues: { method: "Cash", member_id: "", amount: "" } });
 
   // Watch the selected member for Check-in to show their status
-  const selectedCheckInMemberId = watchCheckIn("member_id");
+  const selectedCheckInMemberId = useWatch({
+    control: checkInControl,
+    name: "member_id",
+  });
   const selectedCheckInMember = members?.find(
     (m) => m.id === selectedCheckInMemberId,
   );
@@ -98,14 +100,16 @@ export const OperationPage = () => {
   // ==========================================
   const onCheckInSubmit = async (data: any) => {
     setIsProcessing(true);
-    try {
-      await recordSession({ type: "member", member_id: data.member_id });
-      resetCheckIn();
-    } catch (e) {
-      toast.error("Check-in failed.");
-    } finally {
-      setIsProcessing(false);
-    }
+
+    recordSession(
+      { type: "member", member_id: data.member_id },
+      {
+        onSuccess: () => {
+          resetCheckIn();
+          setIsProcessing(false);
+        },
+      },
+    );
   };
 
   const onDropInSubmit = async (data: any) => {
@@ -120,9 +124,9 @@ export const OperationPage = () => {
         payor_name: data.visitorName,
         notes: "Walk-in session",
       });
-      toast.success("Session recorded successfully!");
+
       resetDropIn();
-    } catch (e) {
+    } catch {
       toast.error("Transaction failed.");
     } finally {
       setIsProcessing(false);
@@ -151,9 +155,8 @@ export const OperationPage = () => {
         payor_name: `${data.firstname} ${data.lastname}`,
       });
 
-      toast.success("Member registered and payment recorded!");
       resetNewMember();
-    } catch (e) {
+    } catch {
       toast.error("Failed to complete the registration workflow.");
     } finally {
       setIsProcessing(false);
@@ -170,9 +173,8 @@ export const OperationPage = () => {
         amount: Number(data.amount),
         member_id: data.member_id,
       });
-      toast.success("Membership renewed successfully!");
       resetRenew();
-    } catch (e) {
+    } catch {
       toast.error("Renewal transaction failed.");
     } finally {
       setIsProcessing(false);

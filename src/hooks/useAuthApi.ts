@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { api } from "../api/axios";
 import type { LoginResponse, GoogleAuthResponse } from "../types";
 import { useAuth } from "../context/useAuth";
+import { isAxiosError } from "axios";
 
 export const useDemoLogin = () => {
   const { setAuth } = useAuth();
@@ -16,8 +17,11 @@ export const useDemoLogin = () => {
       setAuth(data.user, data.access_token, data.subscription);
       toast.success(`Welcome, ${data.user.name}!`);
     },
-    onError: () => {
-      toast.error("Failed. Please try again.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed. Please try again.",
+      );
     },
   });
 };
@@ -38,8 +42,11 @@ export const useLogin = () => {
       setAuth(data.user, data.access_token, data.subscription);
       toast.success(`Welcome back, ${data.user.name}!`);
     },
-    onError: () => {
-      toast.error("Login failed. Please try again.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Login failed. Please try again.",
+      );
     },
   });
 };
@@ -57,8 +64,11 @@ export const useGoogleAuth = () => {
       );
       return data;
     },
-    onError: () => {
-      toast.error("Google authentication failed.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Google authentication failed.",
+      );
     },
     // We don't call setAuth here in onSuccess because it might be a 202 "requires_completion" response.
     // The component using this hook will handle that logic.
@@ -90,8 +100,11 @@ export const useUpdateProfile = () => {
 
       toast.success("Profile updated successfully!");
     },
-    onError: () => {
-      toast.error("Failed to update profile.");
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to update profile.",
+      );
     },
   });
 };

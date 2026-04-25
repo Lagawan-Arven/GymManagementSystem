@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PhilippinePeso } from "lucide-react";
 
@@ -35,7 +35,6 @@ export const RecordPaymentDialog = () => {
     handleSubmit,
     reset,
     control,
-    watch,
     formState: { errors },
   } = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentSchema),
@@ -46,7 +45,7 @@ export const RecordPaymentDialog = () => {
   });
 
   // Watch the payment type so we can dynamically show/hide fields
-  const selectedType = watch("type");
+  const selectedType = useWatch({ control: control, name: "type" });
 
   const onSubmit = (data: PaymentFormValues) => {
     recordPayment(data, {
