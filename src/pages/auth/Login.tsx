@@ -131,9 +131,9 @@ export const Login = () => {
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link to="#" className="text-xs text-red-600 hover:underline">
+              <Button className="bg-transparent text-xs text-red-600 hover:underline">
                 Forgot password?
-              </Link>
+              </Button>
             </div>
             <Input id="password" type="password" {...register("password")} />
             {errors.password && (
