@@ -36,11 +36,13 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token is invalid, expired, or blacklisted
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("subscription");
 
       // Prevent infinite redirect loops if they are already on public pages
       const publicPaths = ["/login", "/register", "/"];
       if (!publicPaths.includes(window.location.pathname)) {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     }
     return Promise.reject(error);
