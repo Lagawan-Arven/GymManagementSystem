@@ -103,7 +103,7 @@ export const DashboardOverview = () => {
               {formatPesos(recentRevenue)}
             </div>
             <p className="text-muted-foreground text-xs">
-              +20.1% from last month
+              {/*+20.1% from last month*/}
             </p>
           </CardContent>
         </Card>
