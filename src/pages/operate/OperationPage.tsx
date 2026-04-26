@@ -340,7 +340,7 @@ export const OperationPage = () => {
               <div className="space-y-2">
                 <Label>Visitor Name *</Label>
                 <Input
-                  placeholder="John Doe"
+                  placeholder=""
                   required
                   {...regDropIn("visitorName")}
                   className="h-12 text-lg"
