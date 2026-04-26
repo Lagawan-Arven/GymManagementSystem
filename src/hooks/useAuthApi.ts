@@ -108,3 +108,39 @@ export const useUpdateProfile = () => {
     },
   });
 };
+
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: async (payload) => {
+      const { data } = await api.post("/auth/forgot-password", payload);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Check email to fetch recovery code.");
+    },
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Internal Server Error.",
+      );
+    },
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: async (payload) => {
+      const { data } = await api.post("/auth/reset-password", payload);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Password updated.");
+    },
+    onError: (error) => {
+      toast.error(
+        (isAxiosError(error) && error.response?.data?.detail) ||
+          "Failed to reset password.",
+      );
+    },
+  });
+};
